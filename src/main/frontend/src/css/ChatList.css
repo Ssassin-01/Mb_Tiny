@@ -1,0 +1,53 @@
+.chat-list {
+    width: 280px;
+    border-right: 1px solid #ddd;
+    padding: 16px;
+    background-color: #fafafa;
+  }
+  
+  .chat-list h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .chat-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+  
+  .chat-item:hover {
+    background-color: #eee;
+  }
+  
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin-right: 12px;
+  }
+  
+  .chat-info {
+    flex: 1;
+  }
+  
+  .chat-info strong {
+    display: block;
+    font-weight: 600;
+  }
+  
+  .chat-info p {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+  }
+  
+  .chat-time {
+    font-size: 12px;
+    color: #999;
+    margin-left: 6px;
+  }
