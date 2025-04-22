@@ -1,0 +1,85 @@
+.write {
+  font-family: 'Pretendard', sans-serif;
+  padding: 40px 16px;
+}
+
+.logo-box {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.logo {
+  width: 80px;
+  height: auto;
+}
+
+.form-box {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.header select,
+.header input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.header input {
+  flex: 1;
+}
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 15px;
+}
+
+.tools {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.tools button {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.actions {
+  text-align: right;
+}
+
+.submit {
+  padding: 10px 18px;
+  background-color: #30d5c8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.submit:hover {
+  background-color: #28c4b7; 
+}

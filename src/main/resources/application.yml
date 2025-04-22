@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/mbtisns
     username : root
-    password: 1234
+    password: hsgty588123s
   jpa:
     hibernate:
       ddl-auto: update

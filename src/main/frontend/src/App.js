@@ -1,17 +1,26 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import MyInfo from './pages/MyInfo';
-import Hello from './components/Hello';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import Login from './pages/Login';
+import SignUpPage from './pages/SignUpPage';
+import AnonymousBoard from './components/AnonymousBoard';
+import AnonymousDetail from './components/AnonymousDetail';
+import AnonymousWrite from './components/AnonymousWrite';
+import MessagesPage from './pages/MessagesPage';
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path='/' element={<Hello />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/me' element={<MyInfo />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} /> 
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/anonymous" element={<AnonymousBoard />} />
+        <Route path="/anonymous/:id" element={<AnonymousDetail />} /> 
+        <Route path="/anonymous/write" element={<AnonymousWrite />} />
+        <Route path="/messages" element={<MessagesPage />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 
