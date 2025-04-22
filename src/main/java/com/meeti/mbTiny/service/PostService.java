@@ -2,7 +2,6 @@
 
     import com.meeti.mbTiny.dto.PostDTO;
     import com.meeti.mbTiny.dto.PostRequestDTO;
-    import com.meeti.mbTiny.dto.PostUpdateDTO;
     import com.meeti.mbTiny.entity.Member;
     import com.meeti.mbTiny.entity.Post;
     import com.meeti.mbTiny.repository.MemberRepository;
@@ -69,7 +68,7 @@
                     .build();
         }
 
-        public void updatePost(Long id, Member member, PostUpdateDTO dto) {
+        public void updatePost(Long id, Member member, PostRequestDTO dto) {
             Post post = postRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("없는 피드 입니다."));
             if(!post.getMember().getNickname().equals(member.getNickname())) {
