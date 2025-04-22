@@ -18,16 +18,18 @@ public class MemberService {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
 
-        if(memberRepository.existsByUsername(dto.getUsername())) {
+        if(memberRepository.existsByNickname(dto.getNickname())) {
             throw new IllegalArgumentException("이미 존재하는 유저이름 입니다.");
         }
 
         Member member = Member.builder()
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))
-                .nickname(dto.getNickname())
-                .username(dto.getUsername())
                 .gender(dto.getGender())
+                .phone(dto.getPhone())
+                .birthday(dto.getBirthday())
+                .nickname(dto.getNickname())
+                .mbti(dto.getMbti())
                 .build();
         memberRepository.save(member);
     }

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,13 +29,20 @@ public class Member {
     private String password;
 
     @Column(nullable = false)
-    private String username;
+    private String gender;
+
+    @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
+    private LocalDate birthday;
 
     @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = false)
-    private String gender;
+    private String mbti;
+
+    private String profileImgUrl;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Post> posts;

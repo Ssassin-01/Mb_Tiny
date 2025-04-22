@@ -13,8 +13,8 @@ public class PostDTO {
     private Long id;
     private String title;
     private String content;
-    private String nickname;
     private boolean isAnonymous;
-    private String tags;
+    private Long viewCount;
+    private String nickname;
     private String createdAt;
 }
