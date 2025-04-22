@@ -24,7 +24,7 @@ import java.util.List;
 @EnableMethodSecurity
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig1 {
     private final CustomUserDetailsService customUserDetailsService;
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/hello").permitAll()
+                        .requestMatchers("/api/hello","/api/posts").permitAll()
                         .requestMatchers("/api/public/**", "/api/members/login", "/api/members/logout", "/api/members/signup").permitAll()
                         .anyRequest().authenticated()
                 )

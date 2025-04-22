@@ -1,20 +1,20 @@
 package com.meeti.mbTiny.dto;
 
+import com.meeti.mbTiny.entity.Member;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostRequestDTO {
-    @NotBlank(message = "제목은 필수입니다")
+@Builder
+public class PostDTO {
+    private Long id;
     private String title;
-    @NotBlank(message = "내용은 필수입니다")
     private String content;
+    private String nickname;
     private boolean isAnonymous;
     private String tags;
+    private String createdAt;
 }

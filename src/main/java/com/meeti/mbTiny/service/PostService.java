@@ -1,11 +1,16 @@
     package com.meeti.mbTiny.service;
 
+    import com.meeti.mbTiny.dto.PostDTO;
     import com.meeti.mbTiny.dto.PostRequestDTO;
     import com.meeti.mbTiny.entity.Member;
     import com.meeti.mbTiny.entity.Post;
     import com.meeti.mbTiny.repository.PostRepository;
     import lombok.RequiredArgsConstructor;
     import org.springframework.stereotype.Service;
+
+    import java.time.format.DateTimeFormatter;
+    import java.util.List;
+    import java.util.stream.Collectors;
 
     @Service
     @RequiredArgsConstructor
@@ -20,5 +25,22 @@
                     .member(member)
                     .build();
             postRepository.save(post);
+        }
+
+        public List<PostDTO> getAllPosts() {
+            List<Post> posts = postRepository.findAll();
+            return posts.stream()
+                    .map(post -> {
+                        String nickname = post.isAnonymous() ? "익명" : post.getMember().getNickname();
+                        return PostDTO.builder()
+                                .id(post.getId())
+                                .title(post.getTitle())
+                                .content(post.getContent())
+                                .nickname(nickname)
+                                .isAnonymous(post.isAnonymous())
+                                .tags(post.getTags())
+                                .createdAt(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                                .build();
+                    }).collect(Collectors.toList());
         }
     }

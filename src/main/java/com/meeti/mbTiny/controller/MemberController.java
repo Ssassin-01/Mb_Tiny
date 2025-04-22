@@ -60,8 +60,6 @@
         @GetMapping("/me")
         public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            System.out.println("🎯 현재 인증 객체: " + auth);
-            System.out.println("🎯 Principal: " + auth.getPrincipal());
 
             if (auth == null || userDetails == null || auth.getPrincipal().equals("anonymousUser")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
