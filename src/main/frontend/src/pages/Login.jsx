@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/Login.css'; // ← components 폴더 안 CSS를 참조
+import '../css/Login.css';
 
 function Login() {
   const navigate = useNavigate();
 
   return (
     <div className="login">
-      <img src="/img/logo2.png" alt="MBTiny Logo" className="logo" />
+      <img src="/img/logo.png" alt="MBTiny Logo" className="logo" />
         <div className="login-box">
         <div className="field">
           <input type="text" placeholder="ID" />

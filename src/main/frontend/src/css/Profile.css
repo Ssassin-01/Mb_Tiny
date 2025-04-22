@@ -1,0 +1,39 @@
+.profile-page {
+    padding: 30px;
+    font-family: 'Pretendard', sans-serif;
+  }
+  
+  .profile-card {
+    display: flex;
+    align-items: center;
+    background: #f7f7f7;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 24px;
+  }
+  
+  .profile-info p {
+    margin: 6px 0;
+  }
+  
+  .edit-btn {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border: none;
+    background-color: #30d5c8;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
