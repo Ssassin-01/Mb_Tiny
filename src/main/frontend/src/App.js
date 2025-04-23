@@ -17,9 +17,8 @@ function App() {
         <Route path="/login" element={<Login />} /> 
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/anonymous" element={<AnonymousBoard />} />
-        <Route path="/anonymous" element={<AnonymousBoard />} />
-        <Route path="/anonymous/:id" element={<AnonymousDetail />} /> 
         <Route path="/anonymous/write" element={<AnonymousWrite />} />
+        <Route path="/anonymous/:id" element={<AnonymousDetail />} /> 
         <Route path="/messages" element={<MessagesPage />} />
       </Routes>
     </Router>

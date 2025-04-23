@@ -34,7 +34,7 @@ function SignUpPage() {
     };
 
     try {
-      await axios.post('http://localhost:8080/api/users/signup', registerData);
+      await axios.post('http://localhost:8080/api/users/register', registerData); // ✅ 수정된 경로
       alert('회원가입 성공!');
       navigate('/');
     } catch (err) {
@@ -58,6 +58,7 @@ function SignUpPage() {
           <option value="남자">남자</option>
           <option value="여자">여자</option>
         </select>
+
         <label>휴대전화</label>
         <input name="phone" onChange={handleChange} />
 
@@ -79,9 +80,11 @@ function SignUpPage() {
         <label>MBTI</label>
         <select name="mbti" onChange={handleChange} defaultValue="">
           <option value="" disabled>MBTI 선택</option>
-          {["ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP",
-            "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"].map(type => (
-              <option key={type} value={type}>{type}</option>
+          {[
+            "ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP",
+            "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"
+          ].map(type => (
+            <option key={type} value={type}>{type}</option>
           ))}
         </select>
 
