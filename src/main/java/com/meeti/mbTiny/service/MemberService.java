@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -34,4 +38,16 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    public List<Member> getMembersByMBTI(String IorE, String NorS, String TorF, String JorP) {
+        return memberRepository.findAll().stream()
+                .filter(member -> {
+                    String mbti = Optional.ofNullable(member.getMbti()).orElse("").toUpperCase();
+                    return mbti.length() == 4 &&
+                            (IorE.equals("all") || mbti.startsWith(IorE)) &&
+                            (NorS.equals("all") || mbti.charAt(1) == NorS.charAt(0)) &&
+                            (TorF.equals("all") || mbti.charAt(2) == TorF.charAt(0)) &&
+                            (JorP.equals("all") || mbti.charAt(3) == JorP.charAt(0));
+                })
+                .collect(Collectors.toList());
+    }
 }

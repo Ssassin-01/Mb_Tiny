@@ -21,6 +21,7 @@
     import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 
+    import java.util.List;
     import java.util.Map;
 
     @RestController
@@ -71,6 +72,17 @@
                     "email", member.getEmail(),
                     "nickname", member.getNickname()
             ));
+        }
+
+        @GetMapping("/filter/mbti")
+        public ResponseEntity<List<Member>> getMembersByMBTI(
+                @RequestParam(defaultValue = "all") String IorE,
+                @RequestParam(defaultValue = "all") String NorS,
+                @RequestParam(defaultValue = "all") String TorF,
+                @RequestParam(defaultValue = "all") String JorP
+        ) {
+            List<Member> filtered = memberService.getMembersByMBTI(IorE, NorS, TorF, JorP);
+            return ResponseEntity.ok(filtered);
         }
 
 
