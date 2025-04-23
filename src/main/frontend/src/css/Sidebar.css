@@ -1,22 +1,39 @@
-/* Sidebar.css */
-  .sidebar {
-    width: 200px;
-    
-    background-color: #fff;
-    border-right: 1px solid #ddd;
-    height: 100vh;
-  }
-  .logo {
-    font-weight: bold;
-    font-size: 24px;
-    margin-bottom: 24px;
-    margin-left: 10px;
-  }
-  .menu li {
-    border: 1px solid black;
-    list-style: none;
-    margin: 30px;
-    
-    cursor: pointer;
-  }
+.sidebar {
+  width: 200px;
+  background-color: #fff;
+  border-right: 1px solid #ddd;
+  height: 100vh;
+  padding-top: 20px;
+  box-sizing: border-box;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 24px;
+  margin: 0 auto;
+}
+
+.menu {
+  list-style: none;
+}
   
+.menu li {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #111;
+  padding: 20px 10px;
+  border-radius: 10px;       
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+}
+    
+.menu li:hover {
+  background-color: #f2f2f2;
+}
+  
+.menu li img {
+  width: 24px;
+  height: 24px;
+}

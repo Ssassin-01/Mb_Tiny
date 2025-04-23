@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Sidebar';
-import Topbar from '../components/Topbar';
+
 import '../css/AnonymousBoard.css';
 
 function AnonymousBoard() {
@@ -43,9 +42,9 @@ function AnonymousBoard() {
 
   return (
     <div className="anonymous-page">
-      <Topbar />
+
       <div className="anonymous-layout">
-        <Sidebar />
+
         <div className="anonymous-board">
 
           <table className="table">
