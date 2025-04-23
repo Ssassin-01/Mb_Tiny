@@ -5,6 +5,12 @@
   overflow: hidden;
 }
 
+.layout-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
 .sidebar {
   width: 250px;
   flex-shrink: 0;
@@ -13,20 +19,14 @@
   box-sizing: border-box;
 }
 
+.main-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  height: 100%;
+  background: #f9f9f9;
+}
 
 .main-content {
   padding: 20px;
   box-sizing: border-box;
-}
-.layout-body {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  height: 100vh; /* ✅ 전체 높이 확보 */
-}
-
-.main-scroll-area {
-  flex: 1;
-  overflow-y: auto;
-  min-width: 0; /* ✅ 자식 요소가 눌리는 문제 해결 */
 }
