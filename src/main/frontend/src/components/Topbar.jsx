@@ -15,9 +15,9 @@ const Topbar = () => {
   <div className="topbar-center">
     <input type="text" className="search-input" placeholder="검색하기" />
   </div>
-  <div className="topbar-right">
-    <button className="join-button">로그인</button>
-  </div>
+  
+    <button className="join-button" onClick={handleLoginClick}>로그인</button>
+
 </div>
 
 

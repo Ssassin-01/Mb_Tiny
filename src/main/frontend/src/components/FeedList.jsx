@@ -16,7 +16,7 @@ const allDummyFeeds = Array.from({ length: 50 }, (_, i) => ({
 function FeedList() {
   const [feeds, setFeeds] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0); // 백엔드용 페이지 번호
+  // const [page, setPage] = useState(0); // 백엔드용 페이지 번호
 
   // 초기 렌더링 시
   useEffect(() => {

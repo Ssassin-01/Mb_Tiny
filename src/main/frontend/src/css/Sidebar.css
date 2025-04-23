@@ -22,7 +22,7 @@
   gap: 10px;
   font-size: 16px;
   color: #111;
-  padding: 14px 16px;
+  padding: 20px 16px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -38,6 +38,37 @@
 
 .label-text {
   transition: opacity 0.2s ease;
+}
+.icon {
+  font-size: 22px;
+  color: #888;
+  transition: all 0.2s ease;
+}
+
+.menu li:hover .icon {
+  color: #30d5c8;
+  transform: scale(1.1);
+}
+
+.menu li.active .icon {
+  color: #1ccfc3;
+  transform: scale(1.15);
+}
+
+/* 텍스트도 조화롭게 */
+.label-text {
+  font-size: 14px;
+  color: #333;
+  transition: color 0.2s ease;
+}
+
+.menu li:hover .label-text {
+  color: #30d5c8;
+}
+
+.menu li.active .label-text {
+  color: #1ccfc3;
+  font-weight: bold;
 }
 
 /* 사이드바 축소 (태블릿 이하: 768px) */
@@ -66,7 +97,7 @@
 /* 모바일 최적화 (소형 기기: 480px 이하) */
 @media screen and (max-width: 480px) {
   .sidebar {
-    width: 54px;
+    width: 45px !important;
   }
 
   .icon {
@@ -74,7 +105,7 @@
   }
 
   .menu li {
-    padding: 8px 0;
+    padding: 13px 0 !important;
     font-size: 10px;
   }
 
