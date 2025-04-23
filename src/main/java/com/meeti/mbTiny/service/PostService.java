@@ -4,6 +4,7 @@
     import com.meeti.mbTiny.dto.PostRequestDTO;
     import com.meeti.mbTiny.entity.Member;
     import com.meeti.mbTiny.entity.Post;
+    import com.meeti.mbTiny.repository.LikeRepository;
     import com.meeti.mbTiny.repository.MemberRepository;
     import com.meeti.mbTiny.repository.PostRepository;
     import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@
     public class PostService {
         private final PostRepository postRepository;
         private final MemberRepository memberRepository;
+        private final LikeRepository likeRepository;
         public void createPost(PostRequestDTO dto, Member member) {
             Post post = Post.builder()
                     .title(dto.getTitle())
@@ -56,6 +58,8 @@
             postRepository.save(post);
 
             String nickname = post.isAnonymous() ? "익명" : post.getMember().getNickname();
+            Long likeCount = likeRepository.countByPost(post);
+            boolean liked = likeRepository.existsByPostAndMember(post, member);
 
             return PostDTO.builder()
                     .id(post.getId())
@@ -65,6 +69,8 @@
                     .isAnonymous(post.isAnonymous())
                     .viewCount(post.getViewCount())
                     .createdAt(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                    .liked(liked)
+                    .likeCount(likeCount)
                     .build();
         }
 

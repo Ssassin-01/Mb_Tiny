@@ -22,7 +22,6 @@ public class PostController {
     @PostMapping
     public ResponseEntity<?> createPost(@Valid @RequestBody PostRequestDTO dto,
                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
-        System.out.println("📌 [DEBUG] isAnonymous: " + dto.isAnonymous());
         Member member = userDetails.getMember();
         postService.createPost(dto, member);
         return ResponseEntity.ok(Map.of("message", "게시글 작성 완료"));

@@ -17,4 +17,7 @@ public class PostDTO {
     private Long viewCount;
     private String nickname;
     private String createdAt;
+
+    private Long likeCount;
+    private boolean liked;
 }
