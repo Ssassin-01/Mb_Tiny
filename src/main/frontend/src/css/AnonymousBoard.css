@@ -2,6 +2,7 @@
   max-width: 900px;
   margin: 30px auto;
   font-family: 'Pretendard', sans-serif;
+  position: relative;
 }
 
 .logo-box {
@@ -64,19 +65,21 @@
 }
 
 .actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
 }
 
 .write-btn {
-  padding: 10px 16px;
+  padding: 12px 20px;
   background-color: #30d5c8;
   color: white;
   font-weight: bold;
   border: none;
-  border-radius: 6px;
+  border-radius: 50px;
   cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .write-btn:hover {

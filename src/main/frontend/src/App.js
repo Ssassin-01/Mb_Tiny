@@ -8,6 +8,7 @@ import AnonymousDetail from './components/AnonymousDetail';
 import AnonymousWrite from './components/AnonymousWrite';
 import MessagesPage from './pages/MessagesPage';
 
+
 function App() {
   return (
     <Router>
