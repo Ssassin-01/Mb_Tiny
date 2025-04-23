@@ -14,7 +14,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // 폼 새로고침 방지
     try {
-      const res = await axios.post('http://localhost:8080/api/users/login', form, { // login 그대로 
+      const res = await axios.post('http://localhost:8080/api/users/login', form, {
         withCredentials: true,
       });
       alert('로그인 성공!');

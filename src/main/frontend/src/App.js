@@ -7,27 +7,29 @@ import AnonymousBoard from './components/AnonymousBoard';
 import AnonymousDetail from './components/AnonymousDetail';
 import AnonymousWrite from './components/AnonymousWrite';
 import Layout from './components/Layout';
-import ChatList from './components/ChatList';
 import Profile from './components/Profile';
 import MbtiTest from './components/MbtiTest';
+import MessagesPage from './pages/MessagesPage';
+
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* 사이드바, 탑바 없이 */}
+        {/* 사이드바, 탑바 없이 보여지는 경로 */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUpPage />} />
 
-        {/* 사이드바/탑바 포함된 공통 레이아웃 적용 */}
+
+        {/* 사이드바/탑바 포함 공통 레이아웃 */}
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/anonymous" element={<AnonymousBoard />} />
           <Route path="/anonymous/:id" element={<AnonymousDetail />} />
           <Route path="/anonymous/write" element={<AnonymousWrite />} />
-          <Route path="/chatlist" element={<ChatList/>} />
-          <Route path="/profile" element={<Profile/>} />
-          <Route path="/mbtitest" element={<MbtiTest/>} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/mbtitest" element={<MbtiTest />} />
+          <Route path="/messagespage" element={<MessagesPage />}/>
         </Route>
       </Routes>
     </Router>

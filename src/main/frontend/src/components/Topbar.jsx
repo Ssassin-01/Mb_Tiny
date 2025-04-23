@@ -11,10 +11,16 @@ const Topbar = () => {
 
   return (
     <div className="topbar">
-      <div>LOGO</div>
-      <input type="text" className="search-input" placeholder="검색하기" />
-      <button className="join-button" onClick={handleLoginClick}>로그인</button>
-    </div>
+  <div className="logo">LOGO</div>
+  <div className="topbar-center">
+    <input type="text" className="search-input" placeholder="검색하기" />
+  </div>
+  <div className="topbar-right">
+    <button className="join-button">로그인</button>
+  </div>
+</div>
+
+
   );
 };
 

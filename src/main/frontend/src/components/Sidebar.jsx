@@ -1,20 +1,63 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Sidebar.css";
+import { FaHome, FaCommentDots, FaUser, FaQuestion, FaShapes, FaArchive } from "react-icons/fa";
+
 
 const Sidebar = () => {
   const navigate = useNavigate();
 
   return (
     <div className="sidebar">
-      <h2 className="logo">MBTiny</h2>
       <ul className="menu">
-        <li onClick={() => navigate("/")}>홈</li>
-        <li onClick={() => navigate("/chatlist")}>메시지</li>
-        <li onClick={() => navigate("/profile")}>프로필</li>
-        <li onClick={() => navigate("/anonymous")}>익명게시판</li>
-        <li onClick={() => navigate("/mbtitest")}>성격유형 테스트</li>
-        <li onClick={() => navigate("/resources")}>리소스</li>
+        <li
+          onClick={() => navigate("/")}
+          title="홈"
+          aria-label="홈"
+        >
+          <FaHome className="icon" />
+          <span className="label-text">홈</span>
+        </li>
+        <li
+          onClick={() => navigate("/messagespage")}
+          title="메시지"
+          aria-label="메시지"
+        >
+          <FaCommentDots className="icon" />
+          <span className="label-text">메시지</span>
+        </li>
+        <li
+          onClick={() => navigate("/profile")}
+          title="프로필"
+          aria-label="프로필"
+        >
+          <FaUser className="icon" />
+          <span className="label-text">프로필</span>
+        </li>
+        <li
+          onClick={() => navigate("/anonymous")}
+          title="익명게시판"
+          aria-label="익명게시판"
+        >
+          <FaQuestion className="icon" />
+          <span className="label-text">익명게시판</span>
+        </li>
+        <li
+          onClick={() => navigate("/mbtitest")}
+          title="성격유형 테스트"
+          aria-label="성격유형 테스트"
+        >
+          <FaShapes className="icon" />
+          <span className="label-text">성격유형 테스트</span>
+        </li>
+        <li
+          onClick={() => navigate("/resources")}
+          title="리소스"
+          aria-label="리소스"
+        >
+          <FaArchive className="icon" />
+          <span className="label-text">리소스</span>
+        </li>
       </ul>
     </div>
   );

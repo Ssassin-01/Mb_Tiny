@@ -1,17 +1,16 @@
 .messages-page {
-    display: flex;
-    flex-direction: column;
-    font-family: 'Pretendard', sans-serif;
-  }
-  
-  .messages-layout {
-    display: flex;
-  }
-  
-  .messages-wrapper {
-    display: flex;
-    flex: 1;
-    height: 80vh;
-    border-top: 1px solid #ddd;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.messages-layout {
+  display: flex;
+}
+
+.messages-wrapper {
+  display: flex;
+  flex: 1;
+  height: 80vh;
+  border-top: 1px solid #ddd;
+}
