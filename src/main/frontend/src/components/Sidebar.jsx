@@ -10,7 +10,7 @@ const Sidebar = () => {
       <h2 className="logo">MBTiny</h2>
       <ul className="menu">
         <li onClick={() => navigate("/")}>홈</li>
-        <li onClick={() => navigate("/chatlist")}>메시지</li>
+        <li onClick={() => navigate("/messagespage")}>메시지</li>
         <li onClick={() => navigate("/profile")}>프로필</li>
         <li onClick={() => navigate("/anonymous")}>익명게시판</li>
         <li onClick={() => navigate("/mbtitest")}>성격유형 테스트</li>

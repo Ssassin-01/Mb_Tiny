@@ -51,9 +51,7 @@ function AnonymousDetail() {
 
   return (
     <div className="anonymous-page">
-      <Topbar />
       <div className="anonymous-layout">
-        <Sidebar />
 
         <div className="detail">
           <h1 className="title">{post.title}</h1>
