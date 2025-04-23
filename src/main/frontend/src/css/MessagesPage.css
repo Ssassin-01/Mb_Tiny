@@ -1,16 +1,18 @@
 .messages-page {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  font-family: 'Pretendard', sans-serif;
 }
 
 .messages-layout {
   display: flex;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
 }
 
 .messages-wrapper {
   display: flex;
   flex: 1;
-  height: 80vh;
-  border-top: 1px solid #ddd;
+  overflow: hidden;
 }
