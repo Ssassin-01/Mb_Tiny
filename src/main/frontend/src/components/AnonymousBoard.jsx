@@ -88,7 +88,6 @@ function AnonymousBoard() {
       </div>
     </div>
   );
-  
 }
 
 export default AnonymousBoard;

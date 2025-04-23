@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../css/SignUpPage.css'; // 꼭 CSS import!
+import '../css/SignUpPage.css';
 
 function SignUpPage() {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ function SignUpPage() {
     };
 
     try {
-      await axios.post('http://localhost:8080/api/users/signup', registerData);
+      await axios.post('http://localhost:8080/api/users/register', registerData); // register로 수정
       alert('회원가입 성공!');
       navigate('/');
     } catch (err) {
