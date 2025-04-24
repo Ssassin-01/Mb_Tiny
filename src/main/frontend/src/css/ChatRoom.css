@@ -121,15 +121,18 @@
 .leave-chat-button {
   margin-left: auto;
   padding: 6px 12px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 16px;
-  font-size: 12px;
+  font-size: 13px;
+  background-color: #fff0f0;
+  border: 1px solid #f44336;
+  border-radius: 8px;
+  color: #e53935;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .leave-chat-button:hover {
-  background-color: #d32f2f;
+  background-color: #ffecec;
+  border-color: #d32f2f;
+  color: #c62828;
 }

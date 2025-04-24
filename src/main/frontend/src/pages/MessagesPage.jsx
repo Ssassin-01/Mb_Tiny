@@ -13,12 +13,10 @@ const MessagesPage = () => {
   const [roomId, setRoomId] = useState(null);
   const myId = 1; // 로그인된 사용자 ID (예시)
 
-  // ✅ 사용자 목록 불러오기 + 실패 시 더미 유저 대체
   useEffect(() => {
     axios.get('/api/users')
       .then(res => setUsers(res.data))
-      .catch(err => {
-        console.error('실제 API 호출 실패, 더미 유저로 대체');
+      .catch(() => {
         const dummyUsers = Array.from({ length: 50 }, (_, i) => ({
           id: i + 1,
           name: `사용자${i + 1}`,
@@ -29,7 +27,6 @@ const MessagesPage = () => {
       });
   }, []);
 
-  // ✅ 유저 클릭 시 ChatRoom이 항상 뜨도록 보장
   const handleSelectUser = async (user) => {
     try {
       const res = await axios.post('/api/chatroom/create', {
@@ -44,7 +41,6 @@ const MessagesPage = () => {
       const msgRes = await axios.get(`/api/chatroom/${createdRoom.roomId}/messages`);
       setMessages(msgRes.data);
     } catch (err) {
-      console.warn('API 실패, 더미 채팅방 생성');
       setSelectedFriend(user);
       setRoomId(user.id); // 더미 roomId
       setMessages([
@@ -54,10 +50,8 @@ const MessagesPage = () => {
     }
   };
 
-  // ✅ 지금은 API 없이 화면에만 메시지 반영
   const handleSend = () => {
     if (!input.trim()) return;
-
     setMessages(prev => [
       ...prev,
       {
@@ -66,16 +60,22 @@ const MessagesPage = () => {
         content: input,
       }
     ]);
-
     setInput('');
   };
 
-  // ✅ 채팅방 나가기 버튼 클릭 시 상태 초기화 + 유저 목록 제거
   const handleLeaveChat = (userId) => {
     setUsers(prev => prev.filter(user => user.id !== userId));
     setSelectedFriend(null);
     setMessages([]);
     setInput('');
+  };
+
+  const handleDeleteUsers = (ids) => {
+    setUsers(prev => prev.filter(user => !ids.includes(user.id)));
+    if (selectedFriend && ids.includes(selectedFriend.id)) {
+      setSelectedFriend(null);
+      setMessages([]);
+    }
   };
 
   return (
@@ -84,6 +84,7 @@ const MessagesPage = () => {
         users={users}
         onSelectUser={handleSelectUser}
         selectedUser={selectedFriend}
+        onDelete={handleDeleteUsers} // ✅ 전달 필수
       />
       <div className="chat-container">
         <ChatRoom
@@ -93,7 +94,7 @@ const MessagesPage = () => {
           input={input}
           setInput={setInput}
           handleSend={handleSend}
-          onLeaveChat={handleLeaveChat} // ✅ 나가기 기능 props 전달
+          onLeaveChat={handleLeaveChat}
         />
       </div>
     </div>

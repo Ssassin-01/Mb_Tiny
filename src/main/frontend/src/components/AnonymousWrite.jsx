@@ -7,12 +7,22 @@ function AnonymousWrite() {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const postId = params.get('id'); // 수정 모드 여부 판단
+  const postId = params.get('id');
 
   const [form, setForm] = useState({ category: '수다', title: '', content: '' });
   const [image, setImage] = useState(null);
 
-  // 글 수정 모드일 경우, 기존 데이터 불러오기
+  const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
+
+  // ✅ 로그인 안 되어 있으면 차단
+  useEffect(() => {
+    if (!loginUser) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+    }
+  }, []);
+
+  // ✅ 수정 모드일 경우 기존 글 불러오기
   useEffect(() => {
     if (postId) {
       axios.get(`http://localhost:8080/api/posts/${postId}`)
@@ -24,8 +34,7 @@ function AnonymousWrite() {
           });
         })
         .catch(err => {
-          alert('글 정보를 불러오지 못했습니다.');
-          console.error(err);
+          alert('글 정보를 불러오지 못했습니다. (더미)');
         });
     }
   }, [postId]);
@@ -54,13 +63,11 @@ function AnonymousWrite() {
 
     try {
       if (postId) {
-        // 수정
         await axios.put(`http://localhost:8080/api/posts/${postId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         alert('글이 수정되었습니다!');
       } else {
-        // 새 글 작성
         await axios.post('http://localhost:8080/api/posts', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });

@@ -62,6 +62,14 @@ const ChatRoom = ({ friend, messages, setMessages, input, setInput, handleSend, 
     return <div className="chat-room">대화를 시작할 친구를 선택하세요.</div>;
   }
 
+  // ✅ 나가기 버튼 클릭 시 확인창 띄우기
+  const handleLeaveClick = () => {
+    const confirmed = window.confirm('정말 나가시겠습니까?');
+    if (confirmed) {
+      onLeaveChat(friend.id);
+    }
+  };
+
   return (
     <div className="chat-room">
       <div className="chat-header">
@@ -69,7 +77,7 @@ const ChatRoom = ({ friend, messages, setMessages, input, setInput, handleSend, 
         <div className="chat-partner-name">{friend.name}</div>
 
         {/* ✅ 채팅방 나가기 버튼 */}
-        <button className="leave-chat-button" onClick={() => onLeaveChat(friend.id)}>나가기</button>
+        <button className="leave-chat-button" onClick={handleLeaveClick}>나가기</button>
       </div>
 
       <div className="chat-body" ref={chatBodyRef}>

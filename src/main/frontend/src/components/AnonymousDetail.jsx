@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Sidebar from '../components/Sidebar';
-import Topbar from '../components/Topbar';
 import AnonymousComment from '../components/AnonymousComment';
 import '../css/AnonymousDetail.css';
 
@@ -11,17 +9,16 @@ function AnonymousDetail() {
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
 
-  // ✅ 로그인된 유저 ID 설정 (임시)
-  useEffect(() => {
-    sessionStorage.setItem('loginUser', JSON.stringify({
-      id: 1,
-      nickname: '도하',
-      mbti: 'INFP'
-    }));
-  }, []);
-
   const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
-  const isAuthor = loginUser && loginUser.id === post?.authorId; // 본인 글인지 확인
+  const isAuthor = loginUser && loginUser.id === post?.authorId;
+
+  // ✅ 로그인 체크
+  useEffect(() => {
+    if (!loginUser) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -30,17 +27,17 @@ function AnonymousDetail() {
         setPost(res.data);
       } catch (err) {
         console.error(err);
-        alert('더미 데이터로 확인 중');
+        alert('API 실패 - 더미 데이터 사용');
 
         setPost({
-          id: 1,
-          title: '내가 쓴 더미 글',
-          content: '이건 더미 글입니다. 작성자 ID가 1일 때만 버튼이 보입니다.',
-          authorId: 1, // 로그인 유저 ID와 같음 → 버튼 보임
+          id: id,
+          title: '더미 제목',
+          content: '이건 더미 상세입니다.',
           mbti: 'INFP',
+          authorId: 1,
           createdAt: new Date().toISOString(),
-          views: 99,
-          likes: 20,
+          views: 100,
+          likes: 10,
         });
       }
     };
@@ -49,12 +46,12 @@ function AnonymousDetail() {
   }, [id]);
 
   const handleLike = async () => {
-    alert('추천은 테스트에서 생략됨');
+    alert('추천 기능은 비활성화 상태입니다.');
   };
 
   const handleDelete = () => {
-    if (window.confirm('정말로 삭제하시겠습니까?')) {
-      alert('삭제 성공 (더미)');
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      alert('삭제 완료 (더미)');
       navigate('/anonymous');
     }
   };
