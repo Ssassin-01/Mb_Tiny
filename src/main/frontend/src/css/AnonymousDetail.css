@@ -78,17 +78,3 @@
   .recommend-btn:hover {
     background-color: #28c4b7;
   }
-  .anonymous-page {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .anonymous-layout {
-    display: flex;
-  }
-  
-  .detail {
-    flex: 1;
-    padding: 20px;
-  }
-  

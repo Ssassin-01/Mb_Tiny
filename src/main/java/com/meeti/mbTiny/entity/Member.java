@@ -38,10 +38,12 @@ public class Member {
     @Column(nullable = false)
     private LocalDate birthday;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String nickname;
 
     private String mbti;
+
+    private String address;
 
     private String profileImgUrl;
 

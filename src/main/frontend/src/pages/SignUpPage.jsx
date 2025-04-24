@@ -6,9 +6,8 @@ function SignUpPage() {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('회원가입이 완료되었습니다!');
-    navigate('/login'); 
+    e.preventDefault(); // 새로고침 방지
+    navigate('/');
   };
 
   return (
@@ -42,6 +41,8 @@ function SignUpPage() {
           </select>
           <input type="text" placeholder="일" className="birth-input day" />
         </div>
+
+
 
         <label>닉네임</label>
         <input type="text" />

@@ -1,18 +1,20 @@
 package com.meeti.mbTiny.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.meeti.mbTiny.entity.Member;
+import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
 public class FollowDTO {
     private Long id;
     private String nickname;
-    private String email;
     private String mbti;
     private String profileImgUrl;
+
+    public FollowDTO(Member member) {
+        this.id = member.getId();
+        this.nickname = member.getNickname();
+        this.mbti = member.getMbti();
+        this.profileImgUrl = member.getProfileImgUrl();
+    }
 }

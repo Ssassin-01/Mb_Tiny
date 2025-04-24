@@ -31,17 +31,14 @@ public class FollowController {
         return ResponseEntity.ok(Map.of("message", "ok"));
     }
 
-    //팔로잉 목록 조회
     @GetMapping("/following")
     public ResponseEntity<List<FollowDTO>> getFollowingList(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<FollowDTO> res = followService.getFollowingList(userDetails.getMember());
+        List<FollowDTO> res = followService.getFollowingDTOList(userDetails.getMember());
         return ResponseEntity.ok(res);
     }
-
-    //팔로워 목록 조회
     @GetMapping("/followers")
     public ResponseEntity<List<FollowDTO>> getFollowerList(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<FollowDTO> res = followService.getFollowerList(userDetails.getMember());
+        List<FollowDTO> res = followService.getFollowerDTOList(userDetails.getMember());
         return ResponseEntity.ok(res);
     }
 }

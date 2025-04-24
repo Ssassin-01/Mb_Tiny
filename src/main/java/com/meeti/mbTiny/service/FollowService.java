@@ -44,14 +44,16 @@ public class FollowService {
         followRepository.delete(follow);
     }
 
-    public List<FollowDTO> getFollowingList(Member member) {
-        return followRepository.findAllByFollower(member).stream()
+    public List<FollowDTO> getFollowingDTOList(Member member) {
+        return followRepository.findByFollower(member).stream()
                 .map(f -> new FollowDTO(f.getFollowing()))
                 .collect(Collectors.toList());
     }
 
-    public List<FollowDTO> getFollowerList(Member member) {
-
+    public List<FollowDTO> getFollowerDTOList(Member member) {
+        return followRepository.findByFollowing(member).stream()
+                .map(f -> new FollowDTO(f.getFollower()))
+                .collect(Collectors.toList());
     }
 
 }

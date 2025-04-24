@@ -1,4 +1,4 @@
-package com.meeti.mbTiny.config1;
+package com.meeti.mbTiny.config;
 
 import com.meeti.mbTiny.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
