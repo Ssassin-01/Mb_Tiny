@@ -11,14 +11,7 @@ const Topbar = () => {
 
   return (
     <div className="topbar">
-      <img
-        src="/img/logo2.png"
-        alt="MBTiny Logo"
-        className="topbar-logo"
-        onClick={() => navigate("/")}
-        style={{ cursor: "pointer" }}
-      />
-
+      <div>LOGO</div>
       <input type="text" className="search-input" placeholder="검색하기" />
       <button className="join-button" onClick={handleLoginClick}>로그인</button>
     </div>
@@ -26,3 +19,4 @@ const Topbar = () => {
 };
 
 export default Topbar;
+

@@ -1,0 +1,41 @@
+.mbti-test-page {
+    padding: 40px;
+    font-family: 'Pretendard', sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .question-box {
+    background-color: #f4f4f4;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .options {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  
+  .options button {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #30d5c8;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .next-btn {
+    padding: 10px 18px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  

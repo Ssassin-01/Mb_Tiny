@@ -1,5 +1,4 @@
-/* TagList.css */
-.tag-list {
+  .tag-list {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
