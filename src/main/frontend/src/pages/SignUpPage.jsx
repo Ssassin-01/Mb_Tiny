@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../css/SignUpPage.css'; // 꼭 CSS import!
+import '../css/SignUpPage.css';
 
 function SignUpPage() {
   const navigate = useNavigate();
@@ -10,12 +10,18 @@ function SignUpPage() {
     password: '',
     gender: '',
     phone: '',
-    birthYear: '',
-    birthMonth: '',
-    birthDay: '',
+    birthDate: '', // 생년월일 하나로 받기
     nickname: '',
-    mbti: ''
+    mbti: '',
+    address: '',
   });
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -28,18 +34,27 @@ function SignUpPage() {
       password: form.password,
       gender: form.gender,
       phone: form.phone,
-      birth: `${form.birthYear}-${form.birthMonth}-${form.birthDay}`,
+      birth: form.birthDate, // YYYY-MM-DD 형태로 전송
       nickname: form.nickname,
       mbti: form.mbti,
+      address: form.address,
     };
 
     try {
-      await axios.post('http://localhost:8080/api/users/register', registerData); // ✅ 수정된 경로
+      await axios.post('http://localhost:8080/api/users/register', registerData);
       alert('회원가입 성공!');
       navigate('/');
     } catch (err) {
       alert('회원가입 실패: ' + (err.response?.data?.message || '서버 오류'));
     }
+  };
+
+  const searchAddress = () => {
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        setForm({ ...form, address: data.address });
+      }
+    }).open();
   };
 
   return (
@@ -63,15 +78,30 @@ function SignUpPage() {
         <input name="phone" onChange={handleChange} />
 
         <label>생년월일</label>
-        <div className="birth-group">
-          <input name="birthYear" placeholder="년" className="birth-input year" onChange={handleChange} />
-          <select name="birthMonth" className="birth-input month" onChange={handleChange} defaultValue="">
-            <option value="" disabled>월</option>
-            {[...Array(12)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1}</option>
-            ))}
-          </select>
-          <input name="birthDay" placeholder="일" className="birth-input day" onChange={handleChange} />
+        <input
+          type="date"
+          name="birthDate"
+          onChange={handleChange}
+          value={form.birthDate}
+          max={new Date().toISOString().split("T")[0]}
+          required
+        />
+
+        <label>주소</label>
+        <div className="address-group">
+          <input
+            name="address"
+            value={form.address}
+            readOnly
+            placeholder="주소를 검색해주세요"
+          />
+          <button
+            type="button"
+            className="address-btn"
+            onClick={searchAddress}
+          >
+            주소 검색
+          </button>
         </div>
 
         <label>닉네임</label>
@@ -87,6 +117,15 @@ function SignUpPage() {
             <option key={type} value={type}>{type}</option>
           ))}
         </select>
+
+        <a
+          href="https://www.16personalities.com/ko"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mbti-test-link"
+        >
+          MBTI를 모르신다면? 👉 테스트하러 가기
+        </a>
 
         <button type="submit" className="submit-btn">가입하기</button>
       </form>

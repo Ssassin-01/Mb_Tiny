@@ -2,23 +2,23 @@
 import React from 'react';
 import '../css/ChatList.css';
 
-const ChatList = ({ friends, onSelectFriend, selectedFriend }) => {
+const ChatList = ({ users, onSelectUser, selectedUser }) => {
   return (
     <div className="chat-list">
-      <h3>메시지</h3>
+      <h3>전체 사용자</h3>
       <ul>
-        {friends.map((friend) => (
+        {users.map(user => (
           <li
-            key={friend.id}
-            className={`chat-item ${selectedFriend?.id === friend.id ? 'selected' : ''}`}
-            onClick={() => onSelectFriend(friend)}
+            key={user.id}
+            className={`chat-item ${selectedUser?.id === user.id ? 'selected' : ''}`}
+            onClick={() => onSelectUser(user)}
           >
             <div className="profile-pic">
-              <img src={friend.profileImg} alt="프로필" />
+              <img src={user.profileImg} alt="프로필" />
             </div>
             <div className="chat-info">
-              <strong>{friend.name}</strong>
-              <p>최근 메시지 미리보기</p>
+              <strong>{user.name}</strong>
+              <p>{user.status}</p>
             </div>
             <span className="chat-time">방금</span>
           </li>

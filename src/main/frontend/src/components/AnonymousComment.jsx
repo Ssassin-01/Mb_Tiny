@@ -5,10 +5,13 @@ import '../css/AnonymousComment.css';
 function AnonymousComment({ postId }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedContent, setEditedContent] = useState('');
   const [color, setColor] = useState('#30d5c8');
 
   const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
   const userMbti = loginUser?.mbti || '익명';
+  const userId = loginUser?.id;
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -21,10 +24,19 @@ function AnonymousComment({ postId }) {
           setComments([
             {
               id: 1,
+              userId: 1,
               nickname: 'INFP',
               content: '댓글 더미입니다.',
               createdAt: new Date().toISOString(),
               color: '#9b59b6'
+            },
+            {
+              id: 2,
+              userId: 2,
+              nickname: 'ENFP',
+              content: '남의 댓글입니다.',
+              createdAt: new Date().toISOString(),
+              color: '#f39c12'
             }
           ]);
         }
@@ -37,26 +49,48 @@ function AnonymousComment({ postId }) {
   const handleAddComment = async () => {
     if (newComment.trim() === '') return;
 
+    const newItem = {
+      id: comments.length + 1,
+      userId,
+      nickname: userMbti,
+      content: newComment,
+      createdAt: new Date().toISOString(),
+      color
+    };
+
     try {
       await axios.post('http://localhost:8080/api/comments', {
         postId,
         content: newComment,
         color
       });
-
-      const newItem = {
-        id: comments.length + 1,
-        nickname: userMbti,
-        content: newComment,
-        createdAt: new Date().toISOString(),
-        color
-      };
       setComments([...comments, newItem]);
       setNewComment('');
     } catch (err) {
-      alert('댓글 등록 실패');
-      console.error(err);
+      alert('댓글 등록 실패 (더미로 처리)');
+      setComments([...comments, newItem]);
+      setNewComment('');
     }
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      setComments(comments.filter(c => c.id !== id));
+      alert('삭제 완료 (더미 처리)');
+    }
+  };
+
+  const handleEdit = (comment) => {
+    setEditingCommentId(comment.id);
+    setEditedContent(comment.content);
+  };
+
+  const handleEditSave = (id) => {
+    setComments(
+      comments.map(c => (c.id === id ? { ...c, content: editedContent } : c))
+    );
+    setEditingCommentId(null);
+    alert('수정 완료 (더미 처리)');
   };
 
   return (
@@ -73,7 +107,30 @@ function AnonymousComment({ postId }) {
                 ({new Date(c.createdAt).toLocaleString()})
               </span>
             </div>
-            <div className="comment-content">{c.content}</div>
+
+            {editingCommentId === c.id ? (
+              <div>
+                <textarea
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                  style={{ width: '100%', marginBottom: '6px', fontSize: '14px' }}
+                />
+                <div className="comment-actions">
+                  <button onClick={() => handleEditSave(c.id)}>저장</button>
+                  <button onClick={() => setEditingCommentId(null)}>취소</button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="comment-content">{c.content}</div>
+                {c.userId === userId && (
+                  <div className="comment-actions">
+                    <button onClick={() => handleEdit(c)}>수정</button>
+                    <button onClick={() => handleDelete(c.id)}>삭제</button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         ))}
       </div>

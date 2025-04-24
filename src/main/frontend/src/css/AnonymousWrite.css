@@ -80,6 +80,7 @@ textarea {
 .file-label:hover {
   background-color: #eee;
 }
+
 .file-name {
   font-size: 13px;
   color: #555;
@@ -90,6 +91,7 @@ textarea {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .actions {
   text-align: right;
   margin-top: auto;

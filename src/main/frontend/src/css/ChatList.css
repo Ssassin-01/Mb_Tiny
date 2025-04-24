@@ -1,13 +1,12 @@
 .chat-list {
   width: 320px;
-  height: 100vh;
+  height: 85vh;         /* ✅ 화면 높이만큼 제한 */
+  overflow-y: auto;      /* ✅ 내부 스크롤 */
   background-color: #fafafa;
   padding: 16px;
+  border-right: 1px solid #ddd;
   flex-shrink: 0;
-  overflow-y: auto;
-  border-right: 1px solid #ddd; /* ← 전체 높이의 구분선 */
 }
-
 
 
 .chat-list h3 {
