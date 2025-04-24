@@ -1,13 +1,28 @@
+/* 피드 전체 컨테이너 */
+.feed-container {
+  width: 100%;
+  max-width: 600px;
+  min-width: 360px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+/* 피드 카드 */
 .feed-card {
+  width: 100%;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 40px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-  font-family: 'Pretendard', sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  animation: slideUp 0.4s ease;
 }
 
+/* 헤더 영역 */
 .feed-header {
   display: flex;
   align-items: center;
@@ -25,6 +40,9 @@
 .feed-info {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .feed-nickname {
@@ -36,11 +54,24 @@
   color: #888;
 }
 
+/* 내용 */
 .feed-content {
   font-size: 15px;
   margin: 12px 0;
 }
 
+/* 이미지 */
+.feed-image {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-top: 12px;
+  display: block;
+}
+
+/* 액션 영역 */
 .feed-actions {
   display: flex;
   gap: 16px;
@@ -58,6 +89,7 @@
   color: #30d5c8;
 }
 
+/* 로딩 스피너 */
 .spinner {
   width: 24px;
   height: 24px;
@@ -67,9 +99,75 @@
   animation: spin 0.8s linear infinite;
   margin: 20px auto;
 }
-
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* 반응형 - 태블릿 (768px 이하) */
+@media screen and (max-width: 768px) {
+  .feed-card {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .feed-content {
+    font-size: 14px;
+  }
+
+  .feed-image {
+    max-height: 300px;
+  }
+
+  .feed-actions button {
+    font-size: 13px;
+  }
+}
+
+/* 반응형 - 모바일 (480px 이하) */
+@media screen and (max-width: 480px) {
+  .feed-card {
+    padding: 12px;
+    margin-bottom: 24px;
+  }
+
+  .feed-profile {
+    width: 32px;
+    height: 32px;
+  }
+
+  .feed-content {
+    font-size: 13px;
+  }
+
+  .feed-nickname {
+    font-size: 14px;
+  }
+
+  .feed-time {
+    font-size: 11px;
+  }
+
+  .feed-actions {
+    gap: 12px;
+  }
+
+  .feed-actions button {
+    font-size: 12px;
+  }
+
+  .feed-image {
+    max-height: 200px;
   }
 }
