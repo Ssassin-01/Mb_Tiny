@@ -1,25 +1,26 @@
+// src/components/ChatList.jsx
 import React from 'react';
 import '../css/ChatList.css';
 
-const ChatList = () => {
-  const chats = [
-    { id: 1, name: '홍길동', preview: '으아아악', time: '2분전' },
-    { id: 2, name: '정웅태', preview: '친구 요청?', time: '1일전' },
-    { id: 3, name: '김수민', preview: '야 : 너두?', time: '1년' },
-  ];
-
+const ChatList = ({ friends, onSelectFriend, selectedFriend }) => {
   return (
     <div className="chat-list">
-      <h3>메세지</h3>
+      <h3>메시지</h3>
       <ul>
-        {chats.map(chat => (
-          <li key={chat.id} className="chat-item">
-            <div className="profile-pic"></div>
-            <div className="chat-info">
-              <strong>{chat.name}</strong>
-              <p>{chat.preview}</p>
+        {friends.map((friend) => (
+          <li
+            key={friend.id}
+            className={`chat-item ${selectedFriend?.id === friend.id ? 'selected' : ''}`}
+            onClick={() => onSelectFriend(friend)}
+          >
+            <div className="profile-pic">
+              <img src={friend.profileImg} alt="프로필" />
             </div>
-            <span className="chat-time">{chat.time}</span>
+            <div className="chat-info">
+              <strong>{friend.name}</strong>
+              <p>최근 메시지 미리보기</p>
+            </div>
+            <span className="chat-time">방금</span>
           </li>
         ))}
       </ul>

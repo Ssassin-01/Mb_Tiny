@@ -1,18 +1,11 @@
-.messages-page {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
 .messages-layout {
   display: flex;
-  flex: 1;
-  height: 100%;
-  overflow: hidden;
+  height: 100vh;
 }
 
-.messages-wrapper {
+.chat-container {
   display: flex;
+  flex-direction: column;
   flex: 1;
-  overflow: hidden;
+  background-color: #f9f9f9;
 }
