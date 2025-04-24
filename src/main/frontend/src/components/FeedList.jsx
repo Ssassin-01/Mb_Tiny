@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import FeedCard from "./FeedCard";
+import FeedInput from './FeedInput';
+
 import "../css/Feed.css";
 // import axios from "axios"; 백엔드 연동 시
 
@@ -57,26 +59,36 @@ function FeedList() {
       setHasMore(false); // 에러 시 로딩 중단
     }
   };
-
+  const handleNewPost = (content) => {
+    const newFeed = {
+      id: Date.now(),
+      writer: "나",
+      content,
+      createDate: new Date().toISOString(),
+      image: null,
+    };
+    setFeeds([newFeed, ...feeds]);
+  };
   return (
-    <InfiniteScroll
-      dataLength={feeds.length}
-      next={loadMoreFeeds}
-      hasMore={hasMore}
-      loader={<div className="spinner"></div>}
-      endMessage={
-        <p style={{ textAlign: "center" }}>
-          <b>더 이상 불러올 피드가 없습니다</b>
-        </p>
-      }
-      scrollableTarget="mainScroll"
-    >
-      <div className="feed-container">
+    <div className="feed-container">
+      <FeedInput onPost={handleNewPost} />
+
+      <InfiniteScroll
+        dataLength={feeds.length}
+        next={loadMoreFeeds}
+        hasMore={hasMore}
+        loader={<div className="spinner"></div>}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>더 이상 불러올 피드가 없습니다</b>
+          </p>
+        }
+      >
         {feeds.map((feed) => (
           <FeedCard key={feed.id} feed={feed} />
         ))}
-      </div>
-    </InfiniteScroll>
+      </InfiniteScroll>
+    </div>
   );
 }
 

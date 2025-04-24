@@ -9,9 +9,13 @@
 
 
 .logo {
-  font-weight: bold;
-  font-size: 20px;
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 70px;
+  object-fit: contain;
 }
 
 .topbar-center {

@@ -27,7 +27,7 @@ function Login() {
 
   return (
     <div className="login">
-      <img src="/img/logo2.png" alt="MBTiny Logo" className="logo" />
+      <img src="/img/logo.png" alt="MBTiny Logo" className="logo" />
       <form className="login-box" onSubmit={handleSubmit}>
         <div className="field">
           <input

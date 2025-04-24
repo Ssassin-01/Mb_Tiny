@@ -7,18 +7,18 @@ import "../css/Layout.css";
 const Layout = () => {
   return (
     <div className="home-page">
-      <Topbar />
-      <div className="layout-body">
-        <Sidebar />
-        
-        {/* 무한스크롤 적용되는 영역 */}
-        <div className="main-scroll-area" id="mainScroll">
-          <div className="main-content">
-            <Outlet />
-          </div>
+    
+    <Topbar />
+    <div className="layout-body">
+      <Sidebar />
+      {/* 무한 스크롤 적용 영역 */}
+      <div className="main-scroll-area" id="mainScroll">
+        <div className="main-content">
+          <Outlet />
         </div>
       </div>
     </div>
+  </div>
   );
 };
 

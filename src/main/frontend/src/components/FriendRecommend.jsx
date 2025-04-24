@@ -6,29 +6,27 @@ const recommendedFriends = [
   {
     id: 1,
     nickname: "nickname1",
-    mbti:"isfp",
+    mbti: "isfp",
     img: "/img/user1.jpg",
-    
   },
   {
     id: 2,
     nickname: "nickname2",
-    mbti:"isfj",
+    mbti: "isfj",
     img: "/img/user2.jpg",
-    
   },
   {
     id: 3,
     nickname: "nickname3",
-    mbti:"esfp",
+    mbti: "esfp",
     img: "/img/user3.jpg",
-    
   },
 ];
 
 const FriendRecommend = () => {
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [requestedIds, setRequestedIds] = useState([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,6 +35,13 @@ const FriendRecommend = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleFollowClick = (id) => {
+    if (!requestedIds.includes(id)) {
+      setRequestedIds((prev) => [...prev, id]);
+      // TODO: API 호출 처리도 여기서 가능
+    }
+  };
 
   return (
     <>
@@ -66,14 +71,22 @@ const FriendRecommend = () => {
                 <li key={friend.id} className="friend-item">
                   <img
                     src={friend.img}
-                    alt={friend.name}
+                    alt={friend.nickname}
                     className="friend-profile-img"
                   />
                   <div className="friend-info">
                     <span className="friend-nickname">{friend.nickname}</span>
                     <span className="mbti-text">{friend.mbti}</span>
                   </div>
-                  <button className="follow-friend-btn">팔로우</button>
+                  <button
+                    className={`follow-friend-btn ${
+                      requestedIds.includes(friend.id) ? "requested" : ""
+                    }`}
+                    onClick={() => handleFollowClick(friend.id)}
+                    disabled={requestedIds.includes(friend.id)}
+                  >
+                    {requestedIds.includes(friend.id) ? "요청됨" : "팔로우"}
+                  </button>
                 </li>
               ))}
             </ul>
