@@ -1,9 +1,9 @@
-package com.meeti.mbTiny.dto;
+package com.meeti.mbTiny.dto.user;
 
 import lombok.Data;
 
 @Data
-public class RoginDto {
+public class LoginDto {
     private String email;
     private String password;
 }

@@ -39,6 +39,9 @@ public class User {
 
     private String mbti;
 
+    //주소 추가
+    private String address;
+
     private String profileImgUrl;
 
     @CreatedDate

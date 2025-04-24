@@ -1,4 +1,4 @@
-package com.meeti.mbTiny.dto;
+package com.meeti.mbTiny.dto.user;
 
 import lombok.Data;
 
@@ -13,4 +13,5 @@ public class RegisterDto {
     private String phone;
     private String nickname;
     private String mbti;
+    private String address;
 }
