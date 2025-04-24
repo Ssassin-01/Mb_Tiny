@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
 import '../css/AnonymousBoard.css';
 
 function AnonymousBoard() {
@@ -11,14 +10,20 @@ function AnonymousBoard() {
   const POSTS_PER_PAGE = 20;
 
   useEffect(() => {
+    // 로그인된 사용자 더미 설정
+    sessionStorage.setItem('loginUser', JSON.stringify({
+      id: 1,
+      nickname: '도하',
+      mbti: 'INFP'
+    }));
+
     const fetchPosts = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/posts'); // ✅ 실제 API 요청
+        const res = await axios.get('http://localhost:8080/api/posts'); // 실제 API
         setPosts(res.data);
       } catch (err) {
         console.warn('API 실패 → 더미 데이터 사용');
-  
-       //더미데이터
+
         const dummyPosts = Array.from({ length: 50 }, (_, i) => ({
           id: i + 1,
           title: `더미 제목 ${i + 1}`,
@@ -26,15 +31,16 @@ function AnonymousBoard() {
           createdAt: new Date(Date.now() - i * 60000).toISOString(),
           views: Math.floor(Math.random() * 100),
           likes: Math.floor(Math.random() * 30),
-          content: `이건 더미 ${i + 1}번 내용입니다.`
+          content: `이건 더미 ${i + 1}번 내용입니다.`,
+          authorId: i % 3 === 0 ? 1 : i + 10, // ✔ 본인 글과 타인 글 구분
         }));
-        setPosts(dummyPosts); //더미데이터
+
+        setPosts(dummyPosts);
       }
     };
-  
+
     fetchPosts();
   }, []);
-  
 
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
   const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
@@ -42,11 +48,8 @@ function AnonymousBoard() {
 
   return (
     <div className="anonymous-page">
-
       <div className="anonymous-layout">
-
         <div className="anonymous-board">
-
           <table className="table">
             <thead>
               <tr>
@@ -61,15 +64,10 @@ function AnonymousBoard() {
             <tbody>
               {currentPosts.map((post, index) => (
                 <tr
-                    key={post.id}
-                    onClick={() => {
-                      // ✅ 더미 데이터일 때: id가 1인 항목만 상세페이지로 이동
-                      if (post.id === 1 || post.apiSource) {
-                        navigate(`/anonymous/${post.id}`);
-                      }
-                    }}
-                    style={{ cursor: post.id === 1 || post.apiSource ? 'pointer' : 'default' }}
-                  >
+                  key={post.id}
+                  onClick={() => navigate(`/anonymous/${post.id}`)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>{posts.length - ((currentPage - 1) * POSTS_PER_PAGE + index)}</td>
                   <td className="subject">{post.title}</td>
                   <td>{post.mbti || '익명'}</td>

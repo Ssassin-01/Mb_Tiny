@@ -1,12 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/AnonymousWrite.css';
 
 function AnonymousWrite() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const postId = params.get('id');
+
   const [form, setForm] = useState({ category: '수다', title: '', content: '' });
-  const [image, setImage] = useState(null); 
+  const [image, setImage] = useState(null);
+
+  const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
+
+  // ✅ 로그인 안 되어 있으면 차단
+  useEffect(() => {
+    if (!loginUser) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+    }
+  }, []);
+
+  // ✅ 수정 모드일 경우 기존 글 불러오기
+  useEffect(() => {
+    if (postId) {
+      axios.get(`http://localhost:8080/api/posts/${postId}`)
+        .then(res => {
+          setForm({
+            category: res.data.category || '수다',
+            title: res.data.title,
+            content: res.data.content,
+          });
+        })
+        .catch(err => {
+          alert('글 정보를 불러오지 못했습니다. (더미)');
+        });
+    }
+  }, [postId]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -31,13 +62,21 @@ function AnonymousWrite() {
     }
 
     try {
-      await axios.post('http://localhost:8080/api/posts', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      alert('글이 등록되었습니다!');
-      navigate('/anonymous'); 
+      if (postId) {
+        await axios.put(`http://localhost:8080/api/posts/${postId}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        alert('글이 수정되었습니다!');
+      } else {
+        await axios.post('http://localhost:8080/api/posts', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        alert('글이 등록되었습니다!');
+      }
+
+      navigate('/anonymous');
     } catch (err) {
-      alert('글 등록 실패!');
+      alert(postId ? '수정 실패!' : '등록 실패!');
       console.error(err);
     }
   };
@@ -89,7 +128,9 @@ function AnonymousWrite() {
             </div>
 
             <div className="actions">
-              <button type="submit" className="submit">작성완료</button>
+              <button type="submit" className="submit">
+                {postId ? '수정완료' : '작성완료'}
+              </button>
             </div>
           </form>
         </div>

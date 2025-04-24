@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Sidebar from '../components/Sidebar';
-import Topbar from '../components/Topbar';
 import AnonymousComment from '../components/AnonymousComment';
 import '../css/AnonymousDetail.css';
 
@@ -11,6 +9,17 @@ function AnonymousDetail() {
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
 
+  const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
+  const isAuthor = loginUser && loginUser.id === post?.authorId;
+
+  // ✅ 로그인 체크
+  useEffect(() => {
+    if (!loginUser) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+    }
+  }, []);
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -18,18 +27,18 @@ function AnonymousDetail() {
         setPost(res.data);
       } catch (err) {
         console.error(err);
-        alert('글을 불러오지 못했습니다');
-        if (id === '1') {
-          setPost({
-            id: 1,
-            title: 'MBTI 더미 글',
-            content: '이건 상세페이지에서 볼 수 있는 더미 내용입니다.',
-            mbti: 'INFP',
-            createdAt: new Date().toISOString(),
-            views: 55,
-            likes: 12
-          });
-        }
+        alert('API 실패 - 더미 데이터 사용');
+
+        setPost({
+          id: id,
+          title: '더미 제목',
+          content: '이건 더미 상세입니다.',
+          mbti: 'INFP',
+          authorId: 1,
+          createdAt: new Date().toISOString(),
+          views: 100,
+          likes: 10,
+        });
       }
     };
 
@@ -37,13 +46,13 @@ function AnonymousDetail() {
   }, [id]);
 
   const handleLike = async () => {
-    try {
-      await axios.post(`http://localhost:8080/api/posts/${id}/like`);
-      const res = await axios.get(`http://localhost:8080/api/posts/${id}`);
-      setPost(res.data);
-    } catch (err) {
-      alert('추천 실패!');
-      console.error(err);
+    alert('추천 기능은 비활성화 상태입니다.');
+  };
+
+  const handleDelete = () => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      alert('삭제 완료 (더미)');
+      navigate('/anonymous');
     }
   };
 
@@ -52,13 +61,12 @@ function AnonymousDetail() {
   return (
     <div className="anonymous-page">
       <div className="anonymous-layout">
-
         <div className="detail">
           <h1 className="title">{post.title}</h1>
 
           <div className="info-row">
             <div className="left">
-              <span className="writer">MBTI: {post.mbti || '익명'}</span>
+              <span className="writer">MBTI: {post.mbti}</span>
               <span className="date">{new Date(post.createdAt).toLocaleString()}</span>
             </div>
             <div className="right">
@@ -69,31 +77,22 @@ function AnonymousDetail() {
 
           <div className="content">
             <p>{post.content}</p>
-
-            {post.imageUrl && (
-              <img
-                src={post.imageUrl}
-                alt="첨부 이미지"
-                style={{
-                  maxWidth: '100%',
-                  height: 'auto',
-                  marginTop: '20px',
-                  borderRadius: '8px',
-                  display: 'block'
-                }}
-              />
-            )}
           </div>
 
           <div className="recommend">
-            <button className="recommend-btn" onClick={handleLike}>
-              추천하기
-            </button>
+            <button className="recommend-btn" onClick={handleLike}>추천하기</button>
           </div>
 
           <div className="buttons">
             <button onClick={() => navigate('/anonymous')}>목록으로</button>
+            {isAuthor && (
+              <>
+                <button onClick={() => navigate(`/anonymous/write?id=${id}`)}>수정</button>
+                <button onClick={handleDelete}>삭제</button>
+              </>
+            )}
           </div>
+
           <AnonymousComment postId={id} />
         </div>
       </div>
