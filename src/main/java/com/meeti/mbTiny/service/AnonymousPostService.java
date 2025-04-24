@@ -47,7 +47,7 @@ public class AnonymousPostService {
     }
 
     public List<PostDTO> getAllPosts(Optional<Member> member) {
-        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
+        List<Post> posts = postRepository.findByIsAnonymousTrueOrderByCreatedAtDesc();
         return posts.stream()
                 .map(post -> convertToDTO(post, member))
                 .collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class AnonymousPostService {
         Post post = validatePostOwner(member, postId);
         post.setViewCount(post.getViewCount() + 1);
         postRepository.save(post);
-        return convertToDTO(post, member);
+        return convertToDTO(post, Optional.of(member));
     }
 
     private Post validatePostOwner(Member member, Long postId) {
@@ -70,10 +70,6 @@ public class AnonymousPostService {
             throw new IllegalArgumentException("익명 게시물이 아닙니다");
         }
         return post;
-    }
-
-    private PostDTO convertToDTO(Post post, Member member) {
-        return convertToDTO(post, Optional.ofNullable(member));
     }
     private PostDTO convertToDTO(Post post, Optional<Member> member) {
         String nickName = post.isAnonymous() ? "익명" : post.getMember().getNickname();

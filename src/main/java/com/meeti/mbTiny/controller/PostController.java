@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,32 +25,32 @@ public class PostController {
     @PostMapping
     public ResponseEntity<?> createPost(@Valid @RequestBody PostRequestDTO dto,
                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Member member = userDetails.getMember();
-        postService.createPost(dto, member);
+        postService.createPost(dto,  userDetails.getMember());
         return ResponseEntity.ok(Map.of("message", "게시글 작성 완료"));
     }
-
-    @GetMapping("{postId}")
-    public ResponseEntity<PostDTO> getPost(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Member member = userDetails.getMember();
-        PostDTO res = postService.getPost(postId, member.getNickname());
-        return ResponseEntity.ok(res);
-    }
-
     @PutMapping("/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails, @Valid @RequestBody PostRequestDTO dto) {
-        Member member = userDetails.getMember();
-        postService.updatePost(postId, member, dto);
+        postService.updatePost(postId, userDetails.getMember(), dto);
         return ResponseEntity.ok(Map.of("message", "success"));
     }
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Member member = userDetails.getMember();
-        postService.deletePost(postId, member);
+        postService.deletePost(postId, userDetails.getMember());
         return ResponseEntity.ok(Map.of("message", "success"));
     }
 
-    //일단 익명/비익명 둘다 조회됨
+    @GetMapping
+    public ResponseEntity<List<PostDTO>> getAllPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Optional<Member> member = userDetails != null ? Optional.of(userDetails.getMember()) : Optional.empty();
+        List<PostDTO> posts = postService.getAllPosts(member);
+        return ResponseEntity.ok(posts);
+    }
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDTO> getPost(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        PostDTO res = postService.getPost(postId,  userDetails.getMember());
+        return ResponseEntity.ok(res);
+    }
+
     @GetMapping("/filter/mbti")
     public ResponseEntity<List<PostDTO>> getPostsByMBTI(
             @RequestParam(defaultValue = "all") String IorE,
@@ -69,26 +70,4 @@ public class PostController {
         List<PostDTO> res = postService.getPostsByLikeCount(optionalMember);
         return ResponseEntity.ok(res);
     }
-
-    // 익명이 아닌 사람들의 피드 전체 조회
-    @GetMapping
-    public ResponseEntity<List<PostDTO>> getAllPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        Optional<Member> optionalMember = userDetails != null ? Optional.of(userDetails.getMember()) : Optional.empty();
-        List<PostDTO> res = postService.getPostsByAnonymous(false, optionalMember);
-        return ResponseEntity.ok(res);
-    }
-    
-    
-    //익명인사람 전체 조회
-    @GetMapping("/anonymous")
-    public ResponseEntity<List<PostDTO>> getAnonymousPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        Optional<Member> optionalMember = userDetails != null ? Optional.of(userDetails.getMember()) : Optional.empty();
-        List<PostDTO> posts = postService.getPostsByAnonymous(true, optionalMember);
-        return ResponseEntity.ok(posts);
-    }
-
-    
-
-
-    
 }
