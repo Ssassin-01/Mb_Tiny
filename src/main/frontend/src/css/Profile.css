@@ -1,180 +1,142 @@
 .profile-page {
   display: flex;
-  justify-content: center;
-  padding: 60px 20px;
+  gap: 40px;
+  padding: 60px 40px;
   font-family: 'Pretendard', sans-serif;
   background-color: #fff;
 }
-.default-profile-img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background-color: #ddd;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #666;
-  font-size: 28px;
+
+.profile-left {
+  width: 380px;
 }
 
-.default-camera-icon {
-  font-size: 24px;
+.profile-right {
+  flex: 1;
+  border-left: 1px solid #eee;
+  padding-left: 40px;
 }
 
 .profile-card {
   background-color: #fff;
-  border-radius: 24px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-  padding: 40px 30px;
-  width: 360px;
-  text-align: center;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  padding: 24px;
 }
 
 .profile-img-wrapper {
-  position: relative;
   width: 120px;
   height: 120px;
   margin: 0 auto 20px;
 }
 
-.profile-img {
+.default-profile-img {
   width: 100%;
   height: 100%;
+  background-color: #ddd;
   border-radius: 50%;
-  object-fit: cover;
-  
-}
-
-.upload-icon {
-  position: absolute;
-  width: 20px;
-  bottom: 0;
-  right: 0;
-  background-color: #30d5c8;
-  color: white;
-  border-radius: 40%;
-  padding: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.profile-info p {
-  margin: 6px 0;
-  color: #444;
-  font-size: 15px;
-  text-align: left;
-}
-
-.profile-info p strong {
-  color: #000;
-}
-
-.profile-actions {
-  margin-top: 24px;
-}
-
-.profile-actions button,
-.friend-btn,
-.modal-close {
-  width: 100%;
-  padding: 12px 0;
-  margin: 10px 0;
-  background-color: #30d5c8;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.profile-actions button:hover,
-.friend-btn:hover,
-.modal-close:hover {
-  background-color: #25bcb1;
-}
-
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
 }
 
-.modal-content {
-  background: #fff;
-  padding: 30px 20px;
-  border-radius: 20px;
-  width: 300px;
-  max-height: 60vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  text-align: center;
+.default-camera-icon {
+  font-size: 24px;
+  color: #666;
 }
 
-.friend-list {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0;
+.profile-info p {
+  margin: 8px 0;
   font-size: 15px;
-  color: #444;
+  color: #333;
 }
 
-.friend-list li {
+.profile-mbti {
+  background-color: #e1fafa;
+  color: #30d5c8;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 16px;
+  display: inline-block;
+  font-size: 14px;
   margin: 10px 0;
 }
 
+.profile-stats {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.stats-btn {
+  flex: 1;
+  background: #f8fffe;
+  border: 1px solid #30d5c8;
+  color: #30d5c8;
+  border-radius: 12px;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.stats-btn .count {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.mbti-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.mbti-tags span {
+  background: #e1fafa;
+  color: #30d5c8;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+
+.mbti-description {
+  margin-top: 20px;
+}
+
+.profile-actions button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #30d5c8;
+  color: white;
+}
+
 .delete-btn {
-  background-color: white !important;
-  color: #30d5c8 !important;
-  border: 2px solid #30d5c8 !important;
+  background-color: white;
+  color: #30d5c8;
+  border: 2px solid #30d5c8;
 }
 
-.delete-btn:hover {
-  background-color: #f0fdfc !important;
+.post-section {
+  margin-bottom: 30px;
 }
 
-/* ✅ 반응형: 모바일 대응 (768px 이하) */
-@media screen and (max-width: 768px) {
-  .profile-card {
-    width: 100%;
-    padding: 30px 20px;
-    border-radius: 0;
-    box-shadow: none;
-  }
+.post-section h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
 
-  .profile-img-wrapper {
-    width: 100px;
-    height: 100px;
-  }
-
-  .default-profile-img {
-    width: 100px;
-    height: 100px;
-    font-size: 24px;
-  }
-
-  .upload-icon {
-    padding: 6px;
-    font-size: 14px;
-  }
-
-  .profile-info p {
-    font-size: 14px;
-  }
-
-  .profile-actions button,
-  .friend-btn,
-  .modal-close {
-    font-size: 14px;
-    padding: 10px 0;
-  }
+.post-section ul {
+  list-style: disc;
+  padding-left: 20px;
+  color: #555;
 }

@@ -5,24 +5,24 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 const recommendedFriends = [
   {
     id: 1,
-    name: "A",
-    mutual: "3명의 친구와 공통",
+    nickname: "nickname1",
+    mbti:"isfp",
     img: "/img/user1.jpg",
-    distance: "📍 1.2km"
+    
   },
   {
     id: 2,
-    name: "B",
-    mutual: "2명의 친구와 공통",
+    nickname: "nickname2",
+    mbti:"isfj",
     img: "/img/user2.jpg",
-    distance: "📍 0.6km"
+    
   },
   {
     id: 3,
-    name: "C",
-    mutual: "4명의 친구와 공통",
+    nickname: "nickname3",
+    mbti:"esfp",
     img: "/img/user3.jpg",
-    distance: "📍 2.5km"
+    
   },
 ];
 
@@ -70,11 +70,10 @@ const FriendRecommend = () => {
                     className="friend-profile-img"
                   />
                   <div className="friend-info">
-                    <span className="friend-name">{friend.name}</span>
-                    <span className="mutual-text">{friend.mutual}</span>
-                    <span className="friend-distance">{friend.distance}</span>
+                    <span className="friend-nickname">{friend.nickname}</span>
+                    <span className="mbti-text">{friend.mbti}</span>
                   </div>
-                  <button className="add-friend-btn">추가</button>
+                  <button className="follow-friend-btn">팔로우</button>
                 </li>
               ))}
             </ul>

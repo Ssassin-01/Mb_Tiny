@@ -1,21 +1,29 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import '../css/ChatRoom.css';
 
-const ChatRoom = () => {
+const ChatRoom = ({ friend, messages }) => {
+  const chatBodyRef = useRef(null);
+
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  if (!friend) return <div className="chat-room">대화를 시작할 친구를 선택하세요.</div>;
+
   return (
     <div className="chat-room">
       <div className="chat-header">
-        <div className="profile-pic"></div>
-        <div className="chat-partner-name">Gisub Lee</div>
+        <img src={friend.profileImg} alt="프로필" className="chat-profile-img" />
+        <div className="chat-partner-name">{friend.name}</div>
       </div>
-      <div className="chat-body">
-        <div className="chat-message received">어 뭐야</div>
-        <div className="chat-message received">ㅋㅋㅋㅋ</div>
-        <div className="chat-message sent">토요일에 걸림</div>
-      </div>
-      <div className="chat-input-box">
-        <input type="text" placeholder="메세지 입력..." />
-        <button>전송</button>
+      <div className="chat-body" ref={chatBodyRef}>
+        {messages.map(msg => (
+          <div key={msg.id} className={`chat-message ${msg.sender === 'me' ? 'sent' : 'received'}`}>
+            {msg.content}
+          </div>
+        ))}
       </div>
     </div>
   );

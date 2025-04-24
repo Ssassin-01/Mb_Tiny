@@ -1,8 +1,11 @@
 .chat-list {
-  width: 280px;
-  border-right: 1px solid #ddd;
-  padding: 16px;
+  width: 320px;
+  height: 100vh;
   background-color: #fafafa;
+  padding: 16px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid #ddd; /* 전체 높이의 구분선 */
 }
 
 .chat-list h3 {

@@ -31,7 +31,8 @@ const Sidebar = () => {
           title="프로필"
           aria-label="프로필"
         >
-          <FaUser className="icon" />
+          
+          <FaUser className="icon" /> 
           <span className="label-text">프로필</span>
         </li>
         <li

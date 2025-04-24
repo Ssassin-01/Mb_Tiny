@@ -1,16 +1,11 @@
-.messages-page {
-  display: flex;
-  flex-direction: column;
-  font-family: 'Pretendard', sans-serif;
-}
-
 .messages-layout {
   display: flex;
+  height: 100vh;
 }
 
-.messages-wrapper {
+.chat-container {
   display: flex;
+  flex-direction: column;
   flex: 1;
-  height: 80vh;
-  border-top: 1px solid #ddd;
+  background-color: #f9f9f9;
 }
