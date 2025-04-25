@@ -1,11 +1,14 @@
     package com.meeti.mbTiny.controller;
 
     import com.meeti.mbTiny.dto.LoginRequestDTO;
+    import com.meeti.mbTiny.dto.MemberDTO;
     import com.meeti.mbTiny.dto.MemberRequestDTO;
     import com.meeti.mbTiny.entity.Member;
     import com.meeti.mbTiny.security.CustomUserDetails;
     import com.meeti.mbTiny.service.MemberService;
+    import jakarta.servlet.http.Cookie;
     import jakarta.servlet.http.HttpServletRequest;
+    import jakarta.servlet.http.HttpServletResponse;
     import jakarta.validation.Valid;
     import lombok.RequiredArgsConstructor;
     import org.springframework.http.HttpStatus;
@@ -31,10 +34,10 @@
         private final MemberService memberService;
         private final AuthenticationManager authenticationManager;
 
-        @PostMapping("/signup")
+        @PostMapping("/register")
         public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody MemberRequestDTO dto) {
             memberService.signup(dto);
-            return ResponseEntity.ok(Map.of("message", "success"));
+            return ResponseEntity.ok(Map.of("message", "회원가입 성공"));
         }
 
         @PostMapping("/login")
@@ -47,7 +50,6 @@
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 context.setAuthentication(authentication);
 
-                // ✅ 명시적으로 세션에 SecurityContext 저장!
                 request.getSession(true)
                         .setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
 
@@ -59,20 +61,53 @@
         }
 
         @GetMapping("/me")
-        public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-            if (auth == null || userDetails == null || auth.getPrincipal().equals("anonymousUser")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of("message", "로그인이 필요합니다."));
-            }
-
+        public ResponseEntity<MemberDTO> getMyProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
             Member member = userDetails.getMember();
-            return ResponseEntity.ok(Map.of(
-                    "email", member.getEmail(),
-                    "nickname", member.getNickname()
-            ));
+            MemberDTO profile = memberService.getMyProfile(member);
+            return ResponseEntity.ok(profile);
         }
+
+        @GetMapping("/{nickname}")
+        public ResponseEntity<MemberDTO> getOtherProfile(@PathVariable String nickname) {
+            MemberDTO profile = memberService.getOtherProfile(nickname);
+            return ResponseEntity.ok(profile);
+        }
+
+        //회원정보 수정
+        @PutMapping("/modify")
+        public ResponseEntity<?> modifyProfile(@RequestBody MemberRequestDTO dto, @AuthenticationPrincipal CustomUserDetails userDetails) {
+            if (userDetails == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            }
+            memberService.updateUser(userDetails.getMember(), dto);
+            return ResponseEntity.ok("프로필이 수정되었습니다.");
+        }
+
+        //회원 탈퇴
+        @DeleteMapping("/delete")
+        public ResponseEntity<?> deleteUser(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            HttpServletRequest request, HttpServletResponse response) {
+            System.out.println("delete controller 접근");
+            if (userDetails == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            }
+            memberService.deleteUser(userDetails.getMember());
+
+            // 🔐 강제로 로그아웃 처리 (세션 무효화 + SecurityContext 초기화)
+            request.getSession().invalidate();
+            SecurityContextHolder.clearContext();
+
+            // 선택: JSESSIONID 쿠키 삭제
+            Cookie cookie = new Cookie("JSESSIONID", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
+            return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+        }
+
+
+
 
         @GetMapping("/filter/mbti")
         public ResponseEntity<List<Member>> getMembersByMBTI(

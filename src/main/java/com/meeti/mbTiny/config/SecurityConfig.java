@@ -55,8 +55,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/hello","/api/posts").permitAll()
-                        .requestMatchers("/api/public/**", "/api/members/login", "/api/members/logout", "/api/members/signup").permitAll()
+                        .requestMatchers("/api/public/**", "/api/members/login", "/api/members/logout", "/api/members/register").permitAll()
+                        .requestMatchers("/api/posts", "/api/anonymous-posts").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
