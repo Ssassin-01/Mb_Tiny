@@ -1,0 +1,13 @@
+.messages-layout {
+  display: flex;
+  height: 88vh;
+  overflow: hidden;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 85vh; /* ✅ 여기서 height 전체 고정 */
+  overflow: hidden;
+}
