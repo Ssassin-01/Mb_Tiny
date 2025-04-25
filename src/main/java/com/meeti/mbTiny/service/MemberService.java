@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,6 +38,7 @@ public class MemberService {
         member.setBirthday(dto.getBirthday());
         member.setNickname(dto.getNickname());
         member.setMbti(dto.getMbti());
+        member.setAddress(dto.getAddress());
         memberRepository.save(member);
     }
 

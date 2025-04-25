@@ -20,6 +20,7 @@ public class MemberDTO {
     private String phone;
     private String nickname;
     private String mbti;
+    private String address;
     private String profileImgUrl;
     private int followerCount;
     private int followingCount;
