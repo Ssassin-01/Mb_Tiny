@@ -1,11 +1,4 @@
 /* 피드 전체 컨테이너 */
-<<<<<<< HEAD
-=======
-body {
-  background-color: #f7fafa;
-}
-
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
 .feed-container {
   width: 100%;
   max-width: 600px;
@@ -17,17 +10,15 @@ body {
 
 /* 피드 카드 */
 .feed-card {
-  width: 100%;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 40px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-  animation: slideUp 0.4s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  font-family: 'Pretendard', sans-serif;
 }
+
 
 /* 헤더 영역 */
 .feed-header {
@@ -47,11 +38,7 @@ body {
 .feed-info {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
 }
-
 .feed-nickname {
   font-weight: bold;
 }
@@ -106,6 +93,8 @@ body {
   animation: spin 0.8s linear infinite;
   margin: 20px auto;
 }
+
+/* 애니메이션 */
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -116,6 +105,7 @@ body {
     transform: translateY(0);
   }
 }
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

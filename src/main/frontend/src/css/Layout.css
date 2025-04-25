@@ -1,18 +1,14 @@
-
 .home-page {
   height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  
 }
 
 .layout-body {
   display: flex;
   flex: 1;
   overflow: hidden;
-  background-color: #fff;
-  
 }
 
 .sidebar {
@@ -21,7 +17,6 @@
   border-right: 1px solid #ddd;
   padding: 20px;
   box-sizing: border-box;
-  
 }
 
 .main-scroll-area {

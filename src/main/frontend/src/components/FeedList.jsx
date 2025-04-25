@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import FeedCard from "./FeedCard";
-
 import FeedInput from './FeedInput';
-
 
 import "../css/Feed.css";
 // import axios from "axios"; 백엔드 연동 시
@@ -91,7 +89,6 @@ function FeedList() {
         ))}
       </InfiniteScroll>
     </div>
-
   );
 }
 
