@@ -27,6 +27,8 @@ out/
 !**/src/test/**/out/
 application.yml
 
+application.yml
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -36,3 +38,4 @@ application.yml
 
 ### VS Code ###
 .vscode/
+.metadata/
