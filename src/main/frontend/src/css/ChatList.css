@@ -35,7 +35,7 @@
   color: #c62828;
 }
 
-/* ✅ 사용자 목록만 스크롤되도록 래퍼 추가 */
+/* 사용자 목록만 스크롤되도록 래퍼 추가 */
 .chat-list-scroll {
   flex: 1;
   overflow-y: auto;

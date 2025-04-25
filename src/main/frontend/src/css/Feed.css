@@ -1,4 +1,8 @@
 /* 피드 전체 컨테이너 */
+body {
+  background-color: #f7fafa;
+}
+
 .feed-container {
   width: 100%;
   max-width: 600px;
