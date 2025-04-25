@@ -1,66 +1,131 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../css/SignUpPage.css';
 
 function SignUpPage() {
   const navigate = useNavigate();
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    gender: '',
+    phone: '',
+    birthDate: '', // 생년월일 하나로 받기
+    nickname: '',
+    mbti: '',
+    address: '',
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // 새로고침 방지
-    navigate('/');
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const registerData = {
+      email: form.email,
+      password: form.password,
+      gender: form.gender,
+      phone: form.phone,
+      birth: form.birthDate, // YYYY-MM-DD 형태로 전송
+      nickname: form.nickname,
+      mbti: form.mbti,
+      address: form.address,
+    };
+
+    try {
+      await axios.post('http://localhost:8080/api/users/register', registerData);
+      alert('회원가입 성공!');
+      navigate('/');
+    } catch (err) {
+      alert('회원가입 실패: ' + (err.response?.data?.message || '서버 오류'));
+    }
+  };
+
+  const searchAddress = () => {
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        setForm({ ...form, address: data.address });
+      }
+    }).open();
   };
 
   return (
     <div className="signup">
       <img src="/img/logo2.png" alt="MBTiny Logo" className="logo" />
-      <h2>회원 가입</h2>
-
       <form className="form" onSubmit={handleSubmit}>
-        <label>E-MAIL</label>
-        <input type="email" />
+        <label>이메일</label>
+        <input name="email" type="email" onChange={handleChange} required />
 
-        <label>PW</label>
-        <input type="password" />
-        
+        <label>비밀번호</label>
+        <input name="password" type="password" onChange={handleChange} required />
+
         <label>성별</label>
-        <input type="text" />
+        <select name="gender" onChange={handleChange} defaultValue="">
+          <option value="" disabled>성별 선택</option>
+          <option value="남자">남자</option>
+          <option value="여자">여자</option>
+        </select>
 
         <label>휴대전화</label>
-        <input type="tel" />
+        <input name="phone" onChange={handleChange} />
 
         <label>생년월일</label>
-        <div className="birth-group">
-          <input type="text" placeholder="년" className="birth-input year" />
-          <select className="birth-input month">
-            <option value="">월</option>
-            {[...Array(12)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {i + 1}
-              </option>
-            ))}
-          </select>
-          <input type="text" placeholder="일" className="birth-input day" />
+        <input
+          type="date"
+          name="birthDate"
+          onChange={handleChange}
+          value={form.birthDate}
+          max={new Date().toISOString().split("T")[0]}
+          required
+        />
+
+        <label>주소</label>
+        <div className="address-group">
+          <input
+            name="address"
+            value={form.address}
+            readOnly
+            placeholder="주소를 검색해주세요"
+          />
+          <button
+            type="button"
+            className="address-btn"
+            onClick={searchAddress}
+          >
+            주소 검색
+          </button>
         </div>
 
-
-
         <label>닉네임</label>
-        <input type="text" />
+        <input name="nickname" onChange={handleChange} />
 
         <label>MBTI</label>
-        <select defaultValue="">
+        <select name="mbti" onChange={handleChange} defaultValue="">
           <option value="" disabled>MBTI 선택</option>
           {[
-            "ISTJ", "ISFJ", "INFJ", "INTJ",
-            "ISTP", "ISFP", "INFP", "INTP",
-            "ESTP", "ESFP", "ENFP", "ENTP",
-            "ESTJ", "ESFJ", "ENFJ", "ENTJ"
-          ].map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
+            "ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP",
+            "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"
+          ].map(type => (
+            <option key={type} value={type}>{type}</option>
           ))}
         </select>
+
+        <a
+          href="https://www.16personalities.com/ko"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mbti-test-link"
+        >
+          MBTI를 모르신다면? 👉 테스트하러 가기
+        </a>
 
         <button type="submit" className="submit-btn">가입하기</button>
       </form>

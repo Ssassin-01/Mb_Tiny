@@ -38,3 +38,4 @@ application.yml
 
 ### VS Code ###
 .vscode/
+.metadata/

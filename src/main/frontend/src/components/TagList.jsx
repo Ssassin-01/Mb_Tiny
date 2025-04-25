@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/TagList.css";
 
-const tags = ["#music", "#gaming", "#movies", "#anime", "#food", "#a", "#b", "#a", "#a"];
+const tags = [];
 
 const TagList = () => {
   return (

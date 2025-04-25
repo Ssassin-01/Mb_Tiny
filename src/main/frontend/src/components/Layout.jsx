@@ -2,20 +2,25 @@ import React from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { Outlet } from "react-router-dom";
-import "../css/Home.css";
+import "../css/Layout.css";
 
 const Layout = () => {
   return (
     <div className="home-page">
-      <Topbar />
-      <div className="layout-body">
-        <Sidebar />
+    
+    <Topbar />
+    <div className="layout-body">
+      <Sidebar />
+      {/* 무한 스크롤 적용 영역 */}
+      <div className="main-scroll-area" id="mainScroll">
         <div className="main-content">
-          <Outlet /> {/* 여기에 각 페이지 내용이 들어감 */}
+          <Outlet />
         </div>
       </div>
     </div>
+  </div>
   );
 };
+
 
 export default Layout;
