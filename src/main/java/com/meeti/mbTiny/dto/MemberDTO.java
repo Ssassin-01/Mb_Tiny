@@ -23,6 +23,6 @@ public class MemberDTO {
     private String profileImgUrl;
     private int followerCount;
     private int followingCount;
-    private LocalDateTime createDate;
-    private LocalDateTime updateDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

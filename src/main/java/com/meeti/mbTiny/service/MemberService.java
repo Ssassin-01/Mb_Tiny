@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -90,8 +91,8 @@ public class MemberService {
                 .profileImgUrl(member.getProfileImgUrl())
                 .gender(member.getGender())
                 .birthday(member.getBirthday())
-                .followerCount(member.getFollowers().size())
-                .followingCount(member.getFollowing().size())
+                .createdAt(member.getCreateAt())
+                .updatedAt(member.getUpdateAt())
                 .build();
     }
 }
