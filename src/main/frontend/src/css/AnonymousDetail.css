@@ -1,80 +1,132 @@
 .detail {
-    max-width: 800px;
-    margin: 40px auto;
-    font-family: 'Pretendard', sans-serif;
-    padding: 20px;
-  }
-  
-  .title {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 16px;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 12px;
-  }
-  
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    color: #777;
-    font-size: 13px;
-    margin-bottom: 20px;
-  }
-  
-  .info-row .left span:not(:last-child) {
-    margin-right: 12px;
-  }
-  
-  .info-row .right span {
-    margin-left: 12px;
-  }
-  
-  .content {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #333;
-    border-top: 1px solid #eee;
-    padding-top: 20px;
-    min-height: 200px;
-  }
-  
-  .buttons {
-    text-align: right;
-    margin-top: 30px;
-  }
-  
-  .buttons button {
-    padding: 8px 16px;
-    background: #444;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .buttons button:hover {
-    background: #30d5c8;
-  }
-  
-  .recommend {
-    display: flex;
-    justify-content: center;
-    margin: 30px 0 20px;
-  }
-  
-  .recommend-btn {
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #30d5c8;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .recommend-btn:hover {
-    background-color: #28c4b7;
-  }
+  max-width: 800px;
+  margin: 40px auto;
+  font-family: 'Pretendard', sans-serif;
+  padding: 20px;
+  flex: 1;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 12px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  color: #777;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.info-row .left span:not(:last-child) {
+  margin-right: 12px;
+}
+
+.info-row .right span {
+  margin-left: 12px;
+}
+
+.content {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  min-height: 200px;
+}
+
+.recommend {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0 20px;
+}
+
+.recommend-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #30d5c8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.recommend-btn:hover {
+  background-color: #28c4b7;
+}
+
+.buttons {
+  text-align: right;
+  margin-top: 30px;
+}
+
+.buttons button {
+  padding: 8px 16px;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.buttons button:hover {
+  background: #30d5c8;
+}
+
+/* 댓글 공통 스타일 */
+.comment-top {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.comment-nick {
+  margin-right: 6px;
+}
+
+.comment-time {
+  font-size: 12px;
+  color: #999;
+}
+
+.comment-content {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.comment-actions button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+}
+
+.comment-actions button:hover {
+  color: #111;
+  text-decoration: underline;
+}
+
+.anonymous-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.anonymous-layout {
+  display: flex;
+}

@@ -1,55 +1,62 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../css/Login.css';
 
-function LoginPage() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+function Login() {
+    const navigate = useNavigate();
+    const [form, setForm] = useState({ email: '', password: '' });
 
-  const handleLogin = async () => {
-    try {
-      const response = await axios.post('http://localhost:8080/api/users/login', {
-        email,
-        password
-      }, {
-        withCredentials: true // 세션 유지 시 필요
-      });
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
 
-      alert(response.data); // 로그인 성공 메시지
-      navigate('/'); // 메인 페이지로 이동
-    } catch (error) {
-      alert('로그인 실패: 이메일 또는 비밀번호가 틀렸습니다.');
-    }
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // 폼 새로고침 방지
+        try {
+            const res = await axios.post('http://localhost:8080/api/users/login', form, {
+                withCredentials: true,
+            });
+            alert('로그인 성공!');
+            console.log('로그인 응답:', res.data);
+            navigate('/');
+        } catch (err) {
+            alert('로그인 실패: ' + (err.response?.data?.message || '서버 오류'));
+        }
+    };
 
-  return (
-    <div className="login">
-      <img src="/img/logo2.png" alt="MBTiny Logo" className="logo" />
-      <div className="login-box">
-        <div className="field">
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="이메일 입력"
-          />
+    return (
+        <div className="login">
+            <img src="/img/logo.png" alt="MBTiny Logo" className="logo" />
+            <form className="login-box" onSubmit={handleSubmit}>
+                <div className="field">
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="field">
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={form.password}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <button type="submit" className="login-btn">로그인</button>
+                <button type="button" className="signup-btn" onClick={() => navigate('/signup')}>
+                    회원가입
+                </button>
+            </form>
         </div>
-        <div className="field">
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="비밀번호 입력"
-          />
-        </div>
-
-        <button className="login-btn" onClick={handleLogin}>로그인</button>
-        <button className="signup-btn" onClick={() => navigate('/signup')}>회원가입</button>
-      </div>
-    </div>
-  );
+    );
 }
 
-export default LoginPage;
+export default Login;
