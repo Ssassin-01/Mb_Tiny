@@ -1,4 +1,11 @@
 /* 피드 전체 컨테이너 */
+<<<<<<< HEAD
+=======
+body {
+  background-color: #f7fafa;
+}
+
+>>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
 .feed-container {
   width: 100%;
   max-width: 600px;

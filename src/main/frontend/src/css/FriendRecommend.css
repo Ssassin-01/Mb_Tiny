@@ -110,7 +110,20 @@
   box-shadow: 0 0 12px rgba(48, 213, 200, 0.5);
   transform: scale(1.03);
 }
+<<<<<<< HEAD
 
+=======
+.follow-friend-btn:hover {
+  background-color: #25bcb1;
+}
+
+.follow-friend-btn.requested {
+  background-color: white;
+  color: #30d5c8;
+  border: 1px solid #30d5c8;
+  cursor: default;
+}
+>>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
 /* 토글 버튼 (모바일용) */
 .friend-toggle-btn {
   position: fixed;
