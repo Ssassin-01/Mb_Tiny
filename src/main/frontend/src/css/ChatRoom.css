@@ -7,11 +7,7 @@
   background-color: #f9f9f9;
   overflow: hidden;
 
-<<<<<<< HEAD
-  /* ✅ 하단에 여유 공간 확보 */
-=======
   /* 하단에 여유 공간 확보 */
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
   padding-bottom: 20px;
 }
 
@@ -76,13 +72,8 @@
 .chat-input-box {
   height: 50px;
   padding: 10px 20px;
-<<<<<<< HEAD
-  margin: 40px 0 0px 0;              /* ✅ margin-bottom 제거 */
-  margin-bottom: -12px;             /* ✅ 명시적으로 하단 여백 추가 */
-=======
   margin: 40px 0 0px 0;             
   margin-bottom: -12px;            
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
   border-top: 1px solid #ddd;
   background-color: white;
   display: flex;

@@ -1,23 +1,18 @@
+
 .home-page {
   height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-<<<<<<< HEAD
-=======
   
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
 }
 
 .layout-body {
   display: flex;
   flex: 1;
   overflow: hidden;
-<<<<<<< HEAD
-=======
   background-color: #fff;
   
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
 }
 
 .sidebar {
@@ -26,10 +21,7 @@
   border-right: 1px solid #ddd;
   padding: 20px;
   box-sizing: border-box;
-<<<<<<< HEAD
-=======
   
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
 }
 
 .main-scroll-area {

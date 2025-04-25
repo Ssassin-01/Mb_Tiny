@@ -1,9 +1,6 @@
 import React from 'react';
-<<<<<<< HEAD
-=======
 import '../css/MbtiTest.css';
 
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
 
 const MbtiTest = () => {
     return (

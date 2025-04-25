@@ -9,19 +9,8 @@
 
 
 .logo {
-<<<<<<< HEAD
-  font-weight: bold;
-  font-size: 20px;
-  white-space: nowrap;
-}
-
-.topbar-center {
-  flex: 1;
-  display: flex;
-=======
   display: flex;
   align-items: center;
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
 }
 
 .logo-img {

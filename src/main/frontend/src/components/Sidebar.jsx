@@ -1,11 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Sidebar.css";
-<<<<<<< HEAD
-import { FaHome, FaCommentDots, FaUser, FaQuestion, FaShapes, FaArchive } from "react-icons/fa";
-=======
 import { FaHome, FaCommentDots, FaUser, FaQuestion, FaShapes, FaPuzzlePiece } from "react-icons/fa";
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
 
 
 const Sidebar = () => {
@@ -57,19 +53,11 @@ const Sidebar = () => {
         </li>
         <li
           onClick={() => navigate("/resources")}
-<<<<<<< HEAD
-          title="리소스"
-          aria-label="리소스"
-        >
-          <FaArchive className="icon" />
-          <span className="label-text">리소스</span>
-=======
           title="퀴즈"
           aria-label="퀴즈"
         >
           <FaPuzzlePiece className="icon" />
           <span className="label-text">퀴즈</span>
->>>>>>> 68eaecf4d6951e0392ba4d063848baaa2609d27e
         </li>
       </ul>
     </div>
