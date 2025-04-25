@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/posts/{postId}")
+@RequestMapping("/api/anonymous-posts/{postId}")
 @RequiredArgsConstructor
-public class LikeController {
+public class AnonymousLikeController {
     private final LikeService likeService;
 
     @PostMapping("/like")
     public ResponseEntity<?> toggleLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = userDetails.getMember();
-        boolean liked = likeService.toggleLike(postId, member, false);
+        boolean liked = likeService.toggleLike(postId, member, true);
         return ResponseEntity.ok(Map.of("like", liked));
     }
 
     @GetMapping("/like-count")
     public ResponseEntity<?> getLikeCount(@PathVariable Long postId) {
-        Long count = likeService.getLikeCount(postId, false);
+        Long count = likeService.getLikeCount(postId, true);
         return ResponseEntity.ok(Map.of("count", count));
     }
 }

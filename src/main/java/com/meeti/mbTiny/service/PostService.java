@@ -41,7 +41,7 @@
             Post post = validatePostOwner(member, postId);
             post.setTitle(dto.getTitle());
             post.setContent(dto.getContent());
-            post.setAnonymous(dto.isAnonymous());
+            post.setAnonymous(false);
             postRepository.save(post);
         }
 

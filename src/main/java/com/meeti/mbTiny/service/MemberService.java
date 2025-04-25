@@ -90,6 +90,8 @@ public class MemberService {
                 .profileImgUrl(member.getProfileImgUrl())
                 .gender(member.getGender())
                 .birthday(member.getBirthday())
+                .address(member.getAddress())
+                .phone(member.getPhone())
                 .createdAt(member.getCreateAt())
                 .updatedAt(member.getUpdateAt())
                 .build();
