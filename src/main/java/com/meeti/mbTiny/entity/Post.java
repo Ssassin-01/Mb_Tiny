@@ -29,6 +29,9 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     private boolean isAnonymous;
 
     @Column(insertable=false, columnDefinition="INT DEFAULT 0")
@@ -43,9 +46,6 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
-
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Vote vote;
 
     @CreatedDate
     @Column(name = "created_at")

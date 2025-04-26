@@ -15,6 +15,7 @@ public class PostDTO {
     private String content;
     private boolean isAnonymous = false;
     private Long viewCount;
+    private String imageUrl;
     private String nickname;
     private String createdAt;
     private String mbti;
