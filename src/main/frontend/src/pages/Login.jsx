@@ -23,7 +23,10 @@ function Login() {
       );
       alert('로그인 성공!');
       console.log('로그인 응답:', res.data);
-      navigate('/');
+
+      setTimeout(() => {
+        window.location.href = '/'; // 이거 추가했어요
+      }, 100);
     } catch (err) {
       alert('로그인 실패: ' + (err.response?.data?.message || '서버 오류'));
     }

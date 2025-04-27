@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final NotificationService notificationService;
 
     public void createComment(Long postId, CommentsRequestDTO dto, Member member, boolean isAnonymous) {
         Post post = validatePost(postId, isAnonymous);
@@ -29,6 +30,9 @@ public class CommentService {
                 .member(member)
                 .build();
         commentRepository.save(comment);
+        if(!post.getMember().getId().equals(member.getId())) {
+            notificationService.sendNotification(post.getMember().getId(), member.getNickname() + "님이 댓글을 남겼습니다.");
+        }
     }
     public List<CommentDTO> getComment(Long postId, Member member, boolean isAnonymous) {
         Post post = validatePost(postId, isAnonymous);
@@ -76,6 +80,7 @@ public class CommentService {
         return CommentDTO.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
+                .nickname(comment.getMember().getNickname())
                 .mbti(comment.getMember().getMbti())
                 .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm")))
                 .build();
