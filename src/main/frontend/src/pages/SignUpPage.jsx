@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../css/SignUpPage.css';
+import '../css/pages/SignUpPage.css';
 
 function SignUpPage() {
   const navigate = useNavigate();

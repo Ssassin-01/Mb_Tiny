@@ -1,0 +1,30 @@
+/* src/css/PostItem.css */
+
+.feed-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+  }
+  
+  .feed-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .feed-card img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    margin-top: 10px;
+    border-radius: 8px;
+  }
+  
+  .feed-card .date {
+    font-size: 12px;
+    color: #888;
+    margin-top: 10px;
+  }
+  

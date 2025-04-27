@@ -3,12 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import Login from './pages/Login';
 import SignUpPage from './pages/SignUpPage';
-import AnonymousBoard from './components/AnonymousBoard';
-import AnonymousDetail from './components/AnonymousDetail';
-import AnonymousWrite from './components/AnonymousWrite';
-import Layout from './components/Layout';
-import Profile from './components/Profile';
-import MbtiTest from './components/MbtiTest';
+import AnonymousBoard from './components/anonymous/AnonymousBoard';
+import AnonymousDetail from './components/anonymous/AnonymousDetail';
+import AnonymousWrite from './components/anonymous/AnonymousWrite';
+import Layout from './components/layout/Layout';
+import Profile from './components/profile/Profile';
+import MbtiTest from './components/mbti/MbtiTest';
 import MessagesPage from './pages/MessagesPage';
 
 
