@@ -10,14 +10,17 @@ function AnonymousBoard() {
   const POSTS_PER_PAGE = 20;
 
   useEffect(() => {
+    sessionStorage.setItem('loginUser', JSON.stringify({
+      id: 1,
+      nickname: '도하',
+      mbti: 'INFP'
+    }));
+
     const fetchPosts = async () => {
       try {
-        const res = await axios.get(
-          'http://localhost:8080/api/anonymous-posts',
-          {
-            withCredentials: true,
-          }
-        );
+        const res = await axios.get('http://localhost:8080/api/anonymous-posts', {
+          withCredentials: true,
+        });
         setPosts(res.data);
       } catch (err) {
         console.error('게시글 불러오기 실패', err);
@@ -32,18 +35,18 @@ function AnonymousBoard() {
   const currentPosts = posts.slice(startIdx, startIdx + POSTS_PER_PAGE);
 
   return (
-    <div className='anonymous-page'>
-      <div className='anonymous-layout'>
-        <div className='anonymous-board'>
-          <table className='table'>
+    <div className="anonymous-page">
+      <div className="anonymous-layout">
+        <div className="anonymous-board">
+          <table className="table">
             <thead>
               <tr>
                 <th>번호</th>
                 <th>제목</th>
                 <th>MBTI</th>
                 <th>시간</th>
-                <th>조회</th> {/* 수정 */}
-                <th>추천</th> {/* 수정 */}
+                <th>조회</th>
+                <th>추천</th>
               </tr>
             </thead>
             <tbody>
@@ -53,13 +56,10 @@ function AnonymousBoard() {
                   onClick={() => navigate(`/anonymous/${post.id}`)}
                   style={{ cursor: 'pointer' }}
                 >
+                  <td>{posts.length - ((currentPage - 1) * POSTS_PER_PAGE + index)}</td>
+                  <td className="subject">{post.title}</td>
                   <td>
-                    {posts.length -
-                      ((currentPage - 1) * POSTS_PER_PAGE + index)}
-                  </td>
-                  <td className='subject'>{post.title}</td>
-                  <td>
-                    <span className='mbti-badge' data-mbti={post.mbti}>
+                    <span className="mbti-badge" data-mbti={post.mbti}>
                       {post.mbti || '익명'}
                     </span>
                   </td>
@@ -70,14 +70,14 @@ function AnonymousBoard() {
                       hour12: false,
                     })}
                   </td>
-                  <td>{post.viewCount}</td> {/* 여기 viewCount로 수정 */}
-                  <td>{post.likeCount}</td> {/* 여기 likeCount로 수정 */}
+                  <td>{post.viewCount}</td>
+                  <td>{post.likeCount}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          <div className='paging'>
+          <div className="paging">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i + 1}
@@ -89,11 +89,8 @@ function AnonymousBoard() {
             ))}
           </div>
 
-          <div className='actions'>
-            <button
-              className='write-btn'
-              onClick={() => navigate('/anonymous/write')}
-            >
+          <div className="actions">
+            <button className="write-btn" onClick={() => navigate('/anonymous/write')}>
               글쓰기
             </button>
           </div>
