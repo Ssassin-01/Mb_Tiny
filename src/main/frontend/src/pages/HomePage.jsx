@@ -1,7 +1,7 @@
 import React from "react";
-import FeedList from "../components/FeedList";
-import FriendRecommend from "../components/FriendRecommend";
-import "../css/Home.css";
+import FeedList from "../components/feed/FeedList";
+import FriendRecommend from '../components/recommend/FriendRecommend';
+import '../css/pages/Home.css'
 
 const HomePage = () => {
   return (

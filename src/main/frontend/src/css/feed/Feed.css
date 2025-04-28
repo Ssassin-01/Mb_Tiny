@@ -1,0 +1,231 @@
+/* 피드 전체 컨테이너 */
+.feed-container {
+  width: 100%;
+  max-width: 600px;
+  min-width: 360px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 피드 카드 */
+.feed-card {
+  position: relative;
+  z-index: 10; 
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s ease-in-out;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.feed-card:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+
+/* 헤더 영역 */
+.feed-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.feed-profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.feed-info {
+  display: flex;
+  flex-direction: column;
+}
+.feed-nickname {
+  font-weight: bold;
+}
+
+.feed-time {
+  font-size: 12px;
+  color: #888;
+}
+
+/* 내용 */
+.feed-content {
+  font-size: 15px;
+  margin: 12px 0;
+}
+
+/* 이미지 */
+.feed-image {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-top: 12px;
+  display: block;
+}
+
+/* 액션 영역 */
+.feed-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.feed-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+}
+
+.feed-actions button:hover {
+  color: #30d5c8;
+}
+/* mbti 필터 셀렉트 */
+
+.mbti-filter-container {
+  display: flex;
+  justify-content: center;
+  max-width: 600px; 
+  margin: 0 auto 30px;
+  gap: 12px;
+  flex-wrap: wrap;
+  background-color: #f4ffff;
+  border-radius: 16px;
+  padding: 14px 20px;
+  box-shadow: 0 4px 12px rgba(48, 213, 200, 0.1);
+}
+
+.mbti-filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.mbti-filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #30bcb0;
+  margin-bottom: 4px;
+  font-family: 'Pretendard', sans-serif;
+}
+.mbti-filter-container select {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid #30d5c8;
+  background-color: white;
+  color: #30d5c8;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: 'Pretendard', sans-serif;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 80px;
+  box-shadow: inset 0 0 0 1px rgba(48, 213, 200, 0.15);
+}
+
+.mbti-filter-container select:hover {
+  background-color: #e6fbfb;
+}
+
+.mbti-filter-container select:focus {
+  outline: none;
+  border-color: #1dcfc1;
+  box-shadow: 0 0 0 3px rgba(48, 213, 200, 0.3);
+}
+
+.infinite-scroll-component {
+  overflow-x: visible !important;
+}
+/* 로딩 스피너 */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #ccc;
+  border-top-color: #30d5c8;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 20px auto;
+}
+
+/* 애니메이션 */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 반응형 - 태블릿 (768px 이하) */
+@media screen and (max-width: 768px) {
+  .feed-card {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .feed-content {
+    font-size: 14px;
+  }
+
+  .feed-image {
+    max-height: 300px;
+  }
+
+  .feed-actions button {
+    font-size: 13px;
+  }
+}
+
+/* 반응형 - 모바일 (480px 이하) */
+@media screen and (max-width: 480px) {
+  .feed-card {
+    padding: 12px;
+    margin-bottom: 24px;
+  }
+
+  .feed-profile {
+    width: 32px;
+    height: 32px;
+  }
+
+  .feed-content {
+    font-size: 13px;
+  }
+
+  .feed-nickname {
+    font-size: 14px;
+  }
+
+  .feed-time {
+    font-size: 11px;
+  }
+
+  .feed-actions {
+    gap: 12px;
+  }
+
+  .feed-actions button {
+    font-size: 12px;
+  }
+
+  .feed-image {
+    max-height: 200px;
+  }
+}
