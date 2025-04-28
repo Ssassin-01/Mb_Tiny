@@ -2,21 +2,31 @@ package com.meeti.mbTiny.service;
 
 import com.meeti.mbTiny.dto.MemberDTO;
 import com.meeti.mbTiny.dto.MemberRequestDTO;
+import com.meeti.mbTiny.dto.MemberUpdateRequestDTO;
 import com.meeti.mbTiny.entity.Member;
 import com.meeti.mbTiny.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
+    //application에서 경로 주입
+    @Value("${file.upload.profile-dir}")
+    private String uploadDir;
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -46,19 +56,55 @@ public class MemberService {
 
     //회원정보 수정
     @Transactional
-    public void updateUser(Member member, MemberRequestDTO dto) {
+    public void updateUser(String email, MemberUpdateRequestDTO dto) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("유저 없음"));
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            member.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
 
-        member.setPassword(passwordEncoder.encode(dto.getPassword()));
-        member.setGender(dto.getGender());
-        member.setPhone(dto.getPhone());
-        member.setBirthday(dto.getBirthday());
-        member.setMbti(dto.getMbti());
+        if (dto.getGender() != null) {
+            member.setGender(dto.getGender());
+        }
+
+        if (dto.getPhone() != null && !dto.getPhone().isBlank()) {
+            member.setPhone(dto.getPhone());
+        }
+
+        if (dto.getBirthday() != null) {
+            member.setBirthday(dto.getBirthday());
+        }
+
+        if (dto.getMbti() != null && !dto.getMbti().isBlank()) {
+            member.setMbti(dto.getMbti());
+        }
+
+        MultipartFile profileImg = dto.getProfileImg();
+        if (profileImg != null && !profileImg.isEmpty()) {
+            try {
+                String fileExtension = getFileExtension(profileImg.getOriginalFilename());
+                String fileName = "profile_" + member.getId() + fileExtension;
+
+                File directory = new File(uploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                File saveFile = new File(uploadDir + fileName);
+                profileImg.transferTo(saveFile);
+
+                member.setProfileImgUrl("/uploads/profile/" + fileName);
+
+            } catch (IOException e) {
+                throw new RuntimeException("프로필 이미지 업로드 실패", e);
+            }
+        }
     }
 
     //회원탈퇴
     @Transactional
     public void deleteUser(Member member) {
-        memberRepository.delete(member);
+        memberRepository.deMelete(member);
     }
 
     public MemberDTO getMyProfile(Member member) {
