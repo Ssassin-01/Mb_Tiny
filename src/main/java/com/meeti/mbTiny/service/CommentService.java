@@ -82,7 +82,7 @@ public class CommentService {
                 .content(comment.getContent())
                 .nickname(comment.getMember().getNickname())
                 .mbti(comment.getMember().getMbti())
-                .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm")))
+                .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
                 .build();
     }
 

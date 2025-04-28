@@ -10,32 +10,14 @@ function AnonymousBoard() {
   const POSTS_PER_PAGE = 20;
 
   useEffect(() => {
-    // 로그인된 사용자 더미 설정
-    sessionStorage.setItem('loginUser', JSON.stringify({
-      id: 1,
-      nickname: '도하',
-      mbti: 'INFP'
-    }));
-
     const fetchPosts = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/posts'); // 실제 API
+        const res = await axios.get('http://localhost:8080/api/anonymous-posts', {
+          withCredentials: true,
+        });
         setPosts(res.data);
       } catch (err) {
-        console.warn('API 실패 → 더미 데이터 사용');
-
-        const dummyPosts = Array.from({ length: 50 }, (_, i) => ({
-          id: i + 1,
-          title: `더미 제목 ${i + 1}`,
-          mbti: ['INFP', 'ENFP', 'INTJ', 'ISFJ'][i % 4],
-          createdAt: new Date(Date.now() - i * 60000).toISOString(),
-          views: Math.floor(Math.random() * 100),
-          likes: Math.floor(Math.random() * 30),
-          content: `이건 더미 ${i + 1}번 내용입니다.`,
-          authorId: i % 3 === 0 ? 1 : i + 10,
-        }));
-
-        setPosts(dummyPosts);
+        console.error('게시글 불러오기 실패', err);
       }
     };
 
@@ -57,8 +39,8 @@ function AnonymousBoard() {
                 <th>제목</th>
                 <th>MBTI</th>
                 <th>시간</th>
-                <th>조회</th>
-                <th>추천</th>
+                <th>조회</th> {/* ✅ 수정 */}
+                <th>추천</th> {/* ✅ 수정 */}
               </tr>
             </thead>
             <tbody>
@@ -75,9 +57,15 @@ function AnonymousBoard() {
                       {post.mbti || '익명'}
                     </span>
                   </td>
-                  <td>{new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</td>
-                  <td>{post.views}</td>
-                  <td>{post.likes}</td>
+                  <td>
+                    {new Date(post.createdAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                    })}
+                  </td>
+                  <td>{post.viewCount}</td> {/* ✅ 여기 viewCount로 수정 */}
+                  <td>{post.likeCount}</td> {/* ✅ 여기 likeCount로 수정 */}
                 </tr>
               ))}
             </tbody>
