@@ -10,6 +10,7 @@ import Layout from './components/layout/Layout';
 import Profile from './components/profile/Profile';
 import MBTITest from './components/mbti/MBTITest';
 import MessagesPage from './pages/MessagesPage';
+import FriendProfilePage from './profile/FriendProfilePage';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/anonymous" element={<AnonymousBoard />} />
                     <Route path="/anonymous/:id" element={<AnonymousDetail />} />
                     <Route path="/anonymous/write" element={<AnonymousWrite />} />
+                    <Route path="/profile/:id" element={<FriendProfilePage />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/mbtitest" element={<MBTITest />} />
                     <Route path="/messagespage" element={<MessagesPage />}/>

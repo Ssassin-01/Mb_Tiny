@@ -1,37 +1,35 @@
-// src/pages/FriendProfilePage.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import '../../css/profile/FriendProfilePage.css'; // (스타일 따로)
+import FriendProfileLeft from './FriendProfileLeft';
+import FriendProfileRight from './FriendProfileRight';
+import '../../css/profile/FriendProfilePage.css'; // 새로 만들기
 
 const FriendProfilePage = () => {
   const { id } = useParams(); // URL에서 친구 ID 가져옴
-  const [friendInfo, setFriendInfo] = useState(null);
+  const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
-    // 나중에 여기서 API 호출
-    // axios.get(`/api/members/${id}`).then(res => setFriendInfo(res.data))
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`/api/members/${id}`); // 백엔드 API 경로에 맞춰야 해
+        const data = await res.json();
+        setProfileData(data);
+      } catch (error) {
+        console.error('상대방 프로필 불러오기 실패:', error);
+      }
+    };
 
-    // 일단은 더미 데이터
-    const dummyFriends = [
-      { id: 1, nickname: "nickname1", mbti: "ISFP", img: "/img/user1.jpg", intro: "안녕하세요!" },
-      { id: 2, nickname: "nickname2", mbti: "ISFJ", img: "/img/user2.jpg", intro: "반갑습니다!" },
-      { id: 3, nickname: "nickname3", mbti: "ESFP", img: "/img/user3.jpg", intro: "즐거운 하루!" },
-    ];
-
-    const friend = dummyFriends.find(f => f.id === parseInt(id));
-    setFriendInfo(friend);
+    fetchProfile();
   }, [id]);
 
-  if (!friendInfo) {
-    return <div>로딩 중...</div>; // 정보 없으면 로딩
+  if (!profileData) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="friend-profile-container">
-      <img src={friendInfo.img} alt="프로필 이미지" className="friend-profile-img" />
-      <h2>{friendInfo.nickname}</h2>
-      <p>MBTI: {friendInfo.mbti}</p>
-      <p>한 줄 소개: {friendInfo.intro}</p>
+    <div className="friend-profile-page">
+      <FriendProfileLeft profile={profileData} />
+      <FriendProfileRight userId={id} />
     </div>
   );
 };
