@@ -41,7 +41,7 @@ public class NotificationService {
             }
         }, 0, 30, TimeUnit.SECONDS);
 
-        heartbeatFutures.put(memberId, future); // ✅ 여기 저장!
+        heartbeatFutures.put(memberId, future);
 
         return emitter;
     }

@@ -10,7 +10,7 @@ function SignUpPage() {
     password: '',
     gender: '',
     phone: '',
-    birthDate: '', // 생년월일 하나로 받기
+    birthday: '', // 생년월일 하나로 받기
     nickname: '',
     mbti: '',
     address: '',
@@ -35,7 +35,7 @@ function SignUpPage() {
       password: form.password,
       gender: form.gender,
       phone: form.phone,
-      birth: form.birthDate, // YYYY-MM-DD 형태로 전송
+      birthday: form.birthday, // YYYY-MM-DD 형태로 전송
       nickname: form.nickname,
       mbti: form.mbti,
       address: form.address,
@@ -91,9 +91,9 @@ function SignUpPage() {
         <label>생년월일</label>
         <input
           type='date'
-          name='birthDate'
+          name='birthday'
           onChange={handleChange}
-          value={form.birthDate}
+          value={form.birthday}
           max={new Date().toISOString().split('T')[0]}
           required
         />
