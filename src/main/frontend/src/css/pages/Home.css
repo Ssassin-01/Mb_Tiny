@@ -1,0 +1,28 @@
+body {
+  background-color: white;
+}
+
+.home-body-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.feed-wrapper {
+  flex: 3;
+}
+
+.recommend-wrapper {
+  flex: 1;
+}
+@media screen and (max-width: 768px) {
+  .home-body-layout {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .feed-wrapper,
+  .recommend-wrapper {
+    width: 100%;
+  }
+}
