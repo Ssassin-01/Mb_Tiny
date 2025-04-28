@@ -1,13 +1,39 @@
-import './App.css';
-import Hello from "./components/Hello";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import Login from './pages/Login';
+import SignUpPage from './pages/SignUpPage';
+import AnonymousBoard from './components/AnonymousBoard';
+import AnonymousDetail from './components/AnonymousDetail';
+import AnonymousWrite from './components/AnonymousWrite';
+import Layout from './components/Layout';
+import Profile from './components/Profile';
+import MbtiTest from './components/MbtiTest';
+import MessagesPage from './pages/MessagesPage';
+
 
 function App() {
-  return (
-      <div>
-        <h1>연결성공</h1>
-        <Hello />
-      </div>
-  );
+    return (
+        <Router>
+            <Routes>
+                {/* 사이드바, 탑바 없이 보여지는 경로 */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUpPage />} />
+
+
+                {/* 사이드바/탑바 포함 공통 레이아웃 */}
+                <Route element={<Layout />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/anonymous" element={<AnonymousBoard />} />
+                    <Route path="/anonymous/:id" element={<AnonymousDetail />} />
+                    <Route path="/anonymous/write" element={<AnonymousWrite />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/mbtitest" element={<MbtiTest />} />
+                    <Route path="/messagespage" element={<MessagesPage />}/>
+                </Route>
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;
