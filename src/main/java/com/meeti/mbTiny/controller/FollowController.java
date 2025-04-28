@@ -1,6 +1,7 @@
 package com.meeti.mbTiny.controller;
 
 import com.meeti.mbTiny.dto.FollowDTO;
+import com.meeti.mbTiny.entity.Member;
 import com.meeti.mbTiny.security.CustomUserDetails;
 import com.meeti.mbTiny.service.FollowService;
 import lombok.RequiredArgsConstructor;
@@ -16,29 +17,37 @@ import java.util.Map;
 @RequestMapping("/api/follow")
 public class FollowController {
     private final FollowService followService;
-
-    //팔로우 하기
     @PostMapping("/{targetId}")
     public ResponseEntity<?> follow(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long targetId) {
         followService.follow(userDetails.getMember(), targetId);
-        return ResponseEntity.ok(Map.of("message", "ok"));
+        return ResponseEntity.ok(Map.of("message", "follow ok"));
     }
-
-    //언팔로우 하기
     @DeleteMapping("/{targetId}")
     public ResponseEntity<?> unfollow(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long targetId) {
         followService.unfollow(userDetails.getMember(), targetId);
-        return ResponseEntity.ok(Map.of("message", "ok"));
+        return ResponseEntity.ok(Map.of("message", "unfollow ok"));
     }
 
     @GetMapping("/following")
     public ResponseEntity<List<FollowDTO>> getFollowingList(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<FollowDTO> res = followService.getFollowingDTOList(userDetails.getMember());
+        List<FollowDTO> res = followService.getFollowingList(userDetails.getMember());
         return ResponseEntity.ok(res);
     }
     @GetMapping("/followers")
     public ResponseEntity<List<FollowDTO>> getFollowerList(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<FollowDTO> res = followService.getFollowerDTOList(userDetails.getMember());
+        List<FollowDTO> res = followService.getFollowerList(userDetails.getMember());
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getFollowCounts(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member member = userDetails.getMember();
+        long followers = followService.countFollowers(member);
+        long following = followService.countFollowing(member);
+
+        return ResponseEntity.ok(Map.of(
+                "followers", followers,
+                "following", following
+        ));
     }
 }

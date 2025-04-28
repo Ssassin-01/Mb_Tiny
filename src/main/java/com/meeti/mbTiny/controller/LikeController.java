@@ -19,13 +19,13 @@ public class LikeController {
     @PostMapping("/like")
     public ResponseEntity<?> toggleLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = userDetails.getMember();
-        boolean liked = likeService.toggleLike(postId, member);
+        boolean liked = likeService.toggleLike(postId, member, false);
         return ResponseEntity.ok(Map.of("like", liked));
     }
 
     @GetMapping("/like-count")
     public ResponseEntity<?> getLikeCount(@PathVariable Long postId) {
-        Long count = likeService.getLikeCount(postId);
+        Long count = likeService.getLikeCount(postId, false);
         return ResponseEntity.ok(Map.of("count", count));
     }
 }

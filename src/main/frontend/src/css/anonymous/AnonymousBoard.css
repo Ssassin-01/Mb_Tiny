@@ -1,0 +1,271 @@
+.anonymous-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.anonymous-layout {
+  display: flex;
+  padding: 30px 16px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.anonymous-board {
+  flex: 1;
+  width: 100%;
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.table tbody tr {
+  animation: fadeUp 0.4s ease-in-out;
+  animation-fill-mode: both;
+}
+
+.table thead {
+  background-color: #f4f6f8;
+  font-weight: bold;
+  color: #333;
+  border-bottom: 1px solid #ccc;
+}
+
+.table th,
+.table td {
+  padding: 12px 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.table th {
+  padding: 8px 10px;
+}
+
+.table tbody tr:first-child td {
+  padding-top: 10px;
+}
+
+.table tr:hover {
+  background-color: #e6fafa;
+  transition: background-color 0.2s ease;
+}
+
+/* 번호 */
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 6%;
+  text-align: left;
+  padding-left: 12px;
+}
+
+/* 제목 */
+.table td:nth-child(2) {
+  width: auto;
+  text-align: left;
+  padding-left: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  color: #222;
+}
+
+.table td:nth-child(2):hover {
+  text-decoration: underline;
+  color: #111;
+  cursor: pointer;
+}
+
+/* MBTI, 시간, 조회, 추천 */
+.table th:nth-child(3),
+.table td:nth-child(3),
+.table th:nth-child(4),
+.table td:nth-child(4),
+.table th:nth-child(5),
+.table td:nth-child(5),
+.table th:nth-child(6),
+.table td:nth-child(6) {
+  width: 7%;
+  min-width: 40px;
+  max-width: 60px;
+  padding: 4px 4px;
+  text-align: center;
+  font-size: 13px;
+  word-break: keep-all;
+  font-weight: bold;
+}
+
+/* ✅ MBTI 뱃지 스타일 */
+.mbti-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* ✅ MBTI별 컬러 */
+[data-mbti="ISTJ"] { background-color: #ff2a2a; }
+[data-mbti="ISTP"] { background-color: #6c2eb9; }
+[data-mbti="ESTP"] { background-color: #8ff2f2; }
+[data-mbti="ESTJ"] { background-color: #792c41; }
+[data-mbti="ISFJ"] { background-color: #cfd2d6; color: #222; }
+[data-mbti="ISFP"] { background-color: #f2aecb; color: #222; }
+[data-mbti="ESFP"] { background-color: #2b3df2; }
+[data-mbti="ESFJ"] { background-color: #4caf1b; }
+[data-mbti="INFJ"] { background-color: #dde4ea; color: #222; }
+[data-mbti="INFP"] { background-color: #5c88c4; }
+[data-mbti="ENFP"] { background-color: #a3e27b; color: #222; }
+[data-mbti="ENFJ"] { background-color: #f6c3c3; color: #222; }
+[data-mbti="INTJ"] { background-color: #2a2a3b; }
+[data-mbti="INTP"] { background-color: #fce0b1; color: #222; }
+[data-mbti="ENTP"] { background-color: #a05bd8; }
+[data-mbti="ENTJ"] { background-color: #f6b94d; color: #222; }
+
+/* 페이징 */
+.paging {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 20px 0;
+}
+
+.page-btn {
+  padding: 6px 10px;
+  border: 1px solid #30d5c8;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.page-btn.active {
+  background-color: #444;
+  color: white;
+  font-weight: bold;
+}
+
+.page-btn:hover {
+  background-color: #28c4b7;
+  color: white;
+}
+
+/* 글쓰기 버튼 */
+.actions {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+}
+
+.write-btn {
+  padding: 12px 20px;
+  background-color: #30d5c8;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s ease;
+}
+
+.write-btn:hover {
+  background-color: #28c4b7;
+}
+
+/* 반응형 */
+@media screen and (max-width: 768px) {
+  .anonymous-layout {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .anonymous-board {
+    padding: 16px;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 6px;
+    font-size: 13px;
+  }
+
+  .table td:nth-child(2) {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .paging {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .write-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: auto;
+    padding: 10px 18px;
+    font-size: 14px;
+    border-radius: 30px;
+  }
+
+  .actions {
+    bottom: 20px;
+    right: 20px;
+    width: auto;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .table td:nth-child(2) {
+    max-width: 160px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .write-btn {
+    font-size: 14px;
+    padding: 10px 18px;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .actions {
+    bottom: 20px;
+    right: 20px;
+  }
+}

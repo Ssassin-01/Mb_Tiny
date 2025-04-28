@@ -12,6 +12,7 @@
     import org.springframework.security.core.annotation.AuthenticationPrincipal;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
+    import org.springframework.web.multipart.MultipartFile;
 
     import java.time.format.DateTimeFormatter;
     import java.util.List;
@@ -23,25 +24,42 @@
     public class PostService {
         private final PostRepository postRepository;
         private final LikeRepository likeRepository;
+        private final FileUploadService fileUploadService;
 
         @Transactional
-        public void createPost(PostRequestDTO dto, Member member) {
+        public void createPost(PostRequestDTO dto, MultipartFile image, Member member) {
+            String imageUrl = null;
+            if(image != null && !image.isEmpty()) {
+                imageUrl = fileUploadService.upload(image);
+            }
             Post post = Post.builder()
                     .title(dto.getTitle())
                     .content(dto.getContent())
                     .isAnonymous(false)
                     .viewCount(0L)
                     .member(member)
+                    .imageUrl(imageUrl)
                     .build();
             postRepository.save(post);
         }
 
         @Transactional
-        public void updatePost(Long postId, Member member, PostRequestDTO dto) {
+        public void updatePost(Long postId, Member member, PostRequestDTO dto, MultipartFile image) {
             Post post = validatePostOwner(member, postId);
+
             post.setTitle(dto.getTitle());
             post.setContent(dto.getContent());
-            post.setAnonymous(dto.isAnonymous());
+            post.setAnonymous(false);
+
+            if (image != null) {
+                if (!image.isEmpty()) {
+                    String imageUrl = fileUploadService.upload(image);
+                    post.setImageUrl(imageUrl);
+                } else {
+                    post.setImageUrl(null);
+                }
+            }
+
             postRepository.save(post);
         }
 
@@ -109,6 +127,7 @@
                     .title(post.getTitle())
                     .content(post.getContent())
                     .nickname(nickname)
+                    .imageUrl(post.getImageUrl())
                     .mbti(post.getMember().getMbti())
                     .isAnonymous(post.isAnonymous())
                     .viewCount(post.getViewCount())
