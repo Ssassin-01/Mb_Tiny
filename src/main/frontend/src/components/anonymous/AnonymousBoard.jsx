@@ -10,6 +10,15 @@ function AnonymousBoard() {
   const POSTS_PER_PAGE = 20;
 
   useEffect(() => {
+    sessionStorage.setItem(
+      'loginUser',
+      JSON.stringify({
+        id: 1,
+        nickname: '도하',
+        mbti: 'INFP',
+      })
+    );
+
     const fetchPosts = async () => {
       try {
         const res = await axios.get(
@@ -42,8 +51,8 @@ function AnonymousBoard() {
                 <th>제목</th>
                 <th>MBTI</th>
                 <th>시간</th>
-                <th>조회</th> {/* 수정 */}
-                <th>추천</th> {/* 수정 */}
+                <th>조회</th>
+                <th>추천</th>
               </tr>
             </thead>
             <tbody>
@@ -70,8 +79,8 @@ function AnonymousBoard() {
                       hour12: false,
                     })}
                   </td>
-                  <td>{post.viewCount}</td> {/* 여기 viewCount로 수정 */}
-                  <td>{post.likeCount}</td> {/* 여기 likeCount로 수정 */}
+                  <td>{post.viewCount}</td>
+                  <td>{post.likeCount}</td>
                 </tr>
               ))}
             </tbody>
