@@ -4,6 +4,7 @@ import { FaPaperPlane } from 'react-icons/fa';
 import '../../css/layout/Topbar.css';
 import axios from 'axios';
 import NotificationBell from './NotificationBell';
+import SearchBar from './SearchBar';
 
 const Topbar = () => {
   const navigate = useNavigate();
@@ -45,14 +46,14 @@ const Topbar = () => {
       </div>
 
       <div className='topbar-center'>
-        <input type='text' className='search-input' placeholder='검색하기' />
+        <SearchBar />
       </div>
 
       <div className='topbar-right'>
         {user ? (
           <>
-            {/* 알림벨 (NotificationBell 컴포넌트로 대체) */}
-            <NotificationBell />
+            {/* 알림벨 */}
+            <NotificationBell key='notification' />
 
             {/* MBTI 카드 + 닉네임 */}
             <div className='mbti-card' onClick={goToMyProfile}>

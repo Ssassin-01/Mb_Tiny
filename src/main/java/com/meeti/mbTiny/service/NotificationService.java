@@ -24,11 +24,20 @@ public class NotificationService {
     public SseEmitter subscribe(Long memberId) {
         System.out.println("✅ 구독 시작 memberId: " + memberId);
         SseEmitter emitter = new SseEmitter(60 * 60 * 1000L);
+
+        removeEmitter(memberId);
         emitters.put(memberId, emitter);
 
         emitter.onCompletion(() -> removeEmitter(memberId));
         emitter.onTimeout(() -> removeEmitter(memberId));
         emitter.onError(e -> removeEmitter(memberId));
+
+        try {
+            // ✅ 최초 연결 직후 더미 데이터라도 하나 보내야 끊어지지 않음
+            emitter.send(SseEmitter.event().name("connect").data("Connected"));
+        } catch (IOException e) {
+            throw new RuntimeException("SSE 연결 오류", e);
+        }
 
         ScheduledFuture<?> future = startHeartbeat(memberId);
         heartbeatFutures.put(memberId, future);

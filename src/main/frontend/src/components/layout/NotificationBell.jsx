@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { EventSourcePolyfill } from 'event-source-polyfill';
-import "../../css/layout/NotificationBell.css";
+import '../../css/layout/NotificationBell.css';
 
 export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const eventSourceRef = useRef(null);
 
   useEffect(() => {
-    let source;
-
     const fetchUnread = async () => {
       try {
         const response = await fetch(
@@ -25,10 +24,13 @@ export default function NotificationBell() {
     };
 
     const connect = () => {
-      source = new EventSourcePolyfill(
+      if (eventSourceRef.current) return; // ✅ 이미 연결된 경우 재연결 금지
+
+      const source = new EventSourcePolyfill(
         'http://localhost:8080/api/notifications/subscribe',
         { withCredentials: true }
       );
+      eventSourceRef.current = source;
 
       source.addEventListener('notification', (event) => {
         console.log('새 알림:', event.data);
@@ -43,7 +45,8 @@ export default function NotificationBell() {
       source.onerror = (error) => {
         console.error('❌ SSE 연결 오류 발생. 3초 후 재연결 시도', error);
         source.close();
-        setTimeout(connect, 3000);
+        eventSourceRef.current = null;
+        setTimeout(connect, 3000); // 오류 시 재연결
       };
     };
 
@@ -51,7 +54,10 @@ export default function NotificationBell() {
     connect();
 
     return () => {
-      if (source) source.close();
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
     };
   }, []);
 
@@ -73,21 +79,21 @@ export default function NotificationBell() {
 
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
-      <button onClick={handleBellClick} className="notification-bell">
+      <button onClick={handleBellClick} className='notification-bell'>
         🔔
         {unreadCount > 0 && (
-          <span className="notification-badge">{unreadCount}</span>
+          <span className='notification-badge'>{unreadCount}</span>
         )}
       </button>
 
       {showDropdown && (
-        <div className="notification-dropdown">
-          <div className="notification-title">📢 알림</div>
+        <div className='notification-dropdown'>
+          <div className='notification-title'>📢 알림</div>
           {notifications.length === 0 ? (
-            <div className="notification-empty">알림이 없습니다.</div>
+            <div className='notification-empty'>알림이 없습니다.</div>
           ) : (
             notifications.map((noti, idx) => (
-              <div key={idx} className="notification-item">
+              <div key={idx} className='notification-item'>
                 {noti.message}
               </div>
             ))

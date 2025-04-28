@@ -33,8 +33,11 @@ export default function NotificationBell() {
 
       source.addEventListener('notification', (event) => {
         console.log('✅ 새 알림:', event.data);
-        setNotifications((prev) => [...prev, { message: event.data }]);
-        setUnreadCount((prev) => prev + 1);
+        setNotifications((prev) => {
+          const updated = [...prev, { message: event.data }];
+          setUnreadCount(updated.length); // 추가!
+          return updated;
+        });
       });
 
       source.addEventListener('heartbeat', (event) => {
