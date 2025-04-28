@@ -52,7 +52,7 @@ const Sidebar = () => {
           <span className="label-text">성격유형 테스트</span>
         </li>
         <li
-          onClick={() => navigate("/resources")}
+          onClick={() => navigate("/quiz")}
           title="퀴즈"
           aria-label="퀴즈"
         >

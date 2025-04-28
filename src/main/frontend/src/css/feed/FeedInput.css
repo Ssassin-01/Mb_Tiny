@@ -33,7 +33,7 @@
 }
 
 .feed-textarea::placeholder {
-  color: #aaa; /* 연한 회색 (또는 #ccc, #b5b5b5 도 가능) */
+  color: #aaa; 
   font-size: 15px;
   font-family: 'Pretendard', sans-serif;
   font-style: italic; /* 감성 추가 */

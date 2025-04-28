@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background: white;
+  background-color: white;
   border-bottom: 1px solid #eee;
   font-family: 'Pretendard', sans-serif;
 }
@@ -30,6 +30,7 @@
   height: 35px;
   min-width: 200px;
   max-width: 100%;
+  padding-left: 10px;
   border-radius: 30px;
   margin-right: auto;
   border: 1px solid #3de5d9;
@@ -94,6 +95,64 @@
   background-color: #20d3c7;
   box-shadow: 0 0 15px rgba(61, 229, 217, 0.6);
   color: rgb(255, 255, 255);
+}
+.login-btn-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.plane-icon {
+  position: absolute;
+  top: 20px;
+  left: 0px; 
+  font-size: 14px;
+  color: #ffffff;
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: beautifulFly 6s ease-in-out infinite;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 종이비행기 효과 */
+@keyframes beautifulFly {
+  0% {
+    left: 0px; 
+    top: 20px;
+    transform: translate(-50%, -50%) rotate(-5deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1; 
+  }
+  20% {
+    left: 15%;
+    top: 10px;
+    transform: translate(-50%, -50%) rotate(5deg);
+  }
+  40% {
+    left: 40%;
+    top: 25px;
+    transform: translate(-50%, -50%) rotate(-8deg);
+  }
+  60% {
+    left: 65%;
+    top: 15px;
+    transform: translate(-50%, -50%) rotate(6deg);
+  }
+  80% {
+    left: 90%;
+    top: 22px;
+    transform: translate(-50%, -50%) rotate(-5deg);
+  }
+  90% {
+    opacity: 1; 
+  }
+  100% {
+    left: 115%;
+    top: 20px;
+    transform: translate(-50%, -50%) rotate(3deg);
+    opacity: 0; 
+  }
 }
 
 @media screen and (max-width: 480px) {

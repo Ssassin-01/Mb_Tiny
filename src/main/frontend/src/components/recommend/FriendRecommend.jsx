@@ -1,29 +1,15 @@
 import React, { useState, useEffect } from "react";
-import '../../css/recommend/FriendRecommend.css';
+import "../../css/recommend/FriendRecommend.css";
 import { FaMapMarkerAlt } from "react-icons/fa";
-
-const recommendedFriends = [
-  {
-    id: 1,
-    nickname: "nickname1",
-    mbti: "isfp",
-    img: "/img/user1.jpg",
-  },
-  {
-    id: 2,
-    nickname: "nickname2",
-    mbti: "isfj",
-    img: "/img/user2.jpg",
-  },
-  {
-    id: 3,
-    nickname: "nickname3",
-    mbti: "esfp",
-    img: "/img/user3.jpg",
-  },
-];
+import { useNavigate } from 'react-router-dom'; 
 
 const FriendRecommend = () => {
+  const navigate = useNavigate(); 
+  const [recommendedFriends, setRecommendedFriends] = useState([
+    { id: 1, nickname: "nickname1", mbti: "ISFP", img: "/img/user1.jpg" },
+    { id: 2, nickname: "nickname2", mbti: "ISFJ", img: "/img/user2.jpg" },
+    { id: 3, nickname: "nickname3", mbti: "ESFP", img: "/img/user3.jpg" },
+  ]);
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [requestedIds, setRequestedIds] = useState([]);
@@ -41,6 +27,10 @@ const FriendRecommend = () => {
       setRequestedIds((prev) => [...prev, id]);
       // TODO: API 호출 처리도 여기서 가능
     }
+  };
+
+  const handleProfileClick = (id) => {
+    navigate(`/profile/${id}`); // 클릭하면 이동
   };
 
   return (
@@ -68,7 +58,12 @@ const FriendRecommend = () => {
             </h4>
             <ul className="friend-list">
               {recommendedFriends.map((friend) => (
-                <li key={friend.id} className="friend-item">
+                <li
+                  key={friend.id}
+                  className="friend-item"
+                  onClick={() => handleProfileClick(friend.id)} // 여기 추가
+                  style={{ cursor: "pointer" }} // 클릭 가능 표시
+                >
                   <img
                     src={friend.img}
                     alt={friend.nickname}
@@ -82,7 +77,10 @@ const FriendRecommend = () => {
                     className={`follow-friend-btn ${
                       requestedIds.includes(friend.id) ? "requested" : ""
                     }`}
-                    onClick={() => handleFollowClick(friend.id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // 버튼 누를 때 친구 프로필로 이동 방지
+                      handleFollowClick(friend.id);
+                    }}
                     disabled={requestedIds.includes(friend.id)}
                   >
                     {requestedIds.includes(friend.id) ? "요청됨" : "팔로우"}
