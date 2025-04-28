@@ -53,6 +53,10 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    private String getFileExtension(String fileName) {
+        int dotIndex = fileName.lastIndexOf(".");
+        return (dotIndex != -1) ? fileName.substring(dotIndex) : "";
+    }
 
     //회원정보 수정
     @Transactional
@@ -104,7 +108,7 @@ public class MemberService {
     //회원탈퇴
     @Transactional
     public void deleteUser(Member member) {
-        memberRepository.deMelete(member);
+        memberRepository.delete(member);
     }
 
     public MemberDTO getMyProfile(Member member) {

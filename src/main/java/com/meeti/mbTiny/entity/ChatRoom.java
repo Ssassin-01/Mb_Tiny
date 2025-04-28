@@ -22,17 +22,14 @@ public class ChatRoom {
     private Long id;
 
     // 1:1 채팅 기준: 두 명의 사용자 ID 저장
-    @Column(nullable = false)
-    private Member memberA;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member sender; // 방을 만든 사람 (또는 사용자1)
 
-    @Column(nullable = false)
-    private Member memberB;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member receiver; // 대화 상대 (사용자2)
 
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }

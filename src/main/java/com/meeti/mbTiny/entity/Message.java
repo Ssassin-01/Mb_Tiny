@@ -22,25 +22,17 @@ public class Message {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_id", nullable = false)
-    private ChatRoom chatRoom;
+    private ChatRoom chatRoom; // 어떤 채팅방에 속한 메시지인지
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member sender;
-
-    @Column(nullable = false)
-    private Member receiver;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @CreatedDate
     @Column(updatable = false)
     private LocalDateTime sentAt;
 
     //private boolean isRead = false;
-
-    @PrePersist
-    public void prePersist() {
-        this.sentAt = LocalDateTime.now();
-    }
 }
