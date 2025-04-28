@@ -11,9 +11,12 @@ function FeedCard({ feed }) {
           className="feed-profile"
         />
         <div className="feed-info">
-          <div className="feed-nickname">{feed.writer}</div>
+          <div className="feed-nickname">
+            {/* MBTI가 있을 때만 출력 */}
+            {feed.mbti ? `[${feed.mbti}] ` : ''}{feed.writer}
+          </div>
           <div className="feed-time">
-            {new Date(feed.createDate).toLocaleString()}
+            {new Date(feed.createDate).toLocaleString('ko-KR', { hour12: false })}
           </div>
         </div>
       </div>
@@ -40,4 +43,3 @@ function FeedCard({ feed }) {
 }
 
 export default FeedCard;
-

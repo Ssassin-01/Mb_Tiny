@@ -24,7 +24,7 @@ function AnonymousWrite() {
     }
   }, [loginUser, navigate]);
 
-  // ✅ 수정모드: 기존 글 정보 불러오기
+  // 수정모드: 기존 글 정보 불러오기
   useEffect(() => {
     if (postId) {
       axios.get(`http://localhost:8080/api/anonymous-posts/${postId}`, { withCredentials: true })

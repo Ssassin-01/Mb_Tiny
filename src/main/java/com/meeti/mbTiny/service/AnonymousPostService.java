@@ -74,7 +74,11 @@ public class AnonymousPostService {
     }
 
     public PostDTO getPost(Member member, Long postId) {
-        Post post = validatePostOwner(member, postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        if(!post.isAnonymous()) {
+            throw new IllegalArgumentException("익명 게시물이 아닙니다");
+        }
         post.setViewCount(post.getViewCount() + 1);
         postRepository.save(post);
         return convertToDTO(post, Optional.of(member));
@@ -104,6 +108,7 @@ public class AnonymousPostService {
                 .content(post.getContent())
                 .nickname(nickName)
                 .imageUrl(post.getImageUrl())
+                .email(post.getMember().getEmail())
                 .isAnonymous(post.isAnonymous())
                 .mbti(post.getMember().getMbti())
                 .viewCount(post.getViewCount())

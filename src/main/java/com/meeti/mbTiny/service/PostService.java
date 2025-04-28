@@ -76,7 +76,11 @@
         }
 
         public PostDTO getPost(Long postId, Member member) {
-            Post post = validatePostOwner(member, postId);
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+            if(post.isAnonymous()) {
+                throw new IllegalArgumentException("비익명 게시물이 아닙니다");
+            }
             post.setViewCount(post.getViewCount() + 1);
             postRepository.save(post);
             return convertToDTO(post, Optional.of(member));
@@ -127,6 +131,7 @@
                     .title(post.getTitle())
                     .content(post.getContent())
                     .nickname(nickname)
+                    .email(post.getMember().getEmail())
                     .imageUrl(post.getImageUrl())
                     .mbti(post.getMember().getMbti())
                     .isAnonymous(post.isAnonymous())

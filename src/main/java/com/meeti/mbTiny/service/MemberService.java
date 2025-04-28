@@ -5,11 +5,9 @@ import com.meeti.mbTiny.dto.MemberRequestDTO;
 import com.meeti.mbTiny.entity.Member;
 import com.meeti.mbTiny.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -85,6 +83,8 @@ public class MemberService {
                 })
                 .collect(Collectors.toList());
     }
+
+
     private MemberDTO convertToDTO(Member member) {
         return MemberDTO.builder()
                 .email(member.getEmail())
@@ -98,5 +98,21 @@ public class MemberService {
                 .createdAt(member.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
                 .updatedAt(member.getUpdateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
                 .build();
+    }
+
+    public List<MemberDTO> searchByNickname(String keyword) {
+        return memberRepository.findByNicknameContainingIgnoreCase(keyword)
+                .stream()
+                .map(member -> MemberDTO.builder()
+                        .nickname(member.getNickname())
+                        .profileImgUrl(member.getProfileImgUrl())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public String findExactNickname(String nickname) {
+        return memberRepository.findByNicknameIgnoreCase(nickname)
+                .map(Member::getNickname)
+                .orElse(null);
     }
 }

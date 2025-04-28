@@ -28,7 +28,7 @@ function AnonymousComment({ postId }) {
     fetchComments();
   }, [postId]);
 
-  // 댓글 작성 (현재시간 추가)
+  // ✅ 댓글 작성 (현재시간 추가)
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
 
@@ -41,7 +41,7 @@ function AnonymousComment({ postId }) {
           content: newComment,
           color: color,
           mbti: loginMbti,
-          createdAt: now, // 현재 시간도 같이 보냄
+          createdAt: now, // ✅ 현재 시간도 같이 보냄
         },
         { withCredentials: true }
       );

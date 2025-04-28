@@ -2,19 +2,10 @@ import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import FeedCard from "./FeedCard";
 import FeedInput from './FeedInput';
-import FeedFilter from './FeedFilter'; 
+import FeedFilter from './FeedFilter';
+import axios from "axios";
 
 import "../../css/feed/Feed.css";
-
-// MBTI 더미 피드 데이터
-const allDummyFeeds = Array.from({ length: 50 }, (_, i) => ({
-  id: i + 1,
-  writer: `유저${i + 1}`,
-  content: `${i + 1}번째 피드입니다.`,
-  mbti: ["INTJ", "ENFP", "ISFJ", "ESFP", "ENTP", "ISTP", "INFJ", "ESFJ"][(i + 1) % 8],
-  createDate: new Date().toISOString(),
-  image: i % 2 === 0 ? `/img/feed_img${(i % 3) + 1}.PNG` : null,
-}));
 
 function FeedList() {
   const [feeds, setFeeds] = useState([]);
@@ -22,77 +13,85 @@ function FeedList() {
   const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
 
   useEffect(() => {
-    setFeeds([]);
-    setHasMore(true);
     loadMoreFeeds();
   }, [mbtiFilter]);
 
-  const matchesFilter = (mbti) => {
-    return mbtiFilter.every((val, idx) => val === "선택 안함" || mbti[idx] === val);
-  };
+  // 서버에서 피드 가져오기
+  const loadMoreFeeds = async () => {
+    try {
+      const response = await axios.get('/api/posts', { withCredentials: true });
 
-  const loadMoreFeeds = () => {
-    const filtered = allDummyFeeds.filter((feed) => matchesFilter(feed.mbti));
-    const nextCount = feeds.length + 10;
-    const nextFeeds = filtered.slice(0, nextCount);
-
-    if (nextFeeds.length === feeds.length) {
-      setHasMore(false);
-      return;
+      const fetchedFeeds = response.data;
+      setFeeds(fetchedFeeds);
+      setHasMore(false); // 일단 한 번만 호출
+    } catch (error) {
+      console.error('피드 불러오기 실패:', error);
     }
-
-    setTimeout(() => {
-      setFeeds(nextFeeds);
-    }, 500);
   };
 
-  const handleNewPost = (content) => {
-    const newFeed = {
-      id: Date.now(),
-      writer: "나",
-      content,
-      mbti: "ENFP", // 임시 기본 MBTI
-      createDate: new Date().toISOString(),
-      image: null,
-    };
-    setFeeds([newFeed, ...feeds]);
+  // 새 글 작성 후, 서버 피드 다시 불러오기
+  const handleNewPost = async ({ content, image }) => {
+    try {
+      const userMbti = sessionStorage.getItem('mbti') || 'Unknown'; // 여기서 mbti 가져옴
+
+      const formData = new FormData();
+      const postData = {
+        content: content,
+        title: '',
+        imageUrl: '',
+        mbti: userMbti
+      };
+      formData.append('postData', JSON.stringify(postData));
+      if (image) {
+        formData.append('image', image);
+      }
+
+      await axios.post('/api/posts', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+        timeout: 30000, // 추가: 최대 30초 기다림
+      });
+
+      loadMoreFeeds(); // 업로드 성공하면 다시 피드 불러오기
+
+    } catch (error) {
+      console.error('게시글 업로드 실패', error);
+      alert('게시글 업로드에 실패했습니다.');
+    }
   };
 
+  // MBTI 필터 변경
   const handleFilterChange = (index, value) => {
     const newFilter = [...mbtiFilter];
-    newFilter[index] = value;
+    newFilter[index] = value; 
     setMbtiFilter(newFilter);
   };
 
   return (
     <div className="feed-container">
       <FeedInput onPost={handleNewPost} />
-
-      {/* MBTI 필터 컴포넌트 */}
       <FeedFilter mbtiFilter={mbtiFilter} onChange={handleFilterChange} />
 
-      {/* 피드 리스트 */}
+      {/* 무한 스크롤로 피드 리스트 */}
       <InfiniteScroll
-  dataLength={feeds.length}
-  next={loadMoreFeeds}
-  hasMore={hasMore}
-  loader={<div className="spinner"></div>}
-  endMessage={
-    <p style={{ textAlign: "center" }}>
-      <b>더 이상 불러올 피드가 없습니다</b>
-    </p>
-  }
-  scrollableTarget="mainScroll"
-  style={{
-    overflow: 'visible',     // 내부 div 덮어쓰기
-    position: 'relative'     // 안전하게 위치 제어
-  }}
->
-  {feeds.map((feed) => (
-    <FeedCard key={feed.id} feed={feed} />
-  ))}
-</InfiniteScroll>
-
+        dataLength={feeds.length}
+        next={loadMoreFeeds}
+        hasMore={hasMore}
+        loader={<div className="spinner"></div>}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>더 이상 불러올 피드가 없습니다</b>
+          </p>
+        }
+        scrollableTarget="mainScroll"
+        style={{ overflow: 'visible', position: 'relative' }}
+      >
+        {feeds.map((feed) => (
+          <FeedCard key={feed.id} feed={feed} />
+        ))}
+      </InfiniteScroll>
     </div>
   );
 }
