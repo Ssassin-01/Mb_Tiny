@@ -9,8 +9,8 @@ const Profile = () => {
   const nickname = "babo";
   const mbti = "INFP";
   const joinDate = "2025-04-01";
-  const feedPosts = ["피드글 1", "피드글 2"];
-  const anonPosts = ["익명글 1", "익명글 2"];
+  
+  
 
   return (
     <div className="profile-page">
@@ -18,14 +18,11 @@ const Profile = () => {
         nickname={nickname}
         mbti={mbti}
         joinDate={joinDate}
-        postCount={feedPosts.length + anonPosts.length}
         onTogglePosts={() => setShowPosts(!showPosts)}
         isOwner={true}
       />
       {showPosts && (
-        <ProfileRight
-          feedPosts={feedPosts}
-          anonPosts={anonPosts}
+        <ProfileRight          
         />
       )}
     </div>

@@ -1,3 +1,4 @@
+// src/components/ChatList.jsx
 import React, { useState } from 'react';
 import '../../css/chat/ChatList.css';
 

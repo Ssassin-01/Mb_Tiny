@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCamera } from 'react-icons/fa';
 import '../../css/profile/Profile.css';
+import FollowModal from '../follow/FollowModal';
+import FollowButton from '../follow/FollowButton';
 
 const ImageUpload = ({ uploadImgUrl, setUploadImgUrl }) => {
   const onchangeImageUpload = (e) => {
@@ -20,16 +22,18 @@ const ImageUpload = ({ uploadImgUrl, setUploadImgUrl }) => {
           <FaCamera className="default-camera-icon" />
         </div>
       )}
-      <label htmlFor="img-upload" className="upload-icon">
-        {/* <FaCamera /> 이미지 파일 업로드시 필요 */}
-      </label>
+      <label htmlFor="img-upload" className="upload-icon" />
       <input type="file" id="img-upload" accept="image/*" onChange={onchangeImageUpload} hidden />
     </div>
   );
 };
 
-const ProfileLeft = ({ nickname, mbti, joinDate, onTogglePosts, postCount, isOwner }) => {
+const ProfileLeft = ({ nickname, mbti, joinDate, onTogglePosts, postCount, isOwner, followerCount, followingCount, targetId }) => {
   const navigate = useNavigate();
+  const [modalType, setModalType] = useState(null);
+
+  const openModal = (type) => setModalType(type);
+  const closeModal = () => setModalType(null);
 
   return (
     <div className="profile-left">
@@ -44,8 +48,15 @@ const ProfileLeft = ({ nickname, mbti, joinDate, onTogglePosts, postCount, isOwn
             <button className="stats-btn" onClick={onTogglePosts}>
               게시글 <span className="count">{postCount}</span>
             </button>
-            <button className="stats-btn">팔로워 <span className="count">12</span></button>
-            <button className="stats-btn">팔로잉 <span className="count">5</span></button>
+            <div className="follow-stats">
+              <span className="follow-count" onClick={() => openModal('followers')}>
+                팔로워 {followerCount}
+              </span>
+              <span className="follow-count" onClick={() => openModal('following')}>
+                팔로잉 {followingCount}
+              </span>
+            </div>
+            {!isOwner && <FollowButton targetId={targetId} />}
           </div>
 
           <div className="mbti-description">
@@ -67,6 +78,8 @@ const ProfileLeft = ({ nickname, mbti, joinDate, onTogglePosts, postCount, isOwn
           )}
         </div>
       </div>
+
+      {modalType && <FollowModal type={modalType} onClose={closeModal} />}
     </div>
   );
 };

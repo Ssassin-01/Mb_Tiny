@@ -7,7 +7,7 @@ const MyInfo = () => {
 
   useEffect(() => {
     axios
-      .get('/api/members/me') // baseURL + withCredentials 자동 포함됨
+      .get('/api/members/me') // ✅ baseURL + withCredentials 자동 포함됨
       .then((res) => {
         setUser(res.data);
       })

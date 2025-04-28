@@ -8,33 +8,32 @@ import AnonymousDetail from './components/anonymous/AnonymousDetail';
 import AnonymousWrite from './components/anonymous/AnonymousWrite';
 import Layout from './components/layout/Layout';
 import Profile from './components/profile/Profile';
-import MBTITest from './components/mbti/MBTITest';
+import FriendProfilePage from './components/profile/FriendProfilePage';
+import MbtiTest from './components/mbti/MbtiTest';
 import MessagesPage from './pages/MessagesPage';
-import FriendProfilePage from './profile/FriendProfilePage';
-
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                {/* 사이드바, 탑바 없이 보여지는 경로 */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUpPage />} />
+  return (
+    <Router>
+      <Routes>
+        {/* 사이드바, 탑바 없이 보여지는 경로 */}
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<SignUpPage />} />
 
-                {/* 사이드바/탑바 포함 공통 레이아웃 */}
-                <Route element={<Layout />}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/anonymous" element={<AnonymousBoard />} />
-                    <Route path="/anonymous/:id" element={<AnonymousDetail />} />
-                    <Route path="/anonymous/write" element={<AnonymousWrite />} />
-                    <Route path="/profile/:id" element={<FriendProfilePage />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/mbtitest" element={<MBTITest />} />
-                    <Route path="/messagespage" element={<MessagesPage />}/>
-                </Route>
-            </Routes>
-        </Router>
-    );
+        {/* 사이드바/탑바 포함 공통 레이아웃 */}
+        <Route element={<Layout />}>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/anonymous' element={<AnonymousBoard />} />
+          <Route path='/anonymous/:id' element={<AnonymousDetail />} />
+          <Route path='/anonymous/write' element={<AnonymousWrite />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/profile/:id' element={<FriendProfilePage />} /> 
+          <Route path='/mbtitest' element={<MbtiTest />} />
+          <Route path='/messagespage' element={<MessagesPage />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

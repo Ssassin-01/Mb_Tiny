@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import questions from './Questions';
-import '../../css/mbti/MBTITest.css';
+import questions from '../mbti/questions';
+import MbtiMatchResult from './MbtiMatchResult';
+import '../../css/mbti/MbtiTest.css';
 
-const MBTITest = () => {
+const MbtiTest = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [scores, setScores] = useState({
     E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0
@@ -67,10 +68,12 @@ const MBTITest = () => {
             <p>당신의 MBTI는</p>
             <h1>{result}</h1>
           </div>
+          <MbtiMatchResult userMbti={result} />
+          <h3></h3>
         </div>
       )}
     </div>
   );
 };
 
-export default MBTITest;
+export default MbtiTest;

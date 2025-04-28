@@ -32,7 +32,7 @@ function AnonymousBoard() {
           views: Math.floor(Math.random() * 100),
           likes: Math.floor(Math.random() * 30),
           content: `이건 더미 ${i + 1}번 내용입니다.`,
-          authorId: i % 3 === 0 ? 1 : i + 10, // ✔ 본인 글과 타인 글 구분
+          authorId: i % 3 === 0 ? 1 : i + 10,
         }));
 
         setPosts(dummyPosts);
@@ -70,7 +70,11 @@ function AnonymousBoard() {
                 >
                   <td>{posts.length - ((currentPage - 1) * POSTS_PER_PAGE + index)}</td>
                   <td className="subject">{post.title}</td>
-                  <td>{post.mbti || '익명'}</td>
+                  <td>
+                    <span className="mbti-badge" data-mbti={post.mbti}>
+                      {post.mbti || '익명'}
+                    </span>
+                  </td>
                   <td>{new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</td>
                   <td>{post.views}</td>
                   <td>{post.likes}</td>

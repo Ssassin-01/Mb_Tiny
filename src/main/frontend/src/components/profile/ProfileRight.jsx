@@ -74,6 +74,10 @@ function ProfileRight() {
             loader={<div className="spinner"></div>}
             endMessage={<p style={{ textAlign: "center" }}>더 이상 피드가 없습니다.</p>}
             scrollableTarget="profileScroll"
+            style={{
+              overflow: 'visible',   
+              position: 'relative'
+            }}
           >
             {feedPosts.map((feed) => (
               <PostItem key={feed.id} post={feed} />
@@ -89,6 +93,10 @@ function ProfileRight() {
             loader={<div className="spinner"></div>}
             endMessage={<p style={{ textAlign: "center" }}>더 이상 익명글이 없습니다.</p>}
             scrollableTarget="profileScroll"
+            style={{
+              overflow: 'visible',    
+              position: 'relative'
+            }}
           >
             {anonymousPosts.map((post) => (
               <PostItem key={post.id} post={post} isAnonymous />

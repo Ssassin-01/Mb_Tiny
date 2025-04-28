@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ChatList from '../components/chat/ChatList';
 import ChatRoom from '../components/chat/ChatRoom';
-import '../css/chat/MessagesPage.css'
+import '../css/pages/MessagesPage.css';
 
 const MessagesPage = () => {
   const [users, setUsers] = useState([]);
