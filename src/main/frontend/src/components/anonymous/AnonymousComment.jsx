@@ -28,7 +28,7 @@ function AnonymousComment({ postId }) {
     fetchComments();
   }, [postId]);
 
-  // ✅ 댓글 작성 (현재시간 추가)
+  // 댓글 작성 (현재시간 추가)
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
 

@@ -39,8 +39,8 @@ function AnonymousBoard() {
                 <th>제목</th>
                 <th>MBTI</th>
                 <th>시간</th>
-                <th>조회</th> {/* ✅ 수정 */}
-                <th>추천</th> {/* ✅ 수정 */}
+                <th>조회</th> {/* 수정 */}
+                <th>추천</th> {/* 수정 */}
               </tr>
             </thead>
             <tbody>
@@ -64,8 +64,8 @@ function AnonymousBoard() {
                       hour12: false,
                     })}
                   </td>
-                  <td>{post.viewCount}</td> {/* ✅ 여기 viewCount로 수정 */}
-                  <td>{post.likeCount}</td> {/* ✅ 여기 likeCount로 수정 */}
+                  <td>{post.viewCount}</td> {/* 여기 viewCount로 수정 */}
+                  <td>{post.likeCount}</td> {/* 여기 likeCount로 수정 */}
                 </tr>
               ))}
             </tbody>
