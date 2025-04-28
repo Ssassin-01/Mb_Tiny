@@ -26,7 +26,7 @@ function AnonymousWrite() {
 
   useEffect(() => {
     if (postId) {
-      axios.get(`http://localhost:8080/api/posts/${postId}`)
+      axios.get(`http://localhost:8080/api/anonymous-posts/${postId}`)
         .then(res => {
           setForm({
             category: res.data.category || '수다',
@@ -64,21 +64,31 @@ function AnonymousWrite() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const postData = {
+      title: form.title,
+      content: form.content,
+      // ❗ category는 postData에 넣지 않음 (화면에만 존재)
+    };
+
     const formData = new FormData();
-    formData.append('category', form.category);
-    formData.append('title', form.title);
-    formData.append('content', form.content);
-    if (image) formData.append('image', image);
+    formData.append('postData', JSON.stringify(postData));
+
+    if (image) {
+      formData.append('image', image);
+    }
 
     try {
       if (postId) {
-        await axios.put(`http://localhost:8080/api/posts/${postId}`, formData, {
+        await axios.put(`http://localhost:8080/api/anonymous-posts/${postId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
+          withCredentials: true,
         });
         alert('글이 수정되었습니다!');
       } else {
-        await axios.post('http://localhost:8080/api/posts', formData, {
+        await axios.post('http://localhost:8080/api/anonymous-posts', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
+          withCredentials: true,
         });
         setSuccess(true);
         setTimeout(() => navigate('/anonymous'), 1500);

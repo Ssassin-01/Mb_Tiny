@@ -8,36 +8,40 @@ function AnonymousDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
-  const isAuthor = loginUser && loginUser.id === post?.authorId;
 
-  // ✅ 로그인 체크
+  // ✅ 수정: 닉네임 기준 비교
+  const isAuthor = loginUser && post && loginUser.nickname === post.nickname;
+
   useEffect(() => {
     if (!loginUser) {
       alert('로그인이 필요합니다.');
       navigate('/login');
     }
-  }, []);
+  }, [loginUser, navigate]);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/posts/${id}`);
+        const res = await axios.get(`http://localhost:8080/api/anonymous-posts/${id}`, {
+          withCredentials: true,
+        });
         setPost(res.data);
       } catch (err) {
         console.error(err);
         alert('API 실패 - 더미 데이터 사용');
-
         setPost({
           id: id,
           title: '더미 제목',
           content: '이건 더미 상세입니다.',
           mbti: 'INFP',
-          authorId: 1,
+          nickname: '더미유저', // 더미에도 닉네임 설정
           createdAt: new Date().toISOString(),
-          views: 100,
-          likes: 10,
+          viewCount: 100,
+          likeCount: 10,
+          imageUrl: null,
         });
       }
     };
@@ -49,10 +53,18 @@ function AnonymousDetail() {
     alert('추천 기능은 비활성화 상태입니다.');
   };
 
-  const handleDelete = () => {
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      alert('삭제 완료 (더미)');
+  const handleDelete = async () => {
+    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+
+    try {
+      await axios.delete(`http://localhost:8080/api/anonymous-posts/${id}`, {
+        withCredentials: true,
+      });
+      alert('삭제 완료');
       navigate('/anonymous');
+    } catch (err) {
+      console.error('삭제 실패', err);
+      alert('삭제 실패');
     }
   };
 
@@ -67,15 +79,66 @@ function AnonymousDetail() {
           <div className="info-row">
             <div className="left">
               <span className="writer">MBTI: {post.mbti}</span>
-              <span className="date">{new Date(post.createdAt).toLocaleString()}</span>
+              <span className="date">
+                {new Date(post.createdAt).toLocaleString('ko-KR', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false,
+                })}
+              </span>
             </div>
             <div className="right">
-              <span>조회 {post.views}</span>
-              <span>추천 {post.likes}</span>
+              <span>조회 {post.viewCount}</span>
+              <span>추천 {post.likeCount}</span>
             </div>
           </div>
 
           <div className="content">
+            {post.imageUrl && (
+              <>
+                <img
+                  src={`http://localhost:8080${post.imageUrl}`}
+                  alt="첨부 이미지"
+                  className="post-image"
+                  style={{
+                    maxWidth: '400px',
+                    width: '100%',
+                    height: 'auto',
+                    marginBottom: '16px',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => setShowModal(true)}
+                />
+                {showModal && (
+                  <div
+                    className="modal-overlay"
+                    onClick={() => setShowModal(false)}
+                    style={{
+                      position: 'fixed',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      zIndex: 1000,
+                    }}
+                  >
+                    <img
+                      src={`http://localhost:8080${post.imageUrl}`}
+                      alt="큰 이미지"
+                      style={{ maxHeight: '90%', maxWidth: '90%' }}
+                    />
+                  </div>
+                )}
+              </>
+            )}
             <p>{post.content}</p>
           </div>
 

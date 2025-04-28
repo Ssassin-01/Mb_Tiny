@@ -19,7 +19,7 @@ function AnonymousBoard() {
 
     const fetchPosts = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/posts'); // 실제 API
+        const res = await axios.get('http://localhost:8080/api/anonymous-posts'); // 실제 API
         setPosts(res.data);
       } catch (err) {
         console.warn('API 실패 → 더미 데이터 사용');
