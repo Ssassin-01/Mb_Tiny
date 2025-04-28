@@ -17,7 +17,6 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
-
     public void follow(Member follower, Long followingId) {
         Member following = memberRepository.findById(followingId)
                 .orElseThrow(() -> new IllegalArgumentException("팔로우 대상 사용자가 존재하지 않습니다."));

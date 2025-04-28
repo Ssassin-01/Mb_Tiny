@@ -84,6 +84,8 @@ public class CommentService {
                 .email(comment.getMember().getEmail())
                 .mbti(comment.getMember().getMbti())
                 .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm")))
+                .mbti(comment.getMember().getMbti())
+                .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
                 .build();
     }
 

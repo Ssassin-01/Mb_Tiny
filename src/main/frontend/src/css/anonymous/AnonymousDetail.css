@@ -6,14 +6,17 @@
   flex: 1;
 }
 
+/* 제목 */
 .title {
-  font-size: 22px;
-  font-weight: bold;
+  font-size: 24px; /* 🔥 강조: 폰트 약간 키움 */
+  font-weight: 800; /* 🔥 강조: 더 굵게 */
   margin-bottom: 16px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 2px solid #ccc; /* 🔥 강조: 선 두껍게 */
   padding-bottom: 12px;
+  letter-spacing: -0.5px; /* 🔥 강조: 자간 살짝 좁힘 */
 }
 
+/* 글 상단 정보줄 */
 .info-row {
   display: flex;
   justify-content: space-between;
@@ -30,6 +33,7 @@
   margin-left: 12px;
 }
 
+/* 본문 */
 .content {
   font-size: 15px;
   line-height: 1.6;
@@ -39,6 +43,7 @@
   min-height: 200px;
 }
 
+/* 추천 버튼 */
 .recommend {
   display: flex;
   justify-content: center;
@@ -54,13 +59,15 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease; /* 🔥 자연스러운 확대를 위한 transition */
 }
 
 .recommend-btn:hover {
   background-color: #28c4b7;
+  transform: scale(1.05); /* 🔥 hover시 자연스러운 확대 */
 }
 
+/* 수정/삭제/목록 버튼 */
 .buttons {
   text-align: right;
   margin-top: 30px;
@@ -75,10 +82,12 @@
   font-weight: bold;
   cursor: pointer;
   margin-left: 10px;
+  transition: all 0.2s ease; /* 🔥 자연스러운 확대를 위한 transition */
 }
 
 .buttons button:hover {
   background: #30d5c8;
+  transform: scale(1.03); /* 🔥 hover시 살짝 확대 */
 }
 
 /* 댓글 공통 스타일 */
@@ -115,6 +124,7 @@
   border: none;
   color: #666;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .comment-actions button:hover {
@@ -122,9 +132,13 @@
   text-decoration: underline;
 }
 
+/* 전체 페이지 레이아웃 */
 .anonymous-page {
   display: flex;
   flex-direction: column;
+  border-top: 1px solid #ddd; /* 🔥 댓글 영역 위에 얇은 구분선 추가 */
+  margin-top: 40px;
+  padding-top: 20px;
 }
 
 .anonymous-layout {

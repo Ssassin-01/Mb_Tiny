@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,8 +93,8 @@ public class MemberService {
                 .birthday(member.getBirthday())
                 .address(member.getAddress())
                 .phone(member.getPhone())
-                .createdAt(member.getCreateAt())
-                .updatedAt(member.getUpdateAt())
+                .createdAt(member.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
+                .updatedAt(member.getUpdateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
                 .build();
     }
 }
