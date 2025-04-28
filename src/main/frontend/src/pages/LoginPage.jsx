@@ -52,7 +52,7 @@ const LoginPage = () => {
             required
           />
         </div>
-        <button type='submit'>🔐로그인</button>
+        <button type='submit'>로그인</button>
       </form>
       {message && <p>{message}</p>}
     </div>

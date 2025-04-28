@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
-
+    private final NotificationService notificationService;
     public void follow(Member follower, Long followingId) {
         Member following = memberRepository.findById(followingId)
                 .orElseThrow(() -> new IllegalArgumentException("팔로우 대상 사용자가 존재하지 않습니다."));
@@ -32,6 +32,9 @@ public class FollowService {
                 .following(following)
                 .build();
         followRepository.save(follow);
+        if(!follower.getId().equals(following.getId())) {
+            notificationService.sendNotification(following.getId(), follower.getNickname() + "님이 회원님을 하였습니다.");
+        }
     }
 
     public void unfollow(Member follower, Long followingId) {

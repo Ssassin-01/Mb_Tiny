@@ -30,7 +30,14 @@ public class NotificationService {
         emitter.onTimeout(() -> removeEmitter(memberId));
         emitter.onError(e -> removeEmitter(memberId));
 
-        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(() -> {
+        ScheduledFuture<?> future = startHeartbeat(memberId);
+        heartbeatFutures.put(memberId, future);
+
+        return emitter;
+    }
+
+    private ScheduledFuture<?> startHeartbeat(Long memberId) {
+        return scheduler.scheduleAtFixedRate(() -> {
             if (emitters.containsKey(memberId)) {
                 try {
                     emitters.get(memberId).send(SseEmitter.event().name("heartbeat").data("💓"));
@@ -40,12 +47,7 @@ public class NotificationService {
                 }
             }
         }, 0, 30, TimeUnit.SECONDS);
-
-        heartbeatFutures.put(memberId, future); // ✅ 여기 저장!
-
-        return emitter;
     }
-
 
     private void removeEmitter(Long memberId) {
         SseEmitter emitter = emitters.remove(memberId);
