@@ -9,11 +9,9 @@ function AnonymousDetail() {
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [fetched, setFetched] = useState(false);
 
   const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
-
-  // ✅ 수정: 닉네임 기준 비교
-  const isAuthor = loginUser && post && loginUser.nickname === post.nickname;
 
   useEffect(() => {
     if (!loginUser) {
@@ -23,34 +21,52 @@ function AnonymousDetail() {
   }, [loginUser, navigate]);
 
   useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8080/api/anonymous-posts/${id}`, {
-          withCredentials: true,
-        });
-        setPost(res.data);
-      } catch (err) {
-        console.error(err);
-        alert('API 실패 - 더미 데이터 사용');
-        setPost({
-          id: id,
-          title: '더미 제목',
-          content: '이건 더미 상세입니다.',
-          mbti: 'INFP',
-          nickname: '더미유저', // 더미에도 닉네임 설정
-          createdAt: new Date().toISOString(),
-          viewCount: 100,
-          likeCount: 10,
-          imageUrl: null,
-        });
-      }
-    };
+    if (!fetched) {
+      const fetchPost = async () => {
+        try {
+          const res = await axios.get(`http://localhost:8080/api/anonymous-posts/${id}`, {
+            withCredentials: true,
+          });
+          setPost(res.data);
+          setFetched(true);
+        } catch (err) {
+          console.error(err);
+          alert('게시글 불러오기 실패');
+          setFetched(true);
+        }
+      };
 
-    fetchPost();
-  }, [id]);
+      fetchPost();
+    }
+  }, [id, fetched]);
 
   const handleLike = async () => {
-    alert('추천 기능은 비활성화 상태입니다.');
+    try {
+      // 1. 좋아요 토글
+      await axios.post(`http://localhost:8080/api/anonymous-posts/${id}/like`, {}, {
+        withCredentials: true,
+      });
+
+      // 2. 좋아요 수 다시 가져오기
+      const res = await axios.get(`http://localhost:8080/api/anonymous-posts/${id}/like-count`, {
+        withCredentials: true,
+      });
+
+      // 3. post.likeCount만 업데이트
+      setPost(prev => ({
+        ...prev,
+        likeCount: res.data.count
+      }));
+
+      alert('추천 완료!');
+    } catch (err) {
+      console.error('추천 실패', err);
+      if (err.response && err.response.status === 400) {
+        alert('❌ 이미 추천하셨습니다.');
+      } else {
+        alert('추천 실패');
+      }
+    }
   };
 
   const handleDelete = async () => {
@@ -64,8 +80,16 @@ function AnonymousDetail() {
       navigate('/anonymous');
     } catch (err) {
       console.error('삭제 실패', err);
-      alert('삭제 실패');
+      if (err.response && err.response.status === 400) {
+        alert('❌ 권한이 없습니다. 본인만 삭제할 수 있습니다.');
+      } else {
+        alert('삭제 실패');
+      }
     }
+  };
+
+  const handleEdit = () => {
+    navigate(`/anonymous/write?id=${id}`);
   };
 
   if (!post) return <div>로딩 중...</div>;
@@ -143,17 +167,15 @@ function AnonymousDetail() {
           </div>
 
           <div className="recommend">
-            <button className="recommend-btn" onClick={handleLike}>추천하기</button>
+            <button className="recommend-btn" onClick={handleLike}>
+              추천하기
+            </button>
           </div>
 
           <div className="buttons">
             <button onClick={() => navigate('/anonymous')}>목록으로</button>
-            {isAuthor && (
-              <>
-                <button onClick={() => navigate(`/anonymous/write?id=${id}`)}>수정</button>
-                <button onClick={handleDelete}>삭제</button>
-              </>
-            )}
+            <button onClick={handleEdit}>수정</button>
+            <button onClick={handleDelete}>삭제</button>
           </div>
 
           <AnonymousComment postId={id} />

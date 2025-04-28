@@ -7,7 +7,7 @@ function AnonymousWrite() {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const postId = params.get('id');
+  const postId = params.get('id'); // 수정할 글 id (없으면 새글 작성)
 
   const [form, setForm] = useState({ category: '수다', title: '', content: '' });
   const [image, setImage] = useState(null);
@@ -24,18 +24,23 @@ function AnonymousWrite() {
     }
   }, [loginUser, navigate]);
 
+  // ✅ 수정모드: 기존 글 정보 불러오기
   useEffect(() => {
     if (postId) {
-      axios.get(`http://localhost:8080/api/anonymous-posts/${postId}`)
+      axios.get(`http://localhost:8080/api/anonymous-posts/${postId}`, { withCredentials: true })
         .then(res => {
           setForm({
             category: res.data.category || '수다',
             title: res.data.title,
             content: res.data.content,
           });
+          if (res.data.imageUrl) {
+            setPreview(`http://localhost:8080${res.data.imageUrl}`);
+          }
         })
         .catch(err => {
-          alert('글 정보를 불러오지 못했습니다. (더미)');
+          console.error('글 불러오기 실패', err);
+          alert('❌ 글 정보를 불러오지 못했습니다. (더미)');
         });
     }
   }, [postId]);
@@ -62,17 +67,18 @@ function AnonymousWrite() {
     }
   };
 
+  // ✅ 작성/수정 통합
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const postData = {
       title: form.title,
       content: form.content,
-      // ❗ category는 postData에 넣지 않음 (화면에만 존재)
+      // (category는 화면용이고 실제 저장은 안함)
     };
 
     const formData = new FormData();
-    formData.append('postData', JSON.stringify(postData));
+    formData.append('postData', new Blob([JSON.stringify(postData)], { type: 'application/json' }));
 
     if (image) {
       formData.append('image', image);
@@ -84,7 +90,8 @@ function AnonymousWrite() {
           headers: { 'Content-Type': 'multipart/form-data' },
           withCredentials: true,
         });
-        alert('글이 수정되었습니다!');
+        alert('✅ 글이 수정되었습니다!');
+        navigate('/anonymous');
       } else {
         await axios.post('http://localhost:8080/api/anonymous-posts', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -94,7 +101,7 @@ function AnonymousWrite() {
         setTimeout(() => navigate('/anonymous'), 1500);
       }
     } catch (err) {
-      alert(postId ? '수정 실패!' : '등록 실패!');
+      alert(postId ? '❌ 수정 실패!' : '❌ 등록 실패!');
       console.error(err);
     }
   };

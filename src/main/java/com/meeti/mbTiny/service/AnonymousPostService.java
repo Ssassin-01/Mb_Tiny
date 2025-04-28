@@ -114,7 +114,7 @@ public class AnonymousPostService {
                 .viewCount(post.getViewCount())
                 .likeCount(likeCount)
                 .liked(liked)
-                .createdAt(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .createdAt(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
                 .build();
     }
 }
