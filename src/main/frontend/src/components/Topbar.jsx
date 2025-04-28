@@ -22,6 +22,7 @@ const Topbar = () => {
       <NotificationBell />
       <button className='join-button' onClick={handleLoginClick}>
         로그인
+          {/*테스트*/}
       </button>
     </div>
   );

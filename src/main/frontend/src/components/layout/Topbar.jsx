@@ -4,6 +4,7 @@ import { IoMdNotifications } from "react-icons/io";
 import { FaEnvelope, FaUserPlus, FaPaperPlane } from "react-icons/fa";
 import "../../css/layout/Topbar.css";
  import axios from "axios";
+import NotificationBell from "../NotificationBell";
 
 const Topbar = () => {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ const Topbar = () => {
       <div className="topbar-center">
         <input type="text" className="search-input" placeholder="검색하기" />
       </div>
-
+  <NotificationBell />
       <div className="topbar-right">
         {user ? (
           <>
