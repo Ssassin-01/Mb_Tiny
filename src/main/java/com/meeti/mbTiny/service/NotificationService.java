@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class NotificationService {
     private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> heartbeatFutures = new ConcurrentHashMap<>();
-    private final NotificationRepository notificationRepository; // ✅ 추가
+    private final NotificationRepository notificationRepository;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public SseEmitter subscribe(Long memberId) {

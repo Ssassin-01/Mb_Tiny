@@ -53,10 +53,10 @@
 
             if (image != null) {
                 if (!image.isEmpty()) {
-                    String imageUrl = fileUploadService.upload(image); // 새 이미지 업로드
-                    post.setImageUrl(imageUrl); // 새 이미지로 교체
+                    String imageUrl = fileUploadService.upload(image);
+                    post.setImageUrl(imageUrl);
                 } else {
-                    post.setImageUrl(null); // 이미지 삭제
+                    post.setImageUrl(null);
                 }
             }
 
