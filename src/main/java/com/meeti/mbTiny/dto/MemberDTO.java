@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class MemberDTO {
+    private Long id;
     private String email;
     private String gender;
     private LocalDate birthday;
