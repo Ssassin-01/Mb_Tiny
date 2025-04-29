@@ -27,11 +27,11 @@ public class ChatRoomService {
             Message lastMessage = messageRepository.findTopByChatRoomOrderBySentAtDesc(room);
             if (lastMessage == null) continue;
 
-            Member receiver = (room.getSender().getId().equals(member.getId()))
+            Member target = (room.getSender().getId().equals(member.getId()))
                     ? room.getReceiver()
                     : room.getSender();
 
-            ChatRoomDTO dto = convertToDTO(room, receiver, lastMessage);
+            ChatRoomDTO dto = convertToDTO(room, target, lastMessage);
             result.add(dto);
         }
 
@@ -47,5 +47,10 @@ public class ChatRoomService {
                 .lastMessage(lastMessage.getContent())
                 .lastSentAt(lastMessage.getSentAt())
                 .build();
+    }
+
+    public ChatRoom findById(Long roomId) {
+        return chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
     }
 }
