@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../../api/axiosInstance'; // ✅ 너가 쓰는 axios 인스턴스
+import axios from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import '../../css/layout/Topbar.css';
 
