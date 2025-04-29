@@ -145,4 +145,5 @@ public class MemberService {
                 .updatedAt(member.getUpdateAt())
                 .build();
     }
+
 }

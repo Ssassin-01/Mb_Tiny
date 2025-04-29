@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
-    List<ChatRoom> findBySenderOrReceiverOrderByCreatedAtDesc(Member sender, Member receiver);
+    List<ChatRoom> findBySenderOrReceiver(Member sender, Member receiver);
 }

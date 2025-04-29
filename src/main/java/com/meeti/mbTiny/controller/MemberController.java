@@ -10,6 +10,7 @@
     import jakarta.servlet.http.Cookie;
     import jakarta.servlet.http.HttpServletRequest;
     import jakarta.servlet.http.HttpServletResponse;
+    import jakarta.servlet.http.HttpSession;
     import jakarta.validation.Valid;
     import lombok.RequiredArgsConstructor;
     import org.springframework.http.HttpStatus;
@@ -44,16 +45,16 @@
         }
 
         @PostMapping("/login")
-        public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto) {
+        public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto, HttpServletRequest request) {
             UsernamePasswordAuthenticationToken token =
                     new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword());
 
             try {
                 Authentication authentication = authenticationManager.authenticate(token);
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                System.out.println("인증 성공: " + authentication);
-                System.out.println("isAuthenticated: " + authentication.isAuthenticated());
+
+                HttpSession session = request.getSession(true);
+                session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
                 return ResponseEntity.ok(Map.of("message", "로그인 성공"));
             } catch (BadCredentialsException e) {
