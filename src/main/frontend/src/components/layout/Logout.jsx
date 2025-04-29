@@ -8,7 +8,7 @@ const Logout = () => {
     try {
       await axios.post('http://localhost:8080/api/members/logout', {}, { withCredentials: true });
       sessionStorage.removeItem('loginUser');
-
+      sessionStorage.removeItem('recommendedFriends');
       // ✅ 토스트 띄우기
       const toast = document.createElement('div');
       toast.innerText = '로그아웃 완료되었습니다!';

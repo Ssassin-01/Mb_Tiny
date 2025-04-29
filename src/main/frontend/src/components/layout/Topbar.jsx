@@ -43,7 +43,7 @@ const Topbar = () => {
   return (
     <div className='topbar'>
       <div className='logo'>
-        <img src='/img/logo.png' alt='로고' className='logo-img' />
+        <img src='/img/logo.png' alt='로고' className='logo-img'  onClick={() => navigate('/')} style={{ cursor: 'pointer' }} />
       </div>
 
       <div className='topbar-center'>

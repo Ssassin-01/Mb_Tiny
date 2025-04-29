@@ -1,3 +1,5 @@
+/* 🧹 AnonymousDetail.css (최종정리본) */
+
 .detail {
   max-width: 800px;
   margin: 40px auto;
@@ -8,12 +10,12 @@
 
 /* 제목 */
 .title {
-  font-size: 24px; /* 🔥 강조: 폰트 약간 키움 */
-  font-weight: 800; /* 🔥 강조: 더 굵게 */
+  font-size: 24px;
+  font-weight: 800;
   margin-bottom: 16px;
-  border-bottom: 2px solid #ccc; /* 🔥 강조: 선 두껍게 */
+  border-bottom: 2px solid #ccc;
   padding-bottom: 12px;
-  letter-spacing: -0.5px; /* 🔥 강조: 자간 살짝 좁힘 */
+  letter-spacing: -0.5px;
 }
 
 /* 글 상단 정보줄 */
@@ -59,12 +61,12 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease; /* 🔥 자연스러운 확대를 위한 transition */
+  transition: all 0.3s ease;
 }
 
 .recommend-btn:hover {
   background-color: #28c4b7;
-  transform: scale(1.05); /* 🔥 hover시 자연스러운 확대 */
+  transform: scale(1.05);
 }
 
 /* 수정/삭제/목록 버튼 */
@@ -82,12 +84,12 @@
   font-weight: bold;
   cursor: pointer;
   margin-left: 10px;
-  transition: all 0.2s ease; /* 🔥 자연스러운 확대를 위한 transition */
+  transition: all 0.2s ease;
 }
 
 .buttons button:hover {
   background: #30d5c8;
-  transform: scale(1.03); /* 🔥 hover시 살짝 확대 */
+  transform: scale(1.03);
 }
 
 /* 댓글 공통 스타일 */
@@ -136,7 +138,7 @@
 .anonymous-page {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid #ddd; /* 🔥 댓글 영역 위에 얇은 구분선 추가 */
+  border-top: 1px solid #ddd;
   margin-top: 40px;
   padding-top: 20px;
 }

@@ -9,7 +9,7 @@ function AnonymousDetail() {
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [isLiked, setIsLiked] = useState(false); // 추천 상태
+  const [isLiked, setIsLiked] = useState(false);
 
   const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
 
@@ -21,35 +21,38 @@ function AnonymousDetail() {
   }, [loginUser, navigate]);
 
   useEffect(() => {
-    if (!id) return; // ✅ id 없으면 아무것도 안함
+    if (!id) return;
+
+    let isMounted = true;
 
     const fetchPost = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/api/anonymous-posts/${id}`,
-          { withCredentials: true }
-        );
-        setPost(res.data);
+        const res = await axios.get(`http://localhost:8080/api/anonymous-posts/${id}`, {
+          withCredentials: true,
+        });
 
-        // ✅ 서버 응답 성공했을 때, id 준비된 이후에 sessionStorage 읽기
-        const likedFromStorage = sessionStorage.getItem(`liked-${id}`);
-        setIsLiked(likedFromStorage === 'true');
+        if (isMounted) {
+          setPost(res.data);
+          setIsLiked(res.data.liked); // ✅ 서버에서 내려온 liked로 초기화
+        }
       } catch (err) {
-        console.error(err);
+        console.error('게시글 불러오기 실패', err);
         alert('게시글 불러오기 실패');
       }
     };
 
     fetchPost();
-  }, [id]); // ✅ id 변할 때마다 실행
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   const handleLikeToggle = async () => {
     try {
-      const res = await axios.post(
-        `http://localhost:8080/api/anonymous-posts/${id}/like`,
-        {},
-        { withCredentials: true }
-      );
+      const res = await axios.post(`http://localhost:8080/api/anonymous-posts/${id}/like`, {}, {
+        withCredentials: true,
+      });
 
       const liked = res.data.like;
 
@@ -59,13 +62,6 @@ function AnonymousDetail() {
       }));
 
       setIsLiked(liked);
-
-      if (liked) {
-        sessionStorage.setItem(`liked-${id}`, 'true');
-      } else {
-        sessionStorage.removeItem(`liked-${id}`);
-      }
-
     } catch (err) {
       console.error('추천 토글 실패', err);
       alert('오류가 발생했습니다.');
@@ -94,15 +90,15 @@ function AnonymousDetail() {
   if (!post) return <div>로딩 중...</div>;
 
   return (
-    <div className='anonymous-page'>
-      <div className='anonymous-layout'>
-        <div className='detail'>
-          <h1 className='title'>{post.title}</h1>
+    <div className="anonymous-page">
+      <div className="anonymous-layout">
+        <div className="detail">
+          <h1 className="title">{post.title}</h1>
 
-          <div className='info-row'>
-            <div className='left'>
-              <span className='writer'>MBTI: {post.mbti}</span>
-              <span className='date'>
+          <div className="info-row">
+            <div className="left">
+              <span className="writer">MBTI: {post.mbti}</span>
+              <span className="date">
                 {new Date(post.createdAt).toLocaleString('ko-KR', {
                   year: 'numeric',
                   month: '2-digit',
@@ -114,49 +110,27 @@ function AnonymousDetail() {
                 })}
               </span>
             </div>
-            <div className='right'>
+            <div className="right">
               <span>조회 {post.viewCount}</span>
               <span>추천 {post.likeCount}</span>
             </div>
           </div>
 
-          <div className='content'>
+          <div className="content">
             {post.imageUrl && (
               <>
                 <img
                   src={`http://localhost:8080${post.imageUrl}`}
-                  alt='첨부 이미지'
-                  className='post-image'
-                  style={{
-                    maxWidth: '400px',
-                    width: '100%',
-                    height: 'auto',
-                    marginBottom: '16px',
-                    cursor: 'pointer',
-                  }}
+                  alt="첨부 이미지"
+                  className="post-image"
                   onClick={() => setShowModal(true)}
                 />
                 {showModal && (
-                  <div
-                    className='modal-overlay'
-                    onClick={() => setShowModal(false)}
-                    style={{
-                      position: 'fixed',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      zIndex: 1000,
-                    }}
-                  >
+                  <div className="modal-overlay" onClick={() => setShowModal(false)}>
                     <img
                       src={`http://localhost:8080${post.imageUrl}`}
-                      alt='큰 이미지'
-                      style={{ maxHeight: '90%', maxWidth: '90%' }}
+                      alt="큰 이미지"
+                      className="modal-image"
                     />
                   </div>
                 )}
@@ -165,13 +139,13 @@ function AnonymousDetail() {
             <p>{post.content}</p>
           </div>
 
-          <div className='recommend'>
-            <button className='recommend-btn' onClick={handleLikeToggle}>
+          <div className="recommend">
+            <button className="recommend-btn" onClick={handleLikeToggle}>
               {isLiked ? '추천취소' : '추천하기'}
             </button>
           </div>
 
-          <div className='buttons'>
+          <div className="buttons">
             <button onClick={() => navigate('/anonymous')}>목록으로</button>
             <button onClick={handleEdit}>수정</button>
             <button onClick={handleDelete}>삭제</button>

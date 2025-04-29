@@ -63,7 +63,7 @@ function SignUpPage() {
 
   return (
     <div className='signup'>
-      <img src='/img/logo2.png' alt='MBTiny Logo' className='logo' />
+      <img src='/img/logo2.png' alt='MBTiny Logo' className='logo'  onClick={() => navigate('/')} style={{ cursor: 'pointer' }}/>
       <form className='form' onSubmit={handleSubmit}>
         <label>이메일</label>
         <input name='email' type='email' onChange={handleChange} required />

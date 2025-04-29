@@ -10,9 +10,9 @@ const FriendRecommend = () => {
   const [recommendedFriends, setRecommendedFriends] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [requestedIds, setRequestedIds] = useState([]);
+  const [requestedIds, setRequestedIds] = useState(new Set()); // ⭐️ Set으로 변경
   const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
-  const [friendCount, setFriendCount] = useState(20); // ✅ 기본 20명
+  const [friendCount, setFriendCount] = useState(20);
 
   useEffect(() => {
     const handleResize = () => {
@@ -41,10 +41,17 @@ const FriendRecommend = () => {
     }
   };
 
-  const handleFollowClick = (id) => {
-    if (!requestedIds.includes(id)) {
-      setRequestedIds((prev) => [...prev, id]);
-    }
+  const handleFollowClick = (e, id) => {
+    e.stopPropagation(); // ⭐️ 버튼 클릭 시 부모로 이벤트 전파 막기
+    setRequestedIds(prev => {
+      const updated = new Set(prev);
+      if (updated.has(id)) {
+        updated.delete(id); // 이미 팔로우 되어 있으면 제거
+      } else {
+        updated.add(id); // 아니면 추가
+      }
+      return updated;
+    });
   };
 
   const handleProfileClick = (id) => {
@@ -59,7 +66,7 @@ const FriendRecommend = () => {
 
   const handleFriendCountChange = (e) => {
     const selectedCount = parseInt(e.target.value);
-    sessionStorage.removeItem('recommendedFriends'); // ✅ 친구 수 바꾸면 캐시 삭제
+    sessionStorage.removeItem('recommendedFriends');
     setFriendCount(selectedCount);
   };
 
@@ -90,20 +97,19 @@ const FriendRecommend = () => {
             className={isMobile ? "friend-modal-content" : "friend-recommend"}
             onClick={(e) => isMobile && e.stopPropagation()}
           >
-          <h4 className="title">
-            <FaUserFriends className="location-icon" />
-            친구 추천
-          </h4>
+            <h4 className="title">
+              <FaUserFriends className="location-icon" />
+              친구 추천
+            </h4>
 
-          <div className="friend-count-select">
-            <label htmlFor="friendCount">추천 인원: </label>
-            <select id="friendCount" value={friendCount} onChange={handleFriendCountChange}>
-              <option value={5}>5명</option>
-              <option value={10}>10명</option>
-              <option value={20}>20명</option>
-            </select>
-          </div>
-
+            <div className="friend-count-select">
+              <label htmlFor="friendCount">추천 인원: </label>
+              <select id="friendCount" value={friendCount} onChange={handleFriendCountChange}>
+                <option value={5}>5명</option>
+                <option value={10}>10명</option>
+                <option value={20}>20명</option>
+              </select>
+            </div>
 
             <FriendRecommendFilter mbtiFilter={mbtiFilter} onChange={handleFilterChange} />
 
@@ -125,16 +131,10 @@ const FriendRecommend = () => {
                     <span className="mbti-text">{friend.mbti}</span>
                   </div>
                   <button
-                    className={`follow-friend-btn ${
-                      requestedIds.includes(friend.id) ? "requested" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleFollowClick(friend.id);
-                    }}
-                    disabled={requestedIds.includes(friend.id)}
+                    className={`follow-friend-btn ${requestedIds.has(friend.id) ? "requested" : ""}`}
+                    onClick={(e) => handleFollowClick(e, friend.id)}
                   >
-                    {requestedIds.includes(friend.id) ? "요청됨" : "팔로우"}
+                    {requestedIds.has(friend.id) ? "요청 취소" : "팔로우"}
                   </button>
                 </li>
               ))}

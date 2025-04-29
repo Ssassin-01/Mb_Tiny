@@ -32,7 +32,7 @@ function Login() {
 
   return (
     <div className='login'>
-      <img src='/img/logo.png' alt='MBTiny Logo' className='logo' />
+      <img src='/img/logo.png' alt='MBTiny Logo' className='logo'  onClick={() => navigate('/')} style={{ cursor: 'pointer' }}/>
       <form className='login-box' onSubmit={handleSubmit}>
         <div className='field'>
           <input

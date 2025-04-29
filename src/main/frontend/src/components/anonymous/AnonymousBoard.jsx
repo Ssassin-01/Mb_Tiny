@@ -34,49 +34,86 @@ function AnonymousBoard() {
   const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
   const currentPosts = posts.slice(startIdx, startIdx + POSTS_PER_PAGE);
 
+  // ✅ 오늘이면 시간, 아니면 월-일 형식으로 포맷
+  function formatDateOrTime(createdAt) {
+    const createdDate = new Date(createdAt);
+    const now = new Date();
+
+    const isToday =
+      createdDate.getFullYear() === now.getFullYear() &&
+      createdDate.getMonth() === now.getMonth() &&
+      createdDate.getDate() === now.getDate();
+
+    if (isToday) {
+      return createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    } else {
+      const month = String(createdDate.getMonth() + 1).padStart(2, '0');
+      const date = String(createdDate.getDate()).padStart(2, '0');
+      return `${month}-${date}`;
+    }
+  }
+
   return (
     <div className="anonymous-page">
       <div className="anonymous-layout">
         <div className="anonymous-board">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>MBTI</th>
-                <th>시간</th>
-                <th>조회</th>
-                <th>추천</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentPosts.map((post, index) => (
-                <tr
-                  key={post.id}
-                  onClick={() => navigate(`/anonymous/${post.id}`)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <td>{posts.length - ((currentPage - 1) * POSTS_PER_PAGE + index)}</td>
-                  <td className="subject">{post.title}</td>
-                  <td>
-                    <span className="mbti-badge" data-mbti={post.mbti}>
-                      {post.mbti || '익명'}
-                    </span>
-                  </td>
-                  <td>
-                    {new Date(post.createdAt).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: false,
-                    })}
-                  </td>
-                  <td>{post.viewCount}</td>
-                  <td>{post.likeCount}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
 
+          {/* ✅ PC 테이블 */}
+          <div className="table-wrapper pc-only">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>번호</th>
+                  <th>제목</th>
+                  <th>MBTI</th>
+                  <th>시간</th>
+                  <th>조회</th>
+                  <th>추천</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentPosts.map((post, index) => (
+                  <tr
+                    key={post.id}
+                    onClick={() => navigate(`/anonymous/${post.id}`)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <td>{posts.length - ((currentPage - 1) * POSTS_PER_PAGE + index)}</td>
+                    <td className="subject">{post.title}</td>
+                    <td>
+                      <span className="mbti-badge" data-mbti={post.mbti}>
+                        {post.mbti || '익명'}
+                      </span>
+                    </td>
+                    <td>{formatDateOrTime(post.createdAt)}</td>
+                    <td>{post.viewCount}</td>
+                    <td>{post.likeCount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* ✅ 모바일 리스트 */}
+          <div className="mobile-list mobile-only">
+            {currentPosts.map((post) => (
+              <div className="mobile-post-item" key={post.id} onClick={() => navigate(`/anonymous/${post.id}`)}>
+                <div className="post-title-row">
+                  <div className="post-title">{post.title}</div>
+                  {post.mbti && (
+                    <span className="mbti-badge" data-mbti={post.mbti}>
+                      {post.mbti}
+                    </span>
+                  )}
+                </div>
+                <div className="post-info">
+                  {post.viewCount} 조회 · {post.likeCount} 추천 · {formatDateOrTime(post.createdAt)}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ✅ 페이징 + 글쓰기 버튼은 공통 */}
           <div className="paging">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
@@ -94,6 +131,7 @@ function AnonymousBoard() {
               글쓰기
             </button>
           </div>
+
         </div>
       </div>
     </div>
