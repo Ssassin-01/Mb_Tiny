@@ -30,7 +30,7 @@
         public void createPost(PostRequestDTO dto, MultipartFile image, Member member) {
             String imageUrl = null;
             if(image != null && !image.isEmpty()) {
-                imageUrl = fileUploadService.upload(image);
+                imageUrl = fileUploadService.upload(image, "post");
             }
             Post post = Post.builder()
                     .title(dto.getTitle())
@@ -51,13 +51,17 @@
             post.setContent(dto.getContent());
             post.setAnonymous(false);
 
-            if (image != null) {
-                if (!image.isEmpty()) {
-                    String imageUrl = fileUploadService.upload(image);
-                    post.setImageUrl(imageUrl);
-                } else {
-                    post.setImageUrl(null);
+            if (image == null || image.isEmpty()) {
+                if (post.getImageUrl() != null) {
+                    fileUploadService.delete(post.getImageUrl());
                 }
+                post.setImageUrl(null);
+            } else {
+                if (post.getImageUrl() != null) {
+                    fileUploadService.delete(post.getImageUrl());
+                }
+                String imageUrl = fileUploadService.upload(image, "post");
+                post.setImageUrl(imageUrl);
             }
 
             postRepository.save(post);

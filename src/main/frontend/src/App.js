@@ -6,11 +6,11 @@ import SignUpPage from './pages/SignUpPage';
 import AnonymousBoard from './components/anonymous/AnonymousBoard';
 import AnonymousDetail from './components/anonymous/AnonymousDetail';
 import AnonymousWrite from './components/anonymous/AnonymousWrite';
+import FriendProfilePage from './components/profile/FriendProfilePage';
+import MessagesPage from './pages/MessagesPage';
+import MessagesTest from './pages/MessagesTest';
 import Layout from './components/layout/Layout';
 import Profile from './components/profile/Profile';
-import FriendProfilePage from './components/profile/FriendProfilePage';
-
-import MessagesPage from './pages/MessagesPage';
 import MbtiTest from './components/mbti/MBTITest';
 
 function App() {
@@ -31,6 +31,7 @@ function App() {
           <Route path='/profile/:id' element={<FriendProfilePage />} />
           <Route path='/mbtitest' element={<MbtiTest />} />
           <Route path='/messagespage' element={<MessagesPage />} />
+          <Route path='/messagesTest' element={<MessagesTest />} />
         </Route>
       </Routes>
     </Router>
