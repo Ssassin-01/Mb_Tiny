@@ -9,8 +9,9 @@ import AnonymousWrite from './components/anonymous/AnonymousWrite';
 import Layout from './components/layout/Layout';
 import Profile from './components/profile/Profile';
 import FriendProfilePage from './components/profile/FriendProfilePage';
-import MbtiTest from './components/mbti/MbtiTest';
+
 import MessagesPage from './pages/MessagesPage';
+import MbtiTest from './components/mbti/MBTITest';
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
           <Route path='/anonymous/:id' element={<AnonymousDetail />} />
           <Route path='/anonymous/write' element={<AnonymousWrite />} />
           <Route path='/profile' element={<Profile />} />
-          <Route path='/profile/:id' element={<FriendProfilePage />} /> 
+          <Route path='/profile/:id' element={<FriendProfilePage />} />
           <Route path='/mbtitest' element={<MbtiTest />} />
           <Route path='/messagespage' element={<MessagesPage />} />
         </Route>

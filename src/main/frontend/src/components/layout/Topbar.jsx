@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaPaperPlane } from "react-icons/fa";
-import "../../css/layout/Topbar.css";
- import axios from "axios";
-import NotificationBell from "./NotificationBell";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaPaperPlane } from 'react-icons/fa';
+import '../../css/layout/Topbar.css';
+import axios from 'axios';
+import NotificationBell from './NotificationBell';
+import SearchBar from './SearchBar';
 
 const Topbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [notifications, setNotifications] = useState([
-    
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
   // useEffect(() => {
   //   // ****백엔드 안 되는 동안 강제 로그인된 상태로 보기****
@@ -19,54 +18,54 @@ const Topbar = () => {
   //     mbti: "MBTI"
   //   });
   // }, []);
-  
 
- // 로그인한 사용자 정보 불러오기
+  // 로그인한 사용자 정보 불러오기
   useEffect(() => {
-    axios.get("http://localhost:8080/api/members/me", {
-      withCredentials: true
-    })
+    axios
+      .get('http://localhost:8080/api/members/me', {
+        withCredentials: true,
+      })
       .then((res) => {
         setUser(res.data);
       })
       .catch((err) => {
-        console.error("로그인 사용자 정보 불러오기 실패", err);
+        console.error('로그인 사용자 정보 불러오기 실패', err);
       });
   }, []);
 
-    const goToMyProfile = () => {
-    navigate("/profile/me");
+  const goToMyProfile = () => {
+    navigate('/profile/me');
   };
 
   const unreadCount = notifications.length;
 
   return (
-    <div className="topbar">
-      <div className="logo">
-        <img src="/img/logo.png" alt="로고" className="logo-img" />
+    <div className='topbar'>
+      <div className='logo'>
+        <img src='/img/logo.png' alt='로고' className='logo-img' />
       </div>
 
-      <div className="topbar-center">
-        <input type="text" className="search-input" placeholder="검색하기" />
+      <div className='topbar-center'>
+        <SearchBar />
       </div>
-  
-      <div className="topbar-right">
+
+      <div className='topbar-right'>
         {user ? (
           <>
-  {/* 알림벨 (NotificationBell 컴포넌트로 대체) */}
-  <NotificationBell />
+            {/* 알림벨 */}
+            <NotificationBell key='notification' />
 
             {/* MBTI 카드 + 닉네임 */}
-            <div className="mbti-card" onClick={goToMyProfile}>
+            <div className='mbti-card' onClick={goToMyProfile}>
               {user.nickname} ・ {user.mbti}
             </div>
           </>
         ) : (
-          <div className="login-btn-wrapper">
-            <button className="join-button" onClick={() => navigate("/login")}>
+          <div className='login-btn-wrapper'>
+            <button className='join-button' onClick={() => navigate('/login')}>
               Login
             </button>
-            <FaPaperPlane className="plane-icon" />
+            <FaPaperPlane className='plane-icon' />
           </div>
         )}
       </div>
