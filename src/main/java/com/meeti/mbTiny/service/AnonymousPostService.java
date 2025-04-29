@@ -27,7 +27,7 @@ public class AnonymousPostService {
     public void createPost(PostRequestDTO dto, MultipartFile image, Member member) {
         String imageUrl = null;
         if(image != null && !image.isEmpty()) {
-            imageUrl = fileUploadService.upload(image);
+            imageUrl = fileUploadService.upload(image, "AnonymousPost");
         }
         Post post = Post.builder()
                 .title(dto.getTitle())
@@ -51,7 +51,7 @@ public class AnonymousPostService {
 
         if (image != null) {
             if (!image.isEmpty()) {
-                String imageUrl = fileUploadService.upload(image);
+                String imageUrl = fileUploadService.upload(image, "AnonymousPost");
                 post.setImageUrl(imageUrl);
             } else {
                 post.setImageUrl(null);

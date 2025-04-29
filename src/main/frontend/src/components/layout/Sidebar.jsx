@@ -27,7 +27,15 @@ const Sidebar = () => {
           <span className="label-text">메시지</span>
         </li>
         <li
-          onClick={() => navigate("/profile/me")}
+          onClick={() => navigate("/messagesTest")}
+          title="메시지"
+          aria-label="메시지"
+        >
+          <FaCommentDots className="icon" />
+          <span className="label-text">메시지테스트</span>
+        </li>
+        <li
+          onClick={() => navigate("/profile")}
           title="프로필"
           aria-label="프로필"
         >

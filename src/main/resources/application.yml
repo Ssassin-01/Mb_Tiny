@@ -13,6 +13,7 @@ spring:
     url: jdbc:mysql://localhost:3306/mbtisns
     username : root
     password: xkfprk0011!~
+   
   jpa:
     hibernate:
       ddl-auto: update
@@ -29,3 +30,4 @@ logging:
     org.springframework.web.multipart: DEBUG
     org.springframework.web.servlet.DispatcherServlet: DEBUG
     org.hibernate: ERROR
+
