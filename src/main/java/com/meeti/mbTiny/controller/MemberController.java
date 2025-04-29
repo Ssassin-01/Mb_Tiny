@@ -2,9 +2,7 @@
 
     import com.meeti.mbTiny.dto.LoginRequestDTO;
     import com.meeti.mbTiny.dto.MemberDTO;
-    import com.meeti.mbTiny.dto.MemberListResponseDTO;
     import com.meeti.mbTiny.dto.MemberRequestDTO;
-    import com.meeti.mbTiny.dto.MemberUpdateRequestDTO;
     import com.meeti.mbTiny.entity.Member;
     import com.meeti.mbTiny.security.CustomUserDetails;
     import com.meeti.mbTiny.service.MemberService;
@@ -14,7 +12,6 @@
     import jakarta.validation.Valid;
     import lombok.RequiredArgsConstructor;
     import org.springframework.http.HttpStatus;
-    import org.springframework.http.MediaType;
     import org.springframework.http.ResponseEntity;
     import org.springframework.security.authentication.AuthenticationManager;
     import org.springframework.security.authentication.BadCredentialsException;
@@ -25,7 +22,6 @@
     import org.springframework.security.core.context.SecurityContextHolder;
     import org.springframework.web.bind.annotation.*;
     import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-    import org.springframework.web.multipart.MultipartFile;
 
 
     import java.util.List;
@@ -64,21 +60,6 @@
             }
         }
 
-        @PostMapping("/logout")
-        public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-            request.getSession().invalidate();
-
-            SecurityContextHolder.clearContext();
-
-            Cookie cookie = new Cookie("JSESSIONID", null);
-            cookie.setMaxAge(0);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-
-            return ResponseEntity.ok(Map.of("message", "로그아웃 성공"));
-        }
-
-
         @GetMapping("/me")
         public ResponseEntity<MemberDTO> getMyProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
             Member member = userDetails.getMember();
@@ -94,17 +75,11 @@
 
         //회원정보 수정
         @PutMapping("/modify")
-        public ResponseEntity<?> modifyProfile(@ModelAttribute MemberUpdateRequestDTO dto,
-                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
-            MultipartFile profileImg = dto.getProfileImg();
-            System.out.println(dto.getProfileImg());
-            System.out.println(profileImg);
-
+        public ResponseEntity<?> modifyProfile(@RequestBody MemberRequestDTO dto, @AuthenticationPrincipal CustomUserDetails userDetails) {
             if (userDetails == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
             }
-
-            memberService.updateUser(userDetails.getUsername(), dto);
+            memberService.updateUser(userDetails.getMember(), dto);
             return ResponseEntity.ok("프로필이 수정되었습니다.");
         }
 
@@ -112,6 +87,7 @@
         @DeleteMapping("/delete")
         public ResponseEntity<?> deleteUser(@AuthenticationPrincipal CustomUserDetails userDetails,
                                             HttpServletRequest request, HttpServletResponse response) {
+            System.out.println("delete controller 접근");
             if (userDetails == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
             }
@@ -142,21 +118,18 @@
             return ResponseEntity.ok(exactNickname );
         }
 
-        @GetMapping("/random")
-        public ResponseEntity<?> getRandomMembers(@RequestParam(defaultValue = "20") int count) {
-            List<MemberListResponseDTO> members = memberService.getRandomMembers(count);
-            return ResponseEntity.ok(members);
-        }
-        @GetMapping("/random/mbti")
-        public ResponseEntity<?> getMembersByMBTI(
-                @RequestParam(defaultValue = "20") int count,
+
+
+
+        @GetMapping("/filter/mbti")
+        public ResponseEntity<List<Member>> getMembersByMBTI(
                 @RequestParam(defaultValue = "all") String IorE,
                 @RequestParam(defaultValue = "all") String NorS,
                 @RequestParam(defaultValue = "all") String TorF,
                 @RequestParam(defaultValue = "all") String JorP
         ) {
-            List<MemberListResponseDTO> members = memberService.getRandomMembersByMBTI(count, IorE, NorS, TorF, JorP);
-            return ResponseEntity.ok(members);
+            List<Member> filtered = memberService.getMembersByMBTI(IorE, NorS, TorF, JorP);
+            return ResponseEntity.ok(filtered);
         }
 
 
