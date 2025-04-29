@@ -1,46 +1,31 @@
-import '../../css/follow/FollowButton.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
-const FollowButton = ({ targetId }) => {
-  const [isFollowing, setIsFollowing] = useState(false);
+function FollowButton({ targetId, initialIsFollowing }) {
+  const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
 
-  useEffect(() => {
-    const fetchFollowing = async () => {
-      try {
-        const res = await axios.get('/api/follow/following');
-        const followingList = res.data.map(user => user.followingId);
-        setIsFollowing(followingList.includes(Number(targetId)));
-      } catch (error) {
-        console.error('팔로잉 목록 불러오기 실패:', error);
-      }
-    };
-
-    fetchFollowing();
-  }, [targetId]);
-
-  const handleFollowClick = async () => {
+  const handleToggleFollow = async () => {
     try {
       if (isFollowing) {
-        await axios.delete(`/api/follow/${targetId}`);
-        setIsFollowing(false);
+        // 언팔로우 (DELETE)
+        await axios.delete(`/api/follow/${targetId}`, { withCredentials: true });
       } else {
-        await axios.post(`/api/follow/${targetId}`);
-        setIsFollowing(true);
+        // 팔로우 (POST)
+        await axios.post(`/api/follow/${targetId}`, {}, { withCredentials: true });
+        console.log('팔로우 버튼 클릭 targetId:', targetId);
+
       }
-    } catch (error) {
-      console.error('팔로우/언팔로우 실패:', error);
+      setIsFollowing(!isFollowing);
+    } catch (err) {
+      console.error('팔로우/언팔로우 실패:', err);
     }
   };
 
   return (
-    <button
-      className={isFollowing ? 'unfollow-button' : 'follow-button'}
-      onClick={handleFollowClick}
-    >
+    <button onClick={handleToggleFollow}>
       {isFollowing ? '언팔로우' : '팔로우'}
     </button>
   );
-};
+}
 
 export default FollowButton;

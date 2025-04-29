@@ -1,42 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../../css/follow/FollowModal.css';
 
-
-const FollowModal = ({ type, onClose }) => {
-  const [list, setList] = useState([]);
+function FollowButton({ targetId }) {
+  const [isFollowing, setIsFollowing] = useState(false);
+  const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchFollowingList = async () => {
       try {
-        const endpoint = type === 'followers' ? '/api/follow/followers' : '/api/follow/following';
-        const res = await axios.get(endpoint);
-        setList(res.data);
+        const res = await axios.get('/api/follow/following', { withCredentials: true });
+        const followingList = res.data; // List<FollowDTO>
+
+        const isAlreadyFollowing = followingList.some(f => f.targetId === targetId);
+        setIsFollowing(isAlreadyFollowing);
       } catch (error) {
-        console.error('목록 불러오기 실패:', error);
+        console.error('팔로잉 리스트 가져오기 실패:', error);
       }
     };
 
-    fetchData();
-  }, [type]);
+    if (loginUser) {
+      fetchFollowingList();
+    }
+  }, [targetId]);
+
+  const handleFollowToggle = async () => {
+    try {
+      if (isFollowing) {
+        await axios.delete(`/api/follow/${targetId}`, { withCredentials: true });
+      } else {
+        await axios.post(`/api/follow/${targetId}`, {}, { withCredentials: true });
+      }
+      setIsFollowing(!isFollowing);
+    } catch (error) {
+      console.error('팔로우/언팔로우 실패:', error);
+    }
+  };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h2>{type === 'followers' ? '팔로워' : '팔로잉'}</h2>
-        <button className="modal-close" onClick={onClose}>X</button>
-        <ul className="modal-list">
-          {list.length > 0 ? (
-            list.map(user => (
-              <li key={user.id}>{user.nickname}</li>
-            ))
-          ) : (
-            <p>아직 없습니다.</p>
-          )}
-        </ul>
-      </div>
-    </div>
+    <button 
+      onClick={handleFollowToggle} 
+      className={`follow-btn ${isFollowing ? 'following' : ''}`}
+    >
+      {isFollowing ? '팔로잉' : '팔로우'}
+    </button>
   );
-};
+}
 
-export default FollowModal;
+export default FollowButton;

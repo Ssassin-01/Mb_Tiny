@@ -26,8 +26,8 @@ function App() {
           <Route path='/anonymous' element={<AnonymousBoard />} />
           <Route path='/anonymous/:id' element={<AnonymousDetail />} />
           <Route path='/anonymous/write' element={<AnonymousWrite />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='/profile/:id' element={<FriendProfilePage />} />
+          <Route path='/profile/me' element={<Profile />} />
+          <Route path="/profile/:nickname" element={<FriendProfilePage />} />
           <Route path='/mbtitest' element={<MbtiTest />} />
           <Route path='/messagespage' element={<MessagesPage />} />
         </Route>
