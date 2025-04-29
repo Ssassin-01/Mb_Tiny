@@ -44,17 +44,16 @@
         }
 
         @PostMapping("/login")
-        public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto, HttpServletRequest request) {
+        public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto) {
             UsernamePasswordAuthenticationToken token =
                     new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword());
 
             try {
                 Authentication authentication = authenticationManager.authenticate(token);
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
-                context.setAuthentication(authentication);
 
-                request.getSession(true)
-                        .setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                System.out.println("인증 성공: " + authentication);
+                System.out.println("isAuthenticated: " + authentication.isAuthenticated());
 
                 return ResponseEntity.ok(Map.of("message", "로그인 성공"));
             } catch (BadCredentialsException e) {
@@ -62,6 +61,21 @@
                         .body(Map.of("message", "이메일 또는 비밀번호가 잘못되었습니다."));
             }
         }
+
+        @PostMapping("/logout")
+        public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+            request.getSession().invalidate();
+
+            SecurityContextHolder.clearContext();
+
+            Cookie cookie = new Cookie("JSESSIONID", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
+            return ResponseEntity.ok(Map.of("message", "로그아웃 성공"));
+        }
+
 
         @GetMapping("/me")
         public ResponseEntity<MemberDTO> getMyProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {

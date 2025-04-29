@@ -5,7 +5,7 @@ import SockJS from "sockjs-client";
 function MessagesTest() {
   const [client, setClient] = useState(null);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState({});
   const [roomId, setRoomId] = useState("room1");
   const subscriptionRef = useRef(null); // ✅ 현재 구독을 저장할 ref
 
@@ -54,14 +54,20 @@ function MessagesTest() {
     // 새로운 방 구독
     const subscription = stompClient.subscribe(`/topic/room/${roomId}`, (message) => {
       const receivedMessage = JSON.parse(message.body);
-      setMessages(prev => [...prev, receivedMessage]);
+      setMessages(prevMessages => {
+        const roomMessages = prevMessages[roomId] || [];
+        return {
+          ...prevMessages,
+          [roomId]: [...roomMessages, receivedMessage]
+        };
+      });
     });
 
     // 구독 객체 저장
     subscriptionRef.current = subscription;
 
     // ✅ 방을 바꿀 때 기존 메세지 지워주고 싶으면 이 줄 추가
-    setMessages([]);
+//     setMessages([]);
   };
 
   const sendMessage = () => {
@@ -90,11 +96,11 @@ function MessagesTest() {
         <option value="room3">room3</option>
       </select>
 
-      {messages.map((msg, index) => (
-        <div key={index}>
-          <strong>{msg.sender}:</strong> {msg.content}
-        </div>
-      ))}
+        {(messages[roomId] || []).map((msg, index) => (
+          <div key={index}>
+            <strong>{msg.sender}:</strong> {msg.content}
+          </div>
+        ))}
 
       <input
         type="text"

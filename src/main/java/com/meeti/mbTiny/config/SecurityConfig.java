@@ -59,6 +59,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/posts", "/api/anonymous-posts").permitAll()
                         .requestMatchers("/chat/**").permitAll()
                         .anyRequest().authenticated()
+
                 )
                 .sessionManagement(session -> session
                         .maximumSessions(1)
