@@ -5,6 +5,7 @@ import '../../css/layout/Topbar.css';
 import axios from 'axios';
 import NotificationBell from './NotificationBell';
 import SearchBar from './SearchBar';
+import Logout from './Logout';
 
 const Topbar = () => {
   const navigate = useNavigate();
@@ -54,8 +55,7 @@ const Topbar = () => {
           <>
             {/* 알림벨 */}
             <NotificationBell key='notification' />
-
-            {/* MBTI 카드 + 닉네임 */}
+            <Logout />
             <div className='mbti-card' onClick={goToMyProfile}>
               {user.nickname} ・ {user.mbti}
             </div>

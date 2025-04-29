@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaUserFriends } from "react-icons/fa";
 import "../../css/recommend/FriendRecommend.css";
-import { FaMapMarkerAlt } from "react-icons/fa";
-import { useNavigate } from 'react-router-dom'; 
+import FriendRecommendFilter from "./FriendRecommendFilter";
+import axios from "axios";
 
 const FriendRecommend = () => {
-  const navigate = useNavigate(); 
-  const [recommendedFriends, setRecommendedFriends] = useState([
-    { id: 1, nickname: "nickname1", mbti: "ISFP", img: "/img/user1.jpg" },
-    { id: 2, nickname: "nickname2", mbti: "ISFJ", img: "/img/user2.jpg" },
-    { id: 3, nickname: "nickname3", mbti: "ESFP", img: "/img/user3.jpg" },
-  ]);
+  const navigate = useNavigate();
+  const [recommendedFriends, setRecommendedFriends] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [requestedIds, setRequestedIds] = useState([]);
+  const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
+  const [friendCount, setFriendCount] = useState(20); // ✅ 기본 20명
 
   useEffect(() => {
     const handleResize = () => {
@@ -22,27 +22,65 @@ const FriendRecommend = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    fetchFriends(friendCount);
+  }, [friendCount]);
+
+  const fetchFriends = async (count) => {
+    try {
+      const savedFriends = sessionStorage.getItem('recommendedFriends');
+      if (savedFriends) {
+        setRecommendedFriends(JSON.parse(savedFriends));
+      } else {
+        const res = await axios.get(`http://localhost:8080/api/members/random?count=${count}`, { withCredentials: true });
+        setRecommendedFriends(res.data);
+        sessionStorage.setItem('recommendedFriends', JSON.stringify(res.data));
+      }
+    } catch (err) {
+      console.error('회원 목록 불러오기 실패', err);
+    }
+  };
+
   const handleFollowClick = (id) => {
     if (!requestedIds.includes(id)) {
       setRequestedIds((prev) => [...prev, id]);
-      // TODO: API 호출 처리도 여기서 가능
     }
   };
 
   const handleProfileClick = (id) => {
-    navigate(`/profile/${id}`); // 클릭하면 이동
+    navigate(`/profile/${id}`);
   };
+
+  const handleFilterChange = (idx, value) => {
+    const updated = [...mbtiFilter];
+    updated[idx] = value;
+    setMbtiFilter(updated);
+  };
+
+  const handleFriendCountChange = (e) => {
+    const selectedCount = parseInt(e.target.value);
+    sessionStorage.removeItem('recommendedFriends'); // ✅ 친구 수 바꾸면 캐시 삭제
+    setFriendCount(selectedCount);
+  };
+
+  const filteredFriends = recommendedFriends.filter((friend) => {
+    const mbti = friend.mbti;
+    return (
+      (mbtiFilter[0] === "선택 안함" || mbti[0] === mbtiFilter[0]) &&
+      (mbtiFilter[1] === "선택 안함" || mbti[1] === mbtiFilter[1]) &&
+      (mbtiFilter[2] === "선택 안함" || mbti[2] === mbtiFilter[2]) &&
+      (mbtiFilter[3] === "선택 안함" || mbti[3] === mbtiFilter[3])
+    );
+  });
 
   return (
     <>
-      {/* 모바일 버튼 */}
       {isMobile && (
         <button className="friend-toggle-btn" onClick={() => setIsOpen(true)}>
-          주변 친구
+          친구 추천
         </button>
       )}
 
-      {/* 추천 친구 리스트 */}
       {(!isMobile || isOpen) && (
         <div
           className={isMobile ? "friend-modal-backdrop" : ""}
@@ -52,20 +90,33 @@ const FriendRecommend = () => {
             className={isMobile ? "friend-modal-content" : "friend-recommend"}
             onClick={(e) => isMobile && e.stopPropagation()}
           >
-            <h4 className="title">
-              <FaMapMarkerAlt className="location-icon" />
-              내 주변 친구 추천
-            </h4>
+          <h4 className="title">
+            <FaUserFriends className="location-icon" />
+            친구 추천
+          </h4>
+
+          <div className="friend-count-select">
+            <label htmlFor="friendCount">추천 인원: </label>
+            <select id="friendCount" value={friendCount} onChange={handleFriendCountChange}>
+              <option value={5}>5명</option>
+              <option value={10}>10명</option>
+              <option value={20}>20명</option>
+            </select>
+          </div>
+
+
+            <FriendRecommendFilter mbtiFilter={mbtiFilter} onChange={handleFilterChange} />
+
             <ul className="friend-list">
-              {recommendedFriends.map((friend) => (
+              {filteredFriends.map((friend) => (
                 <li
                   key={friend.id}
                   className="friend-item"
-                  onClick={() => handleProfileClick(friend.id)} // 여기 추가
-                  style={{ cursor: "pointer" }} // 클릭 가능 표시
+                  onClick={() => handleProfileClick(friend.id)}
+                  style={{ cursor: "pointer" }}
                 >
                   <img
-                    src={friend.img}
+                    src={friend.profileImgUrl || "/img/default-profile.png"}
                     alt={friend.nickname}
                     className="friend-profile-img"
                   />
@@ -78,7 +129,7 @@ const FriendRecommend = () => {
                       requestedIds.includes(friend.id) ? "requested" : ""
                     }`}
                     onClick={(e) => {
-                      e.stopPropagation(); // 버튼 누를 때 친구 프로필로 이동 방지
+                      e.stopPropagation();
                       handleFollowClick(friend.id);
                     }}
                     disabled={requestedIds.includes(friend.id)}

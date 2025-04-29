@@ -9,9 +9,12 @@ const FeedInput = ({ onPost }) => {
 
   const handleSubmit = () => {
     if (content.trim()) {
-      onPost(content);
+      // content + image 넘겨주기
+      onPost({ content, image });
+
       setContent('');
       setImage(null);
+      setPreview(null);
     }
   };
 
@@ -19,10 +22,11 @@ const FeedInput = ({ onPost }) => {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // 미리보기 이미지 URL 생성
+      setPreview(URL.createObjectURL(file));
     }
   };
-    return (
+
+  return (
     <div className="feed-input-container">
       <textarea
         placeholder="성격만큼 다양한 이야기, 지금 남겨보세요!"
@@ -30,8 +34,7 @@ const FeedInput = ({ onPost }) => {
         onChange={(e) => setContent(e.target.value)}
         className="feed-textarea"
       />
-       
-      {/* 이미지 미리보기 */}
+
       {preview && (
         <div className="image-preview-container">
           <img src={preview} alt="미리보기" className="image-preview" />
@@ -55,5 +58,6 @@ const FeedInput = ({ onPost }) => {
     </div>
   );
 };
+
 
 export default FeedInput;

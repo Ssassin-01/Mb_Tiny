@@ -60,6 +60,20 @@
             }
         }
 
+        @PostMapping("/logout")
+        public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+            request.getSession().invalidate();
+
+            SecurityContextHolder.clearContext();
+
+            Cookie cookie = new Cookie("JSESSIONID", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
+            return ResponseEntity.ok(Map.of("message", "로그아웃 성공"));
+        }
+
         @GetMapping("/me")
         public ResponseEntity<MemberDTO> getMyProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
             Member member = userDetails.getMember();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../../api/axiosInstance'; // ✅ 너가 쓰는 axios 인스턴스
+import axios from '../../api/axiosInstance'; // axios 인스턴스
 import { useNavigate } from 'react-router-dom';
 import '../../css/layout/Topbar.css';
 
@@ -49,6 +49,20 @@ function SearchBar() {
         onChange={handleChange}
         placeholder='닉네임 검색'
         className='search-input'
+          style={{
+            flex: 1,
+            height: '35px',
+            minWidth: '200px',
+            maxWidth: '100%',
+            paddingLeft: '10px',
+            borderRadius: '30px',
+            marginRight: 'auto',
+            border: '1px solid #3de5d9',
+            outline: 'none',
+            transition: 'all 0.3s ease',
+            fontSize: '14px',
+            backgroundColor: '#f8fffe'
+          }}
       />
 
       {results.length > 0 && (

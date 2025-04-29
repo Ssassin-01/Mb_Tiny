@@ -9,7 +9,7 @@ function AnonymousDetail() {
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [fetched, setFetched] = useState(false);
+  const [isLiked, setIsLiked] = useState(false); // 추천 상태
 
   const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
 
@@ -21,61 +21,54 @@ function AnonymousDetail() {
   }, [loginUser, navigate]);
 
   useEffect(() => {
-    if (!fetched) {
-      const fetchPost = async () => {
-        try {
-          const res = await axios.get(
-            `http://localhost:8080/api/anonymous-posts/${id}`,
-            {
-              withCredentials: true,
-            }
-          );
-          setPost(res.data);
-          setFetched(true);
-        } catch (err) {
-          console.error(err);
-          alert('게시글 불러오기 실패');
-          setFetched(true);
-        }
-      };
+    if (!id) return; // ✅ id 없으면 아무것도 안함
 
-      fetchPost();
-    }
-  }, [id, fetched]);
+    const fetchPost = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/anonymous-posts/${id}`,
+          { withCredentials: true }
+        );
+        setPost(res.data);
 
-  const handleLike = async () => {
+        // ✅ 서버 응답 성공했을 때, id 준비된 이후에 sessionStorage 읽기
+        const likedFromStorage = sessionStorage.getItem(`liked-${id}`);
+        setIsLiked(likedFromStorage === 'true');
+      } catch (err) {
+        console.error(err);
+        alert('게시글 불러오기 실패');
+      }
+    };
+
+    fetchPost();
+  }, [id]); // ✅ id 변할 때마다 실행
+
+  const handleLikeToggle = async () => {
     try {
-      // 1. 좋아요 토글
-      await axios.post(
+      const res = await axios.post(
         `http://localhost:8080/api/anonymous-posts/${id}/like`,
         {},
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
 
-      // 2. 좋아요 수 다시 가져오기
-      const res = await axios.get(
-        `http://localhost:8080/api/anonymous-posts/${id}/like-count`,
-        {
-          withCredentials: true,
-        }
-      );
+      const liked = res.data.like;
 
-      // 3. post.likeCount만 업데이트
       setPost((prev) => ({
         ...prev,
-        likeCount: res.data.count,
+        likeCount: liked ? prev.likeCount + 1 : prev.likeCount - 1,
       }));
 
-      alert('추천 완료!');
-    } catch (err) {
-      console.error('추천 실패', err);
-      if (err.response && err.response.status === 400) {
-        alert('❌ 이미 추천하셨습니다.');
+      setIsLiked(liked);
+
+      if (liked) {
+        sessionStorage.setItem(`liked-${id}`, 'true');
       } else {
-        alert('추천 실패');
+        sessionStorage.removeItem(`liked-${id}`);
       }
+
+    } catch (err) {
+      console.error('추천 토글 실패', err);
+      alert('오류가 발생했습니다.');
     }
   };
 
@@ -90,11 +83,7 @@ function AnonymousDetail() {
       navigate('/anonymous');
     } catch (err) {
       console.error('삭제 실패', err);
-      if (err.response && err.response.status === 400) {
-        alert('❌ 권한이 없습니다. 본인만 삭제할 수 있습니다.');
-      } else {
-        alert('삭제 실패');
-      }
+      alert('삭제 실패');
     }
   };
 
@@ -177,8 +166,8 @@ function AnonymousDetail() {
           </div>
 
           <div className='recommend'>
-            <button className='recommend-btn' onClick={handleLike}>
-              추천하기
+            <button className='recommend-btn' onClick={handleLikeToggle}>
+              {isLiked ? '추천취소' : '추천하기'}
             </button>
           </div>
 

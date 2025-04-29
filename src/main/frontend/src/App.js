@@ -11,7 +11,7 @@ import Profile from './components/profile/Profile';
 import FriendProfilePage from './components/profile/FriendProfilePage';
 
 import MessagesPage from './pages/MessagesPage';
-import MbtiTest from './components/mbti/MbtiTest';
+import MbtiTest from './components/mbti/MBTITest';
 
 function App() {
   return (

@@ -1,4 +1,4 @@
-/* 컨테이너 스타일 */
+/* 추천 친구 전체 박스 */
 .friend-recommend {
   width: 360px;
   background-color: #f8fffe;
@@ -9,7 +9,7 @@
   box-sizing: border-box;
 }
 
-/* 제목 영역 */
+/* 제목 */
 .title {
   font-size: 18px;
   font-weight: 600;
@@ -20,19 +20,20 @@
   gap: 8px;
 }
 
+/* 아이콘 */
 .location-icon {
   font-size: 16px;
   color: #30d5c8;
 }
 
-/* 리스트 */
+/* 추천 친구 리스트 */
 .friend-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* 리스트 아이템 */
+/* 각 친구 카드 */
 .friend-item {
   display: flex;
   align-items: center;
@@ -60,14 +61,14 @@
   border: 1px solid #30d5c8;
 }
 
-/* 텍스트 영역 */
+/* 친구 정보 (닉네임 + MBTI) */
 .friend-info {
   flex: 1;
   min-width: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
-  gap: 8px; /* 이름과 MBTI 사이 간격 */
+  gap: 8px;
 }
 
 .friend-nickname {
@@ -77,7 +78,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 100px; /* 필요 시 길이 제한 */
+  max-width: 100px;
 }
 
 .mbti-text {
@@ -91,7 +92,6 @@
   flex-shrink: 0;
 }
 
-
 /* 팔로우 버튼 */
 .follow-friend-btn {
   background-color: #30d5c8;
@@ -101,15 +101,10 @@
   font-weight: 600;
   border-radius: 20px;
   cursor: pointer;
-  box-shadow: 0 0 0 rgba(48, 213, 200, 0.4);
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
 
-.add-friend-btn:hover {
-  box-shadow: 0 0 12px rgba(48, 213, 200, 0.5);
-  transform: scale(1.03);
-}
 .follow-friend-btn:hover {
   background-color: #25bcb1;
 }
@@ -120,7 +115,8 @@
   border: 1px solid #30d5c8;
   cursor: default;
 }
-/* 토글 버튼 (모바일용) */
+
+/* 모바일에서 추천 친구 토글 버튼 */
 .friend-toggle-btn {
   position: fixed;
   bottom: 20px;
@@ -137,7 +133,11 @@
   transition: background-color 0.3s ease;
 }
 
-/* 모달 배경 및 내용 */
+.friend-toggle-btn:hover {
+  background-color: #25bcb1;
+}
+
+/* 모바일 모달 백그라운드 */
 .friend-modal-backdrop {
   position: fixed;
   top: 0;
@@ -151,6 +151,7 @@
   z-index: 1000;
 }
 
+/* 모바일 모달 콘텐츠 */
 .friend-modal-content {
   background: white;
   padding: 24px;
@@ -162,46 +163,7 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
-/* 애니메이션 */
-/* @keyframes slideFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-} */
-
-/* 반응형: 1500px 이하 */
-/* @media screen and (max-width: 1500px) {
-  .friend-recommend {
-    max-width: 250px;
-    padding: 16px;
-  }
-
-  .friend-item {
-    gap: 10px;
-    padding: 10px;
-  }
-
-  .friend-name {
-    font-size: 12px;
-  }
-
-  .mutual-text,
-  .friend-distance {
-    font-size: 12px;
-  }
-
-  .add-friend-btn {
-    padding: 6px 12px;
-    font-size: 12px;
-  }
-} */
-
-/* 반응형: 모바일 (480px 이하) */
+/* 반응형 (480px 이하) */
 @media screen and (max-width: 480px) {
   .friend-item {
     flex-direction: column;
@@ -213,20 +175,43 @@
     height: 40px;
   }
 
-  .friend-name {
+  .friend-nickname {
     font-size: 14px;
-  }
-
-  .mutual-text,
-  .friend-distance {
-    font-size: 12px;
-  }
-
-  .add-friend-btn {
-    width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 14px;
-    text-align: center;
   }
 }
+
+.friend-count-select {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #30d5c8;
+}
+
+.friend-count-select label {
+  font-weight: 600;
+}
+
+.friend-count-select select {
+  padding: 4px 8px;
+  border: 1px solid #30d5c8;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 13px;
+  color: #30d5c8;
+  cursor: pointer;
+  font-family: 'Pretendard', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.friend-count-select select:hover {
+  background-color: #e8fbfb;
+}
+
+.friend-count-select select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(48, 213, 200, 0.2);
+}
+
