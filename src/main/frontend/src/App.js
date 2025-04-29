@@ -9,9 +9,8 @@ import AnonymousWrite from './components/anonymous/AnonymousWrite';
 import Layout from './components/layout/Layout';
 import Profile from './components/profile/Profile';
 import FriendProfilePage from './components/profile/FriendProfilePage';
-
 import MessagesPage from './pages/MessagesPage';
-import MbtiTest from './components/mbti/MBTITest';
+import MbtiTest from './components/mbti/MbtiTest';
 
 function App() {
   return (

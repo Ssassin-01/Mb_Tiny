@@ -8,7 +8,7 @@ export default function NotificationViewer() {
     const source = new EventSourcePolyfill(
       'http://localhost:8080/api/notifications/subscribe',
       {
-        withCredentials: true, // ✅ 세션 쿠키(JSESSIONID) 자동 전송
+        withCredentials: true, // 세션 쿠키(JSESSIONID) 자동 전송
       }
     );
 

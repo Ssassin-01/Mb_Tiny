@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/Topbar.css';
@@ -30,7 +30,7 @@ const Topbar = () => {
 };
 
 export default Topbar;
-=======
+
 // import React from 'react';
 // import { useNavigate } from 'react-router-dom';
 // import '../css/Topbar.css';
@@ -62,4 +62,4 @@ export default Topbar;
 // };
 
 // export default Topbar;
->>>>>>> 5260eaeedd6cbc60cd8f3b3004cfed4e5182c278
+

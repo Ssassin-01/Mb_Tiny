@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import questions from './Questions';
-import '../../css/mbti/MBTITest.css';
+import questions from './questions';
+import '../../css/mbti/MbtiTest.css';
 import MbtiMatchResult from './MbtiMatchResult';
 
 const MbtiTest = () => {
