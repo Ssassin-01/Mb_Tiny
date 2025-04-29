@@ -2,6 +2,7 @@
 
     import com.meeti.mbTiny.dto.LoginRequestDTO;
     import com.meeti.mbTiny.dto.MemberDTO;
+    import com.meeti.mbTiny.dto.MemberListResponseDTO;
     import com.meeti.mbTiny.dto.MemberRequestDTO;
     import com.meeti.mbTiny.entity.Member;
     import com.meeti.mbTiny.security.CustomUserDetails;
@@ -132,18 +133,21 @@
             return ResponseEntity.ok(exactNickname );
         }
 
-
-
-
-        @GetMapping("/filter/mbti")
-        public ResponseEntity<List<Member>> getMembersByMBTI(
+        @GetMapping("/random")
+        public ResponseEntity<?> getRandomMembers(@RequestParam(defaultValue = "20") int count) {
+            List<MemberListResponseDTO> members = memberService.getRandomMembers(count);
+            return ResponseEntity.ok(members);
+        }
+        @GetMapping("/random/mbti")
+        public ResponseEntity<?> getMembersByMBTI(
+                @RequestParam(defaultValue = "20") int count,
                 @RequestParam(defaultValue = "all") String IorE,
                 @RequestParam(defaultValue = "all") String NorS,
                 @RequestParam(defaultValue = "all") String TorF,
                 @RequestParam(defaultValue = "all") String JorP
         ) {
-            List<Member> filtered = memberService.getMembersByMBTI(IorE, NorS, TorF, JorP);
-            return ResponseEntity.ok(filtered);
+            List<MemberListResponseDTO> members = memberService.getRandomMembersByMBTI(count, IorE, NorS, TorF, JorP);
+            return ResponseEntity.ok(members);
         }
 
 

@@ -1,6 +1,7 @@
 package com.meeti.mbTiny.service;
 
 import com.meeti.mbTiny.dto.MemberDTO;
+import com.meeti.mbTiny.dto.MemberListResponseDTO;
 import com.meeti.mbTiny.dto.MemberRequestDTO;
 import com.meeti.mbTiny.entity.Member;
 import com.meeti.mbTiny.repository.MemberRepository;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -114,5 +116,44 @@ public class MemberService {
         return memberRepository.findByNicknameIgnoreCase(nickname)
                 .map(Member::getNickname)
                 .orElse(null);
+    }
+
+    public List<MemberListResponseDTO> getRandomMembers(int count) {
+        List<Member> allMembers = memberRepository.findAll();
+
+        Collections.shuffle(allMembers);
+
+        List<Member> selectedMembers = allMembers.stream().limit(count).toList();
+
+        return selectedMembers.stream()
+                .map(member -> MemberListResponseDTO.builder()
+                        .nickname(member.getNickname())
+                        .profileImgUrl(member.getProfileImgUrl())
+                        .build()
+                ).collect(Collectors.toList());
+    }
+    public List<MemberListResponseDTO> getRandomMembersByMBTI(int count, String IorE, String NorS, String TorF, String JorP) {
+        List<Member> filtered = memberRepository.findAll().stream()
+                        .filter(member -> {
+                            String mbti = Optional.ofNullable(member.getMbti()).orElse("").toUpperCase();
+                            return mbti.length() == 4 &&
+                                    (IorE.equals("all") || mbti.startsWith(IorE)) &&
+                                    (NorS.equals("all") || mbti.charAt(1) == NorS.charAt(0)) &&
+                                    (TorF.equals("all") || mbti.charAt(2) == TorF.charAt(0)) &&
+                                    (JorP.equals("all") || mbti.charAt(3) == JorP.charAt(0));
+                        }).collect(Collectors.toList());
+
+        Collections.shuffle(filtered);
+
+        return filtered.stream()
+                .limit(count)
+                .map(member -> MemberListResponseDTO.builder()
+                        .id(member.getId())
+                        .nickname(member.getNickname())
+                        .mbti(member.getMbti())
+                        .followerCount(member.getFollowers().size())
+                        .profileImgUrl(member.getProfileImgUrl())
+                        .build()
+                ).collect(Collectors.toList());
     }
 }
