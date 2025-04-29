@@ -106,6 +106,18 @@
             return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
         }
 
+        @GetMapping("/search")
+        public ResponseEntity<List<MemberDTO>> searchByNickname(@RequestParam("keyword") String keyword) {
+            List<MemberDTO> nicknames = memberService.searchByNickname(keyword);
+            return ResponseEntity.ok(nicknames);
+        }
+
+        @GetMapping("/search/exact")
+        public ResponseEntity<?> searchExactNickname(@RequestParam("nickname") String nickname) {
+            String exactNickname  = memberService.findExactNickname(nickname);
+            return ResponseEntity.ok(exactNickname );
+        }
+
 
 
 
