@@ -99,7 +99,8 @@
         //회원정보 수정
         @PutMapping("/modify")
         public ResponseEntity<?> modifyProfile(@ModelAttribute MemberUpdateRequestDTO dto,
-                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+                                               @AuthenticationPrincipal CustomUserDetails userDetails,
+                                               HttpServletRequest request) {
             MultipartFile profileImg = dto.getProfileImg();
             System.out.println(dto.getProfileImg());
             System.out.println(profileImg);
@@ -109,6 +110,19 @@
             }
 
             memberService.updateUser(userDetails.getUsername(), dto);
+
+            Member updatedMember = userDetails.getMember();
+            updatedMember = memberService.getUpdatedMemberByEmail(updatedMember.getEmail()); // DB에서 다시 조회
+
+            CustomUserDetails newDetails = new CustomUserDetails(updatedMember);
+            UsernamePasswordAuthenticationToken newAuth =
+                    new UsernamePasswordAuthenticationToken(newDetails, null, newDetails.getAuthorities());
+
+            // ✅ SecurityContext에 새로운 인증 정보로 교체
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(newAuth);
+            request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+
             return ResponseEntity.ok("프로필이 수정되었습니다.");
         }
 

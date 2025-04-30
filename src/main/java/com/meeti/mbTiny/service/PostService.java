@@ -71,6 +71,7 @@
         public void deletePost(Long postId, Member member) {
             Post post = validatePostOwner(member, postId);
             postRepository.delete(post);
+            fileUploadService.delete(post.getImageUrl());
         }
         public List<PostDTO> getAllPosts(Optional<Member> member) {
             List<Post> posts = postRepository.findByIsAnonymousFalseOrderByCreatedAtDesc();
