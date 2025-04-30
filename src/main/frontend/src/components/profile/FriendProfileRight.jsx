@@ -15,10 +15,10 @@ function FriendProfileRight({ targetNickname }) {  // props 받는 거 맞음
     const fetchFriendInfo = async () => {
       try {
         
-        const res = await axios.get(`/api/members/${targetNickname}`, { withCredentials: true });
+        const res = await axios.get(`http://localhost:8080/api/members/${targetNickname}`, { withCredentials: true });
         setFriendInfo(res.data);
 
-        const feedRes = await axios.get('/api/posts', { withCredentials: true });
+        const feedRes = await axios.get('http://localhost:8080/api/posts', { withCredentials: true });
         console.log('전체 피드 데이터:', feedRes.data);
         
         const myFeeds = feedRes.data.filter(post => {
@@ -30,7 +30,7 @@ function FriendProfileRight({ targetNickname }) {  // props 받는 거 맞음
         setFeedPosts(myFeeds);
         
 
-        const anonRes = await axios.get('/api/anonymous-posts', { withCredentials: true });
+        const anonRes = await axios.get('http://localhost:8080/api/anonymous-posts', { withCredentials: true });
         const myAnons = anonRes.data.filter(post => post.nickname?.toLowerCase() === targetNickname.toLowerCase());
         setAnonymousPosts(myAnons);
       } catch (error) {

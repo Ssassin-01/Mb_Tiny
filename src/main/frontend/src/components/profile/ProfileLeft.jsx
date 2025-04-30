@@ -5,6 +5,7 @@ import axios from 'axios';
 import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
 import mbtiDescriptions from './mbtiDescriptions';
+import DeleteId from './DeleteId';
 
 const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
   const onchangeImageUpload = async (e) => {
@@ -59,8 +60,12 @@ const ProfileLeft = ({
   const navigate = useNavigate();
   const [modalType, setModalType] = useState(null);
   const [uploadImgUrl, setUploadImgUrl] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+
+  const openModal = (type) => setModalType(type);
+  const closeModal = () => setModalType(null);
 
   const mbtiInfo = mbtiDescriptions[mbti?.toUpperCase()] || {
     title: '성격유형',
@@ -68,14 +73,29 @@ const ProfileLeft = ({
     description: '아직 등록되지 않은 MBTI입니다.',
   };
 
-  const openModal = (type) => setModalType(type);
-  const closeModal = () => setModalType(null);
+ // 회원탈퇴 처리 함수 (새로고침 포함)
+  const handleDelete = async () => {
+    try {
+      await axios.delete('http://localhost:8080/api/members/delete', {
+        withCredentials: true,
+      });
+      alert('회원탈퇴가 완료되었습니다.');
+      sessionStorage.clear();
+      navigate('/');
+      window.location.reload(); // 새로고침
+    } catch (error) {
+      console.error('회원 탈퇴 실패:', error);
+      alert('탈퇴 중 오류가 발생했습니다.');
+    }
+
+  };
+
 
   // 팔로워/팔로잉 수 가져오기
   useEffect(() => {
     const fetchFollowCount = async () => {
       try {
-        const res = await axios.get('/api/follow/count', { withCredentials: true });
+        const res = await axios.get('http://localhost:8080/api/follow/count', { withCredentials: true });
         setFollowerCount(res.data.followers);
         setFollowingCount(res.data.following);
       } catch (err) {
@@ -97,9 +117,9 @@ const ProfileLeft = ({
           targetId={targetId}
         />
 
-        <p className="profile-nickname">{nickname}</p>
+        <p className="profile-nickname" style={{cursor:'pointer'}}>{nickname}</p>
         <div className="profile-info">
-          <p className="profile-mbti">{mbti || 'MBTI 미설정'}</p>
+          <p className="profile-mbti" style={{cursor:'pointer'}}>{mbti || 'MBTI 미설정'}</p>
           <p><strong>가입일:</strong> {joinDate}</p>
 
           <div className="profile-stats">
@@ -123,7 +143,7 @@ const ProfileLeft = ({
           {isOwner && (
             <div className="profile-actions">
               <button className="edit-btn" onClick={() => navigate("/profile/edit")}>프로필 수정</button>
-              <button className="delete-btn">회원탈퇴</button>
+              <button className="delete-btn" onClick={() => setShowDeleteModal(true)}>회원탈퇴</button>
             </div>
           )}
         </div>
@@ -134,6 +154,13 @@ const ProfileLeft = ({
           type={modalType}
           targetId={targetId}
           onClose={closeModal}
+        />
+      )}
+
+      {showDeleteModal && (
+        <DeleteId
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDelete}
         />
       )}
     </div>

@@ -61,12 +61,12 @@ function FeedCard({ feed, onUpdate, onDelete }) {
     if (newComment.trim() === '') return;
 
     try {
-      await axios.post(`/api/posts/${feed.id}/comments`, {
+      await axios.post(`http://localhost:8080/api/posts/${feed.id}/comments`, {
         content: newComment
       }, { withCredentials: true });
 
       setNewComment('');
-      const res = await axios.get(`/api/posts/${feed.id}/comments`, { withCredentials: true });
+      const res = await axios.get(`http://localhost:8080/api/posts/${feed.id}/comments`, { withCredentials: true });
       setComments(res.data);
     } catch (error) {
       console.error('댓글 작성 실패:', error);
@@ -76,7 +76,7 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   // 좋아요 토글 (버튼 색깔 즉시 변경)
   const handleLikeClick = async () => {
     try {
-      const res = await axios.post(`/api/posts/${feed.id}/like`, null, { withCredentials: true });
+      const res = await axios.post(`http://localhost:8080/api/posts/${feed.id}/like`, null, { withCredentials: true });
       setLiked(res.data.like); // true/false 값 받아서 liked 상태 갱신
     } catch (error) {
       console.error('좋아요 실패:', error);

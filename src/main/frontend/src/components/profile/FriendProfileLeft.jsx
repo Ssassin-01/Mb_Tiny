@@ -32,8 +32,8 @@ const FriendProfileLeft = ({
   const fetchFollowCounts = async () => {
     try {
       const url = isOwner
-        ? '/api/follow/count'
-        : `/api/follow/count/${targetId}`;
+        ? 'http://localhost:8080/api/follow/count'
+        : `http://localhost:8080/api/follow/count/${targetId}`;
       const res = await axios.get(url, { withCredentials: true });
       setFollowerCount(res.data.followers);
       setFollowingCount(res.data.following);

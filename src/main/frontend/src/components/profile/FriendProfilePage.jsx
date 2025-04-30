@@ -13,7 +13,12 @@ const FriendProfilePage = () => {
     const fetchProfile = async () => {
       try {
         
-        const res = await fetch(`/api/members/${nickname}`);
+        const res = await fetch(`http://localhost:8080/api/members/${encodeURIComponent(nickname)}`, {
+          method: 'GET',
+          credentials: 'include', // 이거 반드시 필요
+        });
+        
+
         const data = await res.json();
         console.log('받은 profileData:', data);
         setProfileData(data);

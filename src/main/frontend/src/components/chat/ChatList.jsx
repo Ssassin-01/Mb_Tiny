@@ -4,7 +4,7 @@ import '../../css/chat/ChatList.css';
 const ChatList = ({ users = [], onSelectUser, selectedUser, onDelete }) => {
   const [deleteMode, setDeleteMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
-  const [selectAll, setSelectAll] = useState(false); // ✅ 전체 선택 상태 추가
+  const [selectAll, setSelectAll] = useState(false); // 전체 선택 상태 추가
 
   const toggleDeleteMode = () => {
     if (deleteMode && selectedIds.length > 0) {
@@ -13,7 +13,7 @@ const ChatList = ({ users = [], onSelectUser, selectedUser, onDelete }) => {
         onDelete(selectedIds);
       }
       setSelectedIds([]);
-      setSelectAll(false); // ✅ 전체선택 해제
+      setSelectAll(false); // 전체선택 해제
     }
     setDeleteMode(!deleteMode);
   };

@@ -16,7 +16,7 @@ function FollowModal({ type, onClose }) {
     const fetchList = async () => {
       try {
         // 상대방 ID로 조회는 불가능 → 본인 기준의 followers/following만 가능
-        const res = await axios.get(`/api/follow/${type}`, { withCredentials: true });
+        const res = await axios.get(`http://localhost:8080/api/follow/${type}`, { withCredentials: true });
         setUsers(res.data);
       } catch (error) {
         console.error(`${type} 목록 불러오기 실패:`, error);

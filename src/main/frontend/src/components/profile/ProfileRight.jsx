@@ -17,20 +17,20 @@ function ProfileRight() {
 
   const fetchMyPosts = async () => {
     try {
-      const userRes = await axios.get('/api/members/me', { withCredentials: true });
+      const userRes = await axios.get('http://localhost:8080/api/members/me', { withCredentials: true });
       const loginUser = userRes.data;
       console.log("현재 로그인 유저:", loginUser);
 
       if (!loginUser) return;
 
       // 일반 게시글
-      const feedRes = await axios.get('/api/posts', { withCredentials: true });
+      const feedRes = await axios.get('http://localhost:8080/api/posts', { withCredentials: true });
       const myFeeds = feedRes.data.filter(post => post.email === loginUser.email);
       setFeedPosts(myFeeds);
       setHasMoreFeed(false);
 
       // 익명 게시글
-      const anonRes = await axios.get('/api/anonymous-posts', { withCredentials: true });
+      const anonRes = await axios.get('http://localhost:8080/api/anonymous-posts', { withCredentials: true });
       const myAnons = anonRes.data.filter(post => post.email === loginUser.email);
       setAnonymousPosts(myAnons);
       setHasMoreAnon(false);
