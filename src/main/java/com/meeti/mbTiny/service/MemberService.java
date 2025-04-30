@@ -203,5 +203,4 @@ public class MemberService {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 유저를 찾을 수 없습니다."));
     }
-
 }
