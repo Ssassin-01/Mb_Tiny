@@ -1,11 +1,11 @@
 // src/pages/MessagesPage.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ChatList from '../components/ChatList';
-import ChatRoom from '../components/ChatRoom';
+import ChatList from '../components/chat/ChatList';
+import ChatRoom from '../components/chat/ChatRoom';
 import SockJS from 'sockjs-client';
 import { CompatClient, Stomp } from '@stomp/stompjs';
-import '../css/MessagesPage.css';
+import '../css/pages/MessagesPage.css';
 
 const MessagesPage = () => {
   const [stompClient, setStompClient] = useState(null);

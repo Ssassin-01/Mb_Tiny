@@ -18,19 +18,19 @@ function ProfileRight() {
 
   const fetchMyPosts = async () => {
     try {
-      const userRes = await axios.get('/api/members/me', { withCredentials: true });
+      const userRes = await axios.get('http://localhost:8080/api/members/me', { withCredentials: true });
       const loginUser = userRes.data;
 
       if (!loginUser) return;
 
       // ✅ 내가 쓴 일반 피드
-      const feedRes = await axios.get('/api/posts', { withCredentials: true });
+      const feedRes = await axios.get('http://localhost:8080/api/posts', { withCredentials: true });
       const myFeeds = feedRes.data.filter(post => post.email === loginUser.email);
       setFeedPosts(myFeeds);
       setHasMoreFeed(false);
 
       // ✅ 내가 쓴 익명글
-      const anonRes = await axios.get('/api/anonymous-posts', { withCredentials: true });
+      const anonRes = await axios.get('http://localhost:8080/api/anonymous-posts', { withCredentials: true });
       const myAnons = anonRes.data.filter(post => post.email === loginUser.email);
       setAnonymousPosts(myAnons);
       setHasMoreAnon(false);
@@ -44,7 +44,7 @@ function ProfileRight() {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
 
     try {
-      await axios.delete(`/api/posts/${postId}`, { withCredentials: true });
+      await axios.delete(`http://localhost:8080/api/posts/${postId}`, { withCredentials: true });
       alert('삭제되었습니다.');
       fetchMyPosts();
     } catch (err) {
@@ -66,7 +66,7 @@ function ProfileRight() {
         formData.append('image', newImage);
       }
 
-      await axios.put(`/api/posts/${postId}`, formData, {
+      await axios.put(`http://localhost:8080/api/posts/${postId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

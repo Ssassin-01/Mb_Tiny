@@ -1,6 +1,6 @@
 // src/components/ChatList.jsx
 import React from 'react';
-import '../css/ChatList.css';
+import '../css/chat/ChatList.css';
 
 const ChatList = ({ chatRooms = [], onSelectChatRoom, selectedRoomId }) => {
   const formatTime = (dateString) => {

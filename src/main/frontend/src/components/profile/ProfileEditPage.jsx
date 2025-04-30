@@ -18,7 +18,7 @@ const ProfileEditPage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('/api/members/me', { withCredentials: true });
+        const res = await axios.get('http://localhost:8080/api/members/me', { withCredentials: true });
         const { gender, phone, birthday, mbti, profileImage } = res.data;
         setForm({
           password: '',
@@ -64,7 +64,7 @@ const ProfileEditPage = () => {
         formData.append('profileImg', imageFile); // DTO 필드명과 일치
       }
 
-      await axios.put('/api/members/modify', formData, {
+      await axios.put('http://localhost:8080/api/members/modify', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
       });

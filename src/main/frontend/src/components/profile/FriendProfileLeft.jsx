@@ -56,7 +56,7 @@ const FriendProfileLeft = ({
   
   const fetchFollowCounts = async () => {
     try {
-      const res = await axios.get('/api/follow/count', { withCredentials: true });
+      const res = await axios.get('http://localhost:8080/api/follow/count', { withCredentials: true });
       setFollowerCount(res.data.followers);
       setFollowingCount(res.data.following);
     } catch (error) {

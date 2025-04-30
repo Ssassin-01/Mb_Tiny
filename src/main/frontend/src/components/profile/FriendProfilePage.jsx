@@ -3,17 +3,22 @@ import { useParams } from 'react-router-dom';
 import FriendProfileLeft from './FriendProfileLeft';
 import FriendProfileRight from './FriendProfileRight';
 import '../../css/profile/FriendProfilePage.css';
+import axios from 'axios';
 
 const FriendProfilePage = () => {
-  const { nickname } = useParams(); // 이 id는 닉네임일 수도 있고, 숫자 id일 수도 있음
+  const { nickname } = useParams(); // 닉네임 또는 숫자 ID일 수 있음
   const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
-    
     const fetchProfile = async () => {
       try {
         
-        const res = await fetch(`/api/members/${nickname}`);
+        const res = await fetch(`http://localhost:8080/api/members/${encodeURIComponent(nickname)}`, {
+          method: 'GET',
+          credentials: 'include', // 이거 반드시 필요
+        });
+        
+
         const data = await res.json();
         console.log('받은 profileData:', data);
         setProfileData(data);
@@ -30,9 +35,7 @@ const FriendProfilePage = () => {
   }
 
   return (
-<div className="friend-profile-page">
-  {profileData && (
-    <>
+    <div className="friend-profile-page">
       <FriendProfileLeft
         nickname={profileData.nickname}
         mbti={profileData.mbti}
@@ -41,13 +44,8 @@ const FriendProfilePage = () => {
         isOwner={false}
         targetId={profileData.id}
       />
-      <FriendProfileRight
-        targetNickname={profileData.nickname}
-      />
-    </>
-  )}
-</div>
-
+      <FriendProfileRight targetNickname={profileData.nickname} />
+    </div>
   );
 };
 
