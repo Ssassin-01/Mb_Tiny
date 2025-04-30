@@ -1,0 +1,145 @@
+.signup {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #eee;
+  border-radius: 10px;
+  font-family: 'Pretendard', sans-serif;
+  text-align: center;
+}
+
+.logo {
+  width: 60px;
+  margin: 0 auto 10px;
+  display: block;      
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.form label {
+  font-size: 14px;
+  color: #333;
+}
+
+.form input,
+.form select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.birth-group {
+  display: flex;
+  gap: 8px;
+}
+
+.birth-input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.birth-input.year,
+.birth-input.day {
+  flex: 2;
+}
+
+.birth-input.month {
+  flex: 1;
+}
+
+.address-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.address-group input {
+  flex: 3;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.address-btn {
+  flex: 1;
+  padding: 10px;
+  background-color: #30d5c8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.address-btn:hover {
+  background-color: #28c4b7;
+}
+
+.mbti-test-link {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #30d5c8;
+  text-align: right;
+  text-decoration: none;
+}
+
+.mbti-test-link:hover {
+  text-decoration: underline;
+}
+
+.submit-btn {
+  background-color: #30d5c8;
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.submit-btn:hover {
+  background-color: #28c4b7;
+}
+
+/* 생년월일 date input 전용 스타일 */
+input[type="date"] {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fefefe;
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Pretendard', sans-serif;
+  cursor: pointer;
+}
+
+input[type="date"]:hover {
+  border-color: #30d5c8;
+  background-color: #f8fdfd;
+}
+
+input[type="date"]:focus {
+  outline: none;
+  border-color: #30d5c8;
+  box-shadow: 0 0 0 2px rgba(48, 213, 200, 0.2);
+}

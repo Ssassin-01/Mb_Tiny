@@ -1,0 +1,85 @@
+/* 알림벨 버튼 */
+.notification-bell {
+  background: transparent;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  font-size: 28px;
+}
+
+/* 알림 개수 뱃지 */
+.notification-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: red;
+  color: white;
+  font-size: 10px;
+  border-radius: 999px;
+  padding: 2px 6px;
+  font-weight: bold;
+}
+
+/* 드롭다운 전체 박스 */
+.notification-dropdown {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: dropdownFade 0.3s ease-out;
+  z-index: 100;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* 드롭다운 열릴 때 애니메이션 */
+@keyframes dropdownFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 각각의 알림 아이템 */
+.notification-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.notification-item:hover {
+  background-color: rgba(240, 240, 255, 0.4);
+}
+
+/* 알림 아이콘 */
+.notification-icon {
+  font-size: 18px;
+  color: #30d5c8;
+}
+
+/* 알림 텍스트 */
+.notification-text {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* 알림 시간 표시 */
+.notification-time {
+  font-size: 12px;
+  color: #999;
+  margin-left: auto;
+}
