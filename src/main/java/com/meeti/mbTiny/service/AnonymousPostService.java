@@ -49,7 +49,8 @@ public class AnonymousPostService {
         post.setContent(dto.getContent());
         post.setAnonymous(true);
 
-        if (image == null || image.isEmpty()) {
+        if (image == null) {
+        } else if (image.isEmpty()) {
             if (post.getImageUrl() != null) {
                 fileUploadService.delete(post.getImageUrl());
             }
@@ -61,6 +62,7 @@ public class AnonymousPostService {
             String imageUrl = fileUploadService.upload(image, "AnonymousPost");
             post.setImageUrl(imageUrl);
         }
+
         postRepository.save(post);
     }
     @Transactional

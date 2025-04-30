@@ -1,13 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCamera } from 'react-icons/fa';
 import axios from 'axios';
 import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
-import DeleteId from './DeleteId';
 import mbtiDescriptions from './mbtiDescriptions';
-
+import DeleteId from './DeleteId';
 
 const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
   const onchangeImageUpload = async (e) => {
@@ -29,18 +27,6 @@ const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
       setUploadImgUrl(`http://localhost:8080${res.data.imageUrl}`);
     } catch (err) {
       console.error('프로필 사진 업로드 실패:', err);
-    
-      // 상세 오류 분석
-      if (err.response) {
-        console.error('서버 응답 오류:', err.response.data);
-        console.error('상태 코드:', err.response.status);
-        console.error('응답 헤더:', err.response.headers);
-      } else if (err.request) {
-        console.error('요청은 갔지만 응답 없음:', err.request);
-      } else {
-        console.error('오류 발생:', err.message);
-      }
-    
       alert('프로필 사진 업로드 중 오류가 발생했습니다.');
     }
   };
@@ -69,14 +55,14 @@ const ProfileLeft = ({
   onTogglePosts,
   postCount,
   isOwner,
-  followerCount,
-  followingCount,
   targetId
 }) => {
   const navigate = useNavigate();
   const [modalType, setModalType] = useState(null);
   const [uploadImgUrl, setUploadImgUrl] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   const openModal = (type) => setModalType(type);
   const closeModal = () => setModalType(null);
@@ -87,7 +73,7 @@ const ProfileLeft = ({
     description: '아직 등록되지 않은 MBTI입니다.',
   };
 
-  // ✅ 회원탈퇴 처리 함수 (새로고침 포함)
+ // 회원탈퇴 처리 함수 (새로고침 포함)
   const handleDelete = async () => {
     try {
       await axios.delete('http://localhost:8080/api/members/delete', {
@@ -96,13 +82,31 @@ const ProfileLeft = ({
       alert('회원탈퇴가 완료되었습니다.');
       sessionStorage.clear();
       navigate('/');
-      window.location.reload(); // ✅ 새로고침
+      window.location.reload(); // 새로고침
     } catch (error) {
       console.error('회원 탈퇴 실패:', error);
       alert('탈퇴 중 오류가 발생했습니다.');
     }
 
   };
+
+
+  // 팔로워/팔로잉 수 가져오기
+  useEffect(() => {
+    const fetchFollowCount = async () => {
+      try {
+        const res = await axios.get('http://localhost:8080/api/follow/count', { withCredentials: true });
+        setFollowerCount(res.data.followers);
+        setFollowingCount(res.data.following);
+      } catch (err) {
+        console.error('팔로우 수 불러오기 실패:', err);
+      }
+    };
+
+    if (isOwner) {
+      fetchFollowCount();
+    }
+  }, [isOwner]);
 
   return (
     <div className="profile-left">
@@ -113,9 +117,9 @@ const ProfileLeft = ({
           targetId={targetId}
         />
 
-        <p className="profile-nickname">{nickname}</p>
+        <p className="profile-nickname" style={{cursor:'pointer'}}>{nickname}</p>
         <div className="profile-info">
-          <p className="profile-mbti">{mbti || 'MBTI 미설정'}</p>
+          <p className="profile-mbti" style={{cursor:'pointer'}}>{mbti || 'MBTI 미설정'}</p>
           <p><strong>가입일:</strong> {joinDate}</p>
 
           <div className="profile-stats">
@@ -153,14 +157,12 @@ const ProfileLeft = ({
         />
       )}
 
-
       {showDeleteModal && (
         <DeleteId
           onClose={() => setShowDeleteModal(false)}
           onConfirm={handleDelete}
         />
       )}
-
     </div>
   );
 };

@@ -60,10 +60,22 @@ public class FollowService {
     }
 
     public long countFollowers(Member member) {
-        return followRepository.countByFollower(member);
+        return followRepository.countByFollowing(member);
     }
 
     public long countFollowing(Member member) {
+        return followRepository.countByFollower(member);
+    }
+
+    public long countFollowersByNickname(String nickname) {
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
         return followRepository.countByFollowing(member);
+    }
+
+    public long countFollowingByNickname(String nickname) {
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        return followRepository.countByFollower(member);
     }
 }

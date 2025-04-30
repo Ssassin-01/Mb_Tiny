@@ -15,7 +15,7 @@ function FollowButton({ targetId, onFollowChange }) {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const res = await axios.get('/api/follow/following', { withCredentials: true });
+        const res = await axios.get('http://localhost:8080/api/follow/following', { withCredentials: true });
         const followingList = res.data;
         const isAlreadyFollowing = followingList.some(user => user.id === targetId);
         setIsFollowing(isAlreadyFollowing);
@@ -36,10 +36,10 @@ function FollowButton({ targetId, onFollowChange }) {
 
     try {
       if (isFollowing) {
-        await axios.delete(`/api/follow/${targetId}`, { withCredentials: true });
+        await axios.delete(`http://localhost:8080/api/follow/${targetId}`, { withCredentials: true });
         setIsFollowing(false);
       } else {
-        await axios.post(`/api/follow/${targetId}`, {}, { withCredentials: true });
+        await axios.post(`http://localhost:8080/api/follow/${targetId}`, {}, { withCredentials: true });
         setIsFollowing(true);
       }
 
