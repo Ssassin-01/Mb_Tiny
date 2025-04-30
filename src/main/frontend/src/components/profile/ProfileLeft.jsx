@@ -5,10 +5,9 @@ import { FaCamera } from 'react-icons/fa';
 import axios from 'axios';
 import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
-import DeleteId from './DeleteId'; // ✅ 회원탈퇴 모달 import
+import DeleteId from './DeleteId';
 import mbtiDescriptions from './mbtiDescriptions';
 
-// 프로필 이미지 업로드 컴포넌트
 const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
   const onchangeImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -50,7 +49,6 @@ const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
   );
 };
 
-// 메인 프로필 좌측 컴포넌트
 const ProfileLeft = ({
   nickname,
   mbti,
@@ -65,7 +63,7 @@ const ProfileLeft = ({
   const navigate = useNavigate();
   const [modalType, setModalType] = useState(null);
   const [uploadImgUrl, setUploadImgUrl] = useState('');
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // ✅ 회원탈퇴 모달 상태
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const openModal = (type) => setModalType(type);
   const closeModal = () => setModalType(null);
@@ -76,7 +74,7 @@ const ProfileLeft = ({
     description: '아직 등록되지 않은 MBTI입니다.',
   };
 
-  // ✅ 회원탈퇴 처리 함수
+  // ✅ 회원탈퇴 처리 함수 (새로고침 포함)
   const handleDelete = async () => {
     try {
       await axios.delete('http://localhost:8080/api/members/delete', {
@@ -85,6 +83,7 @@ const ProfileLeft = ({
       alert('회원탈퇴가 완료되었습니다.');
       sessionStorage.clear();
       navigate('/');
+      window.location.reload(); // ✅ 새로고침
     } catch (error) {
       console.error('회원 탈퇴 실패:', error);
       alert('탈퇴 중 오류가 발생했습니다.');
@@ -128,7 +127,6 @@ const ProfileLeft = ({
         </div>
       </div>
 
-      {/* 팔로워/팔로잉 모달 */}
       {modalType && (
         <FollowModal
           type={modalType}
@@ -137,7 +135,6 @@ const ProfileLeft = ({
         />
       )}
 
-      {/* ✅ 회원탈퇴 모달 */}
       {showDeleteModal && (
         <DeleteId
           onClose={() => setShowDeleteModal(false)}
