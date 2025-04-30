@@ -31,7 +31,6 @@ function App() {
           <Route path='/mbtitest' element={<MbtiTest />} />
           <Route path='/messagespage' element={<MessagesPage />} />
           <Route path="/profile/edit" element={<ProfileEditPage />} />
-
         </Route>
       </Routes>
     </Router>
