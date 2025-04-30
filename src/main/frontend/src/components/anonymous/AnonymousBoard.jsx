@@ -10,31 +10,34 @@ function AnonymousBoard() {
   const POSTS_PER_PAGE = 20;
 
   useEffect(() => {
-    sessionStorage.setItem('loginUser', JSON.stringify({
-      id: 1,
-      nickname: '도하',
-      mbti: 'INFP'
-    }));
-
-    const fetchPosts = async () => {
+    const checkLoginAndFetch = async () => {
       try {
+        // ✅ 로그인 유저 정보 확인
+        const userRes = await axios.get('http://localhost:8080/api/members/me', {
+          withCredentials: true,
+        });
+
+        // ✅ 세션스토리지에 저장 (기존 코드와 호환)
+        sessionStorage.setItem('loginUser', JSON.stringify(userRes.data));
+
+        // ✅ 게시글 가져오기
         const res = await axios.get('http://localhost:8080/api/anonymous-posts', {
           withCredentials: true,
         });
         setPosts(res.data);
       } catch (err) {
-        console.error('게시글 불러오기 실패', err);
+        alert('로그인이 필요합니다.');
+        navigate('/login');
       }
     };
 
-    fetchPosts();
-  }, []);
+    checkLoginAndFetch();
+  }, [navigate]);
 
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
   const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
   const currentPosts = posts.slice(startIdx, startIdx + POSTS_PER_PAGE);
 
-  // ✅ 오늘이면 시간, 아니면 월-일 형식으로 포맷
   function formatDateOrTime(createdAt) {
     const createdDate = new Date(createdAt);
     const now = new Date();
@@ -57,8 +60,6 @@ function AnonymousBoard() {
     <div className="anonymous-page">
       <div className="anonymous-layout">
         <div className="anonymous-board">
-
-          {/* ✅ PC 테이블 */}
           <div className="table-wrapper pc-only">
             <table className="table">
               <thead>
@@ -94,7 +95,6 @@ function AnonymousBoard() {
             </table>
           </div>
 
-          {/* ✅ 모바일 리스트 */}
           <div className="mobile-list mobile-only">
             {currentPosts.map((post) => (
               <div className="mobile-post-item" key={post.id} onClick={() => navigate(`/anonymous/${post.id}`)}>
@@ -113,7 +113,6 @@ function AnonymousBoard() {
             ))}
           </div>
 
-          {/* ✅ 페이징 + 글쓰기 버튼은 공통 */}
           <div className="paging">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
@@ -131,7 +130,6 @@ function AnonymousBoard() {
               글쓰기
             </button>
           </div>
-
         </div>
       </div>
     </div>
