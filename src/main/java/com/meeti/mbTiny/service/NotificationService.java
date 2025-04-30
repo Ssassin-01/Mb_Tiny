@@ -49,9 +49,9 @@ public class NotificationService {
         return scheduler.scheduleAtFixedRate(() -> {
             if (emitters.containsKey(memberId)) {
                 try {
-                    emitters.get(memberId).send(SseEmitter.event().name("heartbeat").data("heartbeat"));
+                    emitters.get(memberId).send(SseEmitter.event().name("heartbeat").data("💓"));
                 } catch (IOException e) {
-                    System.out.println("Heartbeat 실패, emitter 제거: memberId = " + memberId);
+                    System.out.println("💔 Heartbeat 실패, emitter 제거: memberId = " + memberId);
                     removeEmitter(memberId);
                 }
             }
