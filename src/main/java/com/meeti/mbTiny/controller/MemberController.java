@@ -1,13 +1,10 @@
     package com.meeti.mbTiny.controller;
 
-    import com.meeti.mbTiny.dto.LoginRequestDTO;
-    import com.meeti.mbTiny.dto.MemberDTO;
-    import com.meeti.mbTiny.dto.MemberListResponseDTO;
-    import com.meeti.mbTiny.dto.MemberRequestDTO;
-    import com.meeti.mbTiny.dto.MemberUpdateRequestDTO;
+    import com.meeti.mbTiny.dto.*;
     import com.meeti.mbTiny.entity.Member;
     import com.meeti.mbTiny.security.CustomUserDetails;
     import com.meeti.mbTiny.service.MemberService;
+    import com.meeti.mbTiny.service.PostService;
     import jakarta.servlet.http.Cookie;
     import jakarta.servlet.http.HttpServletRequest;
     import jakarta.servlet.http.HttpServletResponse;
@@ -37,6 +34,7 @@
     public class MemberController {
         private final MemberService memberService;
         private final AuthenticationManager authenticationManager;
+        private final PostService postService;
 
         @PostMapping("/register")
         public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody MemberRequestDTO dto) {
@@ -90,6 +88,12 @@
         public ResponseEntity<MemberDTO> getOtherProfile(@PathVariable String nickname) {
             MemberDTO profile = memberService.getOtherProfile(nickname);
             return ResponseEntity.ok(profile);
+        }
+
+        @GetMapping("/{nickname}/posts")
+        public ResponseEntity<List<PostDTO>> getPostsByMemberNickname(@PathVariable String nickname) {
+            List<PostDTO> posts = postService.getPostsByMemberNickname(nickname);
+            return ResponseEntity.ok(posts);
         }
 
         //회원정보 수정
