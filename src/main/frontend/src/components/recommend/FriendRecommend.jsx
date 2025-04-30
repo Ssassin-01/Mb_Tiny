@@ -134,7 +134,7 @@ const FriendRecommend = () => {
                     className={`follow-friend-btn ${requestedIds.has(friend.id) ? "requested" : ""}`}
                     onClick={(e) => handleFollowClick(e, friend.id)}
                   >
-                    {requestedIds.has(friend.id) ? "요청 취소" : "팔로우"}
+                    {requestedIds.has(friend.id) ? "팔로잉" : "팔로우"}
                   </button>
                 </li>
               ))}
