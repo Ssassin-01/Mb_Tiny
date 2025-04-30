@@ -22,7 +22,7 @@ function FeedList() {
   // 서버에서 피드 가져오기
   const loadMoreFeeds = async () => {
     try {
-      const response = await axios.get('/api/posts', { withCredentials: true });
+      const response = await axios.get('http://localhost:8080/api/posts', { withCredentials: true });
       const fetchedFeeds = response.data;
   
       setAllFeeds(fetchedFeeds);
