@@ -12,10 +12,7 @@ import com.meeti.mbTiny.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,5 +40,16 @@ public class ChatRoomController {
         Member member = userDetails.getMember();
         List<MessageDTO> messages = messageService.getMessagesForChatRoom(roomId, member);
         return ResponseEntity.ok(messages);
+    }
+
+    @PostMapping
+    public ResponseEntity<ChatRoomDTO> createChatRoom(
+            @RequestBody ChatRoomRequestDTO dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Member sender = userDetails.getMember();
+        ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(sender.getNickname(), dto.getReceiverNickname());
+
+        return ResponseEntity.ok(chatRoomService.toDTO(chatRoom, sender));
     }
 }

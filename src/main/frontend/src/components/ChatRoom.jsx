@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import '../css/ChatRoom.css';
 
-const ChatRoom = ({ friend, messages, input, setInput, handleSend, onLeaveChat }) => {
+const ChatRoom = ({ friend, myNickname, messages, input, setInput, handleSend, onLeaveChat }) => {
   const chatBodyRef = useRef(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const ChatRoom = ({ friend, messages, input, setInput, handleSend, onLeaveChat }
         {messages.map((msg, idx) => (
           <div
             key={idx}
-            className={`chat-message ${msg.senderNickname === friend.nickname ? 'received' : 'sent'}`}
+            className={`chat-message ${msg.senderNickname === myNickname ? 'sent' : 'received'}`}
           >
             {msg.content}
           </div>

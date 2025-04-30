@@ -1,10 +1,11 @@
 package com.meeti.mbTiny.controller;
 
 import com.meeti.mbTiny.dto.MessageDTO;
+import com.meeti.mbTiny.entity.Message;
+import com.meeti.mbTiny.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -13,10 +14,12 @@ import org.springframework.stereotype.Controller;
 public class MessageController {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final MessageService messageService;
 
-    @MessageMapping("/chat.sendMessage") // 클라이언트가 /app/chat.sendMessage로 보내면 여기가 받는다
-    @SendTo("/topic/public") // 받은 메시지를 다시 /topic/public으로 브로드캐스트
-    public void sendMessage(@Payload MessageDTO message) {
-//        messagingTemplate.convertAndSend("/topic/room/" + message.getRoomId(), message);
+    @MessageMapping("/chat.sendMessage")
+    public void sendMessage(@Payload MessageDTO dto) {
+        System.out.println("WebSocket 메시지 수신: "+ dto.getContent());
+        messageService.saveMessage(dto);
+        messagingTemplate.convertAndSend("/topic/room/" + dto.getRoomId(), dto);
     }
 }

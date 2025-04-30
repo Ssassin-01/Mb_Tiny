@@ -6,6 +6,7 @@ import com.meeti.mbTiny.entity.ChatRoom;
 import com.meeti.mbTiny.entity.Member;
 import com.meeti.mbTiny.entity.Message;
 import com.meeti.mbTiny.repository.ChatRoomRepository;
+import com.meeti.mbTiny.repository.MemberRepository;
 import com.meeti.mbTiny.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,8 +21,7 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatRoomService chatRoomService;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     public List<MessageDTO> getMessagesForChatRoom(Long roomId, Member loginUser) {
@@ -40,19 +40,24 @@ public class MessageService {
                 .toList();
     }
 
+    @Transactional
+    public Message saveMessage(MessageDTO dto) {
+        ChatRoom chatRoom = chatRoomRepository.findById(dto.getRoomId())
+                .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
 
-//    public MessageDTO saveMessage(MessageRequestDTO dto) {
-//        ChatRoom chatRoom = chatRoomService.findById(dto.getRoomId());
-//        Member sender = memberService.findById(dto.getSenderId());
-//
-//        Message message = Message.builder()
-//                .chatRoom(chatRoom)
-//                .sender(sender)
-//                .content(content)
-//                .build();
-//    }
+        Member sender = memberRepository.findByNickname(dto.getSenderNickname())
+                .orElseThrow(() -> new IllegalArgumentException("보낸 사람을 찾을 수 없습니다."));
 
-    private MessageDTO convertToDTO(Message message) {
+        Message message = Message.builder()
+                .chatRoom(chatRoom)
+                .sender(sender)
+                .content(dto.getContent())
+                .build();
+
+        return messageRepository.save(message);
+    }
+
+    public MessageDTO convertToDTO(Message message) {
         return MessageDTO.builder()
                 .id(message.getId())
                 .senderNickname(message.getSender().getNickname())

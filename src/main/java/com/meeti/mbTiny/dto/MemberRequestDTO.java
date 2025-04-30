@@ -24,5 +24,7 @@ public class MemberRequestDTO {
     @NotBlank(message = "닉네임 입력하세요")
     private String nickname;
     private String mbti;
+    private String address;
+    private String profileImgUrl;
 
 }

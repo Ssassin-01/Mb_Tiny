@@ -141,8 +141,8 @@ public class MemberService {
                 .profileImgUrl(member.getProfileImgUrl())
                 .gender(member.getGender())
                 .birthday(member.getBirthday())
-                .createdAt(member.getCreateAt())
-                .updatedAt(member.getUpdateAt())
+                .createdAt(member.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .updatedAt(member.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();
     }
 

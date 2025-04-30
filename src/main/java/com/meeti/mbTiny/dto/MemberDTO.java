@@ -15,15 +15,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class MemberDTO {
+    private Long id;
     private String email;
     private String gender;
     private LocalDate birthday;
     private String phone;
     private String nickname;
     private String mbti;
+    private String address;
     private String profileImgUrl;
     private int followerCount;
     private int followingCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

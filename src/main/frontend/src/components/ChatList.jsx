@@ -3,6 +3,18 @@ import React from 'react';
 import '../css/ChatList.css';
 
 const ChatList = ({ chatRooms = [], onSelectChatRoom, selectedRoomId }) => {
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+      timeZone: 'Asia/Seoul'
+    };
+    return new Intl.DateTimeFormat('ko-KR', options).format(date);
+  };
+
   return (
     <div className="chat-list">
       <div className="chat-title-bar">
@@ -18,7 +30,7 @@ const ChatList = ({ chatRooms = [], onSelectChatRoom, selectedRoomId }) => {
           >
             <div className="chat-item-left">
               <img
-                src="/img/default-profile.png" // 기본 프로필
+                src="/img/default-profile.png"
                 alt="프로필"
                 className="chat-avatar"
               />
@@ -26,7 +38,7 @@ const ChatList = ({ chatRooms = [], onSelectChatRoom, selectedRoomId }) => {
             <div className="chat-info">
               <div className="chat-name">{room.targetNickname}</div>
               <div className="chat-preview">{room.lastMessage}</div>
-              <div className="chat-time">{new Date(room.lastSentAt).toLocaleString()}</div>
+              <div className="chat-time">{formatTime(room.lastSentAt)}</div>
             </div>
           </div>
         ))}

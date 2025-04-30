@@ -10,9 +10,6 @@ import Layout from './components/Layout';
 import Profile from './components/Profile';
 import MbtiTest from './components/MbtiTest';
 import MessagesPage from './pages/MessagesPage';
-import MessagesTest from './pages/MessagesTest';
-import MessagesTestNoS from './pages/MessagesTestNoS';
-
 
 function App() {
     return (
@@ -32,8 +29,6 @@ function App() {
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/mbtitest" element={<MbtiTest />} />
                     <Route path="/messagespage" element={<MessagesPage />}/>
-                    <Route path="/messagesTest" element={<MessagesTest />}/>
-                    <Route path="/messagesTestNoS" element={<MessagesTestNoS />}/>
                 </Route>
             </Routes>
         </Router>
