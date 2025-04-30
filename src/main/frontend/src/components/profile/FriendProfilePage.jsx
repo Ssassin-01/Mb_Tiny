@@ -39,7 +39,7 @@ const FriendProfilePage = () => {
         joinDate={profileData.joinDate}
         postCount={profileData.postCount || 0}
         isOwner={false}
-        targetNickname={profileData.nickname}
+        targetId={profileData.id}
       />
       <FriendProfileRight
         targetNickname={profileData.nickname}
