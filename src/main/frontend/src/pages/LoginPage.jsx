@@ -14,11 +14,11 @@ const LoginPage = () => {
         '/api/members/login',
         { email, password },
         {
-          withCredentials: true, // ✅ 세션 쿠키 포함 필수!
+          withCredentials: true, // 세션 쿠키 포함 필수!
         }
       )
       .then((res) => {
-        setMessage('✅ 로그인 성공!');
+        setMessage('로그인 성공!');
         console.log(document.cookie);
         // 로그인 후 내 정보 페이지로 이동하거나 상태 갱신 등
       })

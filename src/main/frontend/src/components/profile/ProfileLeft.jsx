@@ -1,35 +1,63 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCamera } from 'react-icons/fa';
+import axios from 'axios';
 import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
-import FollowButton from '../follow/FollowButton';
+import DeleteId from './DeleteId';
+import mbtiDescriptions from './mbtiDescriptions';
 
-const ImageUpload = ({ uploadImgUrl, setUploadImgUrl }) => {
-  const onchangeImageUpload = (e) => {
-    const { files } = e.target;
+
+const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
+  const onchangeImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
     const reader = new FileReader();
-    reader.readAsDataURL(files[0]);
+    reader.readAsDataURL(file);
     reader.onloadend = () => setUploadImgUrl(reader.result);
+
+    const formData = new FormData();
+    formData.append('profileImg', file);
+
+    try {
+      const res = await axios.post(`http://localhost:8080/api/members/${targetId}/profile-image`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
+      });
+      setUploadImgUrl(`http://localhost:8080${res.data.imageUrl}`);
+    } catch (err) {
+      console.error('프로필 사진 업로드 실패:', err);
+    
+      // 상세 오류 분석
+      if (err.response) {
+        console.error('서버 응답 오류:', err.response.data);
+        console.error('상태 코드:', err.response.status);
+        console.error('응답 헤더:', err.response.headers);
+      } else if (err.request) {
+        console.error('요청은 갔지만 응답 없음:', err.request);
+      } else {
+        console.error('오류 발생:', err.message);
+      }
+    
+      alert('프로필 사진 업로드 중 오류가 발생했습니다.');
+    }
   };
 
   return (
-    <div className='profile-img-wrapper'>
+    <div className="profile-img-wrapper">
       {uploadImgUrl ? (
-        <img src={uploadImgUrl} alt='프로필' className='profile-img' />
+        <img src={uploadImgUrl} alt="프로필" className="profile-img" />
       ) : (
-        <div className='default-profile-img'>
-          <FaCamera className='default-camera-icon' />
+        <div className="default-profile-img">
+          <FaCamera className="default-camera-icon" />
         </div>
       )}
-      <label htmlFor='img-upload' className='upload-icon' />
-      <input
-        type='file'
-        id='img-upload'
-        accept='image/*'
-        onChange={onchangeImageUpload}
-        hidden
-      />
+      <label htmlFor="img-upload" className="upload-icon">
+        <FaCamera className="camera-icon" />
+      </label>
+      <input type="file" id="img-upload" accept="image/*" onChange={onchangeImageUpload} hidden />
     </div>
   );
 };
@@ -43,72 +71,96 @@ const ProfileLeft = ({
   isOwner,
   followerCount,
   followingCount,
-  targetId,
+  targetId
 }) => {
   const navigate = useNavigate();
   const [modalType, setModalType] = useState(null);
+  const [uploadImgUrl, setUploadImgUrl] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const openModal = (type) => setModalType(type);
   const closeModal = () => setModalType(null);
 
-  return (
-    <div className='profile-left'>
-      <div className='profile-card'>
-        <ImageUpload />
-        <p>{nickname}</p>
-        <div className='profile-info'>
-          <p className='profile-mbti'>{mbti}</p>
-          <p>
-            <strong>가입일:</strong> {joinDate}
-          </p>
+  const mbtiInfo = mbtiDescriptions[mbti?.toUpperCase()] || {
+    title: '성격유형',
+    tags: [],
+    description: '아직 등록되지 않은 MBTI입니다.',
+  };
 
-          <div className='profile-stats'>
-            <button className='stats-btn' onClick={onTogglePosts}>
-              게시글 <span className='count'>{postCount}</span>
-            </button>
-            <div className='follow-stats'>
-              <span
-                className='follow-count'
-                onClick={() => openModal('followers')}
-              >
-                팔로워 {followerCount}
-              </span>
-              <span
-                className='follow-count'
-                onClick={() => openModal('following')}
-              >
-                팔로잉 {followingCount}
-              </span>
+  // ✅ 회원탈퇴 처리 함수 (새로고침 포함)
+  const handleDelete = async () => {
+    try {
+      await axios.delete('http://localhost:8080/api/members/delete', {
+        withCredentials: true,
+      });
+      alert('회원탈퇴가 완료되었습니다.');
+      sessionStorage.clear();
+      navigate('/');
+      window.location.reload(); // ✅ 새로고침
+    } catch (error) {
+      console.error('회원 탈퇴 실패:', error);
+      alert('탈퇴 중 오류가 발생했습니다.');
+    }
+
+  };
+
+  return (
+    <div className="profile-left">
+      <div className="profile-card">
+        <ImageUpload
+          uploadImgUrl={uploadImgUrl}
+          setUploadImgUrl={setUploadImgUrl}
+          targetId={targetId}
+        />
+
+        <p className="profile-nickname">{nickname}</p>
+        <div className="profile-info">
+          <p className="profile-mbti">{mbti || 'MBTI 미설정'}</p>
+          <p><strong>가입일:</strong> {joinDate}</p>
+
+          <div className="profile-stats">
+            <div className="stats-buttons">
+              <span className="stats-item" onClick={onTogglePosts}>게시글 {postCount}</span>
+              <span className="stats-item" onClick={() => openModal('followers')}>팔로워 {followerCount}</span>
+              <span className="stats-item" onClick={() => openModal('following')}>팔로잉 {followingCount}</span>
             </div>
-            {!isOwner && <FollowButton targetId={targetId} />}
           </div>
 
-          <div className='mbti-description'>
-            <h4>{mbti} 유형: 열정적인 중재자</h4>
-            <div className='mbti-tags'>
-              <span>내향형</span>
-              <span>직관형</span>
-              <span>감정형</span>
-              <span>인식형</span>
+          <div className="mbti-description">
+            <h4>{mbti} 유형: {mbtiInfo.title}</h4>
+            <div className="mbti-tags">
+              {mbtiInfo.tags.map((tag, index) => (
+                <span key={index}>{tag}</span>
+              ))}
             </div>
-            <p>열정적인 중재자는 이상주의적이며 감성적인...</p>
+            <p>{mbtiInfo.description}</p>
           </div>
 
           {isOwner && (
-            <div className='profile-actions'>
-              <button
-                className='edit-btn'
-                onClick={() => navigate('/profile/edit')}
-              >
-                프로필 수정
-              </button>
-              <button className='delete-btn'>회원탈퇴</button>
+            <div className="profile-actions">
+              <button className="edit-btn" onClick={() => navigate("/profile/edit")}>프로필 수정</button>
+              <button className="delete-btn" onClick={() => setShowDeleteModal(true)}>회원탈퇴</button>
             </div>
           )}
         </div>
       </div>
 
-      {modalType && <FollowModal type={modalType} onClose={closeModal} />}
+      {modalType && (
+        <FollowModal
+          type={modalType}
+          targetId={targetId}
+          onClose={closeModal}
+        />
+      )}
+
+
+      {showDeleteModal && (
+        <DeleteId
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDelete}
+        />
+      )}
+
     </div>
   );
 };

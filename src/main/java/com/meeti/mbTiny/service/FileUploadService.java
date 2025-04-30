@@ -55,7 +55,6 @@ public class FileUploadService {
         try {
             // ex) /uploads/profile/abc.jpg → profile/abc.jpg
             String relativePath = fileUrl.replaceFirst("^/uploads/", "");
-            System.out.println("파일 경로:" + relativePath);
 
             Path path = Paths.get(uploadDir, relativePath); // ✅ OS 경로 조합
             Files.deleteIfExists(path);
