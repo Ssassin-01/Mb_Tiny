@@ -22,9 +22,11 @@ public class Message {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private ChatRoom chatRoom; // 어떤 채팅방에 속한 메시지인지
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoom chatRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
     private Member sender;
 
     @Column(nullable = false, columnDefinition = "TEXT")

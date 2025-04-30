@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import PostItem from './ProfileRightPostItem';
+import ProfileFeedCard from './ProfileFeedCard'; // ✅ 새 컴포넌트
+import PostItem from './ProfileRightPostItem';   // 익명글용
 import '../../css/profile/Profile.css';
 import axios from 'axios';
 
@@ -19,17 +20,12 @@ function ProfileRight() {
     try {
       const userRes = await axios.get('http://localhost:8080/api/members/me', { withCredentials: true });
       const loginUser = userRes.data;
-      console.log("현재 로그인 유저:", loginUser);
 
       if (!loginUser) return;
-
-      // 일반 게시글
       const feedRes = await axios.get('http://localhost:8080/api/posts', { withCredentials: true });
       const myFeeds = feedRes.data.filter(post => post.email === loginUser.email);
       setFeedPosts(myFeeds);
       setHasMoreFeed(false);
-
-      // 익명 게시글
       const anonRes = await axios.get('http://localhost:8080/api/anonymous-posts', { withCredentials: true });
       const myAnons = anonRes.data.filter(post => post.email === loginUser.email);
       setAnonymousPosts(myAnons);
@@ -39,8 +35,51 @@ function ProfileRight() {
     }
   };
 
+  // ✅ 삭제
+  const handleDelete = async (postId) => {
+    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+
+    try {
+      await axios.delete(`http://localhost:8080/api/posts/${postId}`, { withCredentials: true });
+      alert('삭제되었습니다.');
+      fetchMyPosts();
+    } catch (err) {
+      console.error('삭제 실패:', err);
+      alert('삭제 실패');
+    }
+  };
+
+  // ✅ 수정
+  const handleUpdate = async (postId, newContent, newImage) => {
+    try {
+      const formData = new FormData();
+      const postData = {
+        content: newContent,
+        title: '',
+      };
+      formData.append('postData', JSON.stringify(postData));
+      if (newImage) {
+        formData.append('image', newImage);
+      }
+
+      await axios.put(`http://localhost:8080/api/posts/${postId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
+
+      alert('수정 완료');
+      fetchMyPosts();
+    } catch (err) {
+      console.error('수정 실패:', err);
+      alert('수정 실패');
+    }
+  };
+
   return (
     <div className='profile-right-container'>
+      {/* 탭 */}
       <div className='profile-tab-buttons'>
         <button
           className={activeTab === 'feed' ? 'active' : ''}
@@ -56,6 +95,7 @@ function ProfileRight() {
         </button>
       </div>
 
+      {/* 게시글 목록 */}
       <div className='profile-post-list' id='profileScroll'>
         {activeTab === 'feed' && (
           <InfiniteScroll
@@ -68,7 +108,12 @@ function ProfileRight() {
             style={{ overflow: 'visible', position: 'relative' }}
           >
             {feedPosts.map((feed) => (
-              <PostItem key={feed.id} post={feed} />
+              <ProfileFeedCard
+                key={feed.id}
+                feed={feed}
+                onUpdate={handleUpdate}
+                onDelete={handleDelete}
+              />
             ))}
           </InfiniteScroll>
         )}

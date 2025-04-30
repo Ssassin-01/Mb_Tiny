@@ -17,7 +17,7 @@ function Login() {
     e.preventDefault(); // 폼 새로고침 방지
     try {
       const res = await axios.post('/api/members/login', form, {
-        withCredentials: true, // 세션 유지
+        withCredentials: true,
       });
       alert('로그인 성공!');
       console.log('로그인 응답:', res.data);

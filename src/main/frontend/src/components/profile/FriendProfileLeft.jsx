@@ -31,10 +31,7 @@ const FriendProfileLeft = ({
   // 팔로우 수 불러오기
   const fetchFollowCounts = async () => {
     try {
-      const url = isOwner
-        ? 'http://localhost:8080/api/follow/count'
-        : `http://localhost:8080/api/follow/count/${targetId}`;
-      const res = await axios.get(url, { withCredentials: true });
+      const res = await axios.get('http://localhost:8080/api/follow/count', { withCredentials: true });
       setFollowerCount(res.data.followers);
       setFollowingCount(res.data.following);
     } catch (error) {

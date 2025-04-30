@@ -87,7 +87,7 @@ function FeedList() {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
 
     try {
-      await axios.delete(`'http://localhost:8080/api/posts'${postId}`, { withCredentials: true });
+      await axios.delete(`http://localhost:8080/api/posts/${postId}`, { withCredentials: true });
       alert('게시글이 삭제되었습니다.');
       loadMoreFeeds(); // 삭제 후 다시 로드
     } catch (error) {
@@ -119,8 +119,7 @@ function FeedList() {
       if (newImage) {
         formData.append('image', newImage);
       }
-
-      await axios.put(`'http://localhost:8080/api/posts'${postId}`, formData, {
+      await axios.put(`http://localhost:8080/api/posts/${postId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
