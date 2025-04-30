@@ -49,21 +49,25 @@ public class AnonymousPostService {
         post.setContent(dto.getContent());
         post.setAnonymous(true);
 
-        if (image != null) {
-            if (!image.isEmpty()) {
-                String imageUrl = fileUploadService.upload(image, "AnonymousPost");
-                post.setImageUrl(imageUrl);
-            } else {
-                post.setImageUrl(null);
+        if (image == null || image.isEmpty()) {
+            if (post.getImageUrl() != null) {
+                fileUploadService.delete(post.getImageUrl());
             }
+            post.setImageUrl(null);
+        } else {
+            if (post.getImageUrl() != null) {
+                fileUploadService.delete(post.getImageUrl());
+            }
+            String imageUrl = fileUploadService.upload(image, "AnonymousPost");
+            post.setImageUrl(imageUrl);
         }
-
         postRepository.save(post);
     }
     @Transactional
     public void deletePost(Member member, Long postId) {
         Post post = validatePostOwner(member, postId);
         postRepository.delete(post);
+        fileUploadService.delete(post.getImageUrl());
     }
 
     public List<PostDTO> getAllPosts(Optional<Member> member) {
