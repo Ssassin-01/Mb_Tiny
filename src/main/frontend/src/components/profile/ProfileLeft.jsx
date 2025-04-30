@@ -6,9 +6,6 @@ import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
 import mbtiDescriptions from './mbtiDescriptions';
 
-
-
-// 프로필 이미지 업로드 컴포넌트
 const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
   const onchangeImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -29,18 +26,6 @@ const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
       setUploadImgUrl(`http://localhost:8080${res.data.imageUrl}`);
     } catch (err) {
       console.error('프로필 사진 업로드 실패:', err);
-    
-      // 상세 오류 분석
-      if (err.response) {
-        console.error('서버 응답 오류:', err.response.data);
-        console.error('상태 코드:', err.response.status);
-        console.error('응답 헤더:', err.response.headers);
-      } else if (err.request) {
-        console.error('요청은 갔지만 응답 없음:', err.request);
-      } else {
-        console.error('오류 발생:', err.message);
-      }
-    
       alert('프로필 사진 업로드 중 오류가 발생했습니다.');
     }
   };
@@ -62,7 +47,6 @@ const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
   );
 };
 
-// 메인 프로필 좌측 컴포넌트
 const ProfileLeft = ({
   nickname,
   mbti,
@@ -70,22 +54,39 @@ const ProfileLeft = ({
   onTogglePosts,
   postCount,
   isOwner,
-  followerCount,
-  followingCount,
   targetId
 }) => {
   const navigate = useNavigate();
   const [modalType, setModalType] = useState(null);
   const [uploadImgUrl, setUploadImgUrl] = useState('');
-
-  const openModal = (type) => setModalType(type);
-  const closeModal = () => setModalType(null);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   const mbtiInfo = mbtiDescriptions[mbti?.toUpperCase()] || {
     title: '성격유형',
     tags: [],
     description: '아직 등록되지 않은 MBTI입니다.',
   };
+
+  const openModal = (type) => setModalType(type);
+  const closeModal = () => setModalType(null);
+
+  // 팔로워/팔로잉 수 가져오기
+  useEffect(() => {
+    const fetchFollowCount = async () => {
+      try {
+        const res = await axios.get('/api/follow/count', { withCredentials: true });
+        setFollowerCount(res.data.followers);
+        setFollowingCount(res.data.following);
+      } catch (err) {
+        console.error('팔로우 수 불러오기 실패:', err);
+      }
+    };
+
+    if (isOwner) {
+      fetchFollowCount();
+    }
+  }, [isOwner]);
 
   return (
     <div className="profile-left">
@@ -109,7 +110,6 @@ const ProfileLeft = ({
             </div>
           </div>
 
-          {/* MBTI 설명 */}
           <div className="mbti-description">
             <h4>{mbti} 유형: {mbtiInfo.title}</h4>
             <div className="mbti-tags">
@@ -129,7 +129,6 @@ const ProfileLeft = ({
         </div>
       </div>
 
-      {/* 팔로워/팔로잉 모달 */}
       {modalType && (
         <FollowModal
           type={modalType}

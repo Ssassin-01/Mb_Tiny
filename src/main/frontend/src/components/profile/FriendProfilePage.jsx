@@ -40,6 +40,7 @@ const FriendProfilePage = () => {
         postCount={profileData.postCount || 0}
         isOwner={false}
         targetId={profileData.id}
+        profileImgUrl={profileData.profileImgUrl}
       />
       <FriendProfileRight
         targetNickname={profileData.nickname}
