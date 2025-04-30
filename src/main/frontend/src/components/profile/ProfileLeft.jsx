@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCamera } from 'react-icons/fa';
 import axios from 'axios';
 import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
 import mbtiDescriptions from './mbtiDescriptions';
+
+
 
 // 프로필 이미지 업로드 컴포넌트
 const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
