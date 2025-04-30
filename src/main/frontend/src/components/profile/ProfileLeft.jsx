@@ -4,10 +4,7 @@ import { FaCamera } from 'react-icons/fa';
 import axios from 'axios';
 import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
-import FollowButton from '../follow/FollowButton';
 import mbtiDescriptions from './mbtiDescriptions';
-
-<mbtiDescriptions/>
 
 // 프로필 이미지 업로드 컴포넌트
 const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
@@ -51,9 +48,18 @@ const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
   );
 };
 
-
 // 메인 프로필 좌측 컴포넌트
-const ProfileLeft = ({ nickname, mbti, joinDate, onTogglePosts, postCount, isOwner, followerCount, followingCount, targetId }) => {
+const ProfileLeft = ({
+  nickname,
+  mbti,
+  joinDate,
+  onTogglePosts,
+  postCount,
+  isOwner,
+  followerCount,
+  followingCount,
+  targetId
+}) => {
   const navigate = useNavigate();
   const [modalType, setModalType] = useState(null);
   const [uploadImgUrl, setUploadImgUrl] = useState('');
@@ -62,15 +68,19 @@ const ProfileLeft = ({ nickname, mbti, joinDate, onTogglePosts, postCount, isOwn
   const closeModal = () => setModalType(null);
 
   const mbtiInfo = mbtiDescriptions[mbti?.toUpperCase()] || {
-    title: "성격유형",
+    title: '성격유형',
     tags: [],
-    description: "아직 등록되지 않은 MBTI입니다."
+    description: '아직 등록되지 않은 MBTI입니다.',
   };
 
   return (
     <div className="profile-left">
       <div className="profile-card">
-        <ImageUpload uploadImgUrl={uploadImgUrl} setUploadImgUrl={setUploadImgUrl} targetId={targetId} />
+        <ImageUpload
+          uploadImgUrl={uploadImgUrl}
+          setUploadImgUrl={setUploadImgUrl}
+          targetId={targetId}
+        />
 
         <p className="profile-nickname">{nickname}</p>
         <div className="profile-info">
@@ -79,13 +89,10 @@ const ProfileLeft = ({ nickname, mbti, joinDate, onTogglePosts, postCount, isOwn
 
           <div className="profile-stats">
             <div className="stats-buttons">
-              <span className="stats-item" onClick={onTogglePosts}>게시글 {postCount}</span> 
+              <span className="stats-item" onClick={onTogglePosts}>게시글 {postCount}</span>
               <span className="stats-item" onClick={() => openModal('followers')}>팔로워 {followerCount}</span>
               <span className="stats-item" onClick={() => openModal('following')}>팔로잉 {followingCount}</span>
             </div>
-
-            {!isOwner && <FollowModal type="followers" targetId={targetId} onClose={closeModal} />
-          }
           </div>
 
           {/* MBTI 설명 */}
@@ -108,7 +115,14 @@ const ProfileLeft = ({ nickname, mbti, joinDate, onTogglePosts, postCount, isOwn
         </div>
       </div>
 
-      {modalType && <FollowModal type={modalType} onClose={closeModal} />}
+      {/* 팔로워/팔로잉 모달 */}
+      {modalType && (
+        <FollowModal
+          type={modalType}
+          targetId={targetId}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 };
