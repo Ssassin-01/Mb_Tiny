@@ -7,13 +7,14 @@ const PostItem = ({ post, isAnonymous }) => (
       <>
         <h4>{post.title}</h4>
         <p>{post.content}</p>
+        {post.imageUrl && <img src={`http://localhost:8080${post.imageUrl}`} alt="게시글 이미지" />}
         <p className="date">{post.createDate}</p>
       </>
     ) : (
       <>
         <p><strong>{post.writer}</strong></p>
         <p>{post.content}</p>
-        {post.image && <img src={post.image} alt="피드 이미지" />}
+        {post.imageUrl && <img src={`http://localhost:8080${post.imageUrl}`} alt="피드 이미지" />}
         <p className="date">{post.createDate}</p>
       </>
     )}
