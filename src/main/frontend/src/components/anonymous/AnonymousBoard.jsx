@@ -15,7 +15,7 @@ function AnonymousBoard() {
       nickname: '도하',
       mbti: 'INFP'
     }));
-
+ 
     const fetchPosts = async () => {
       try {
         const res = await axios.get('http://localhost:8080/api/anonymous-posts', {
@@ -34,7 +34,7 @@ function AnonymousBoard() {
   const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
   const currentPosts = posts.slice(startIdx, startIdx + POSTS_PER_PAGE);
 
-  // ✅ 오늘이면 시간, 아니면 월-일 형식으로 포맷
+  // 오늘이면 시간, 아니면 월-일 형식으로 포맷
   function formatDateOrTime(createdAt) {
     const createdDate = new Date(createdAt);
     const now = new Date();
@@ -58,7 +58,7 @@ function AnonymousBoard() {
       <div className="anonymous-layout">
         <div className="anonymous-board">
 
-          {/* ✅ PC 테이블 */}
+          {/* PC 테이블 */}
           <div className="table-wrapper pc-only">
             <table className="table">
               <thead>
