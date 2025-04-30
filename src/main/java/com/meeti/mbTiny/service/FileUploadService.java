@@ -8,6 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
@@ -17,26 +20,54 @@ public class FileUploadService {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file, String folder) {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+
         try {
-            // 디렉토리 없으면 생성
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
+            String extension = getFileExtension(file.getOriginalFilename());
+            String fileName = UUID.randomUUID() + extension;
+
+            String fullPath = Paths.get(uploadDir, folder).toString() + "/";
+
+            File directory = new File(fullPath);
+            if (!directory.exists()) {
+                directory.mkdirs();
             }
 
-            // 파일 이름 UUID로 중복 방지
-            String originalName = file.getOriginalFilename();
-            String fileName = UUID.randomUUID() + "_" + originalName;
-            String filePath = uploadDir + File.separator + fileName;
+            File saveFile = new File(fullPath + fileName);
+            file.transferTo(saveFile);
 
-            // 파일 저장
-            file.transferTo(new File(filePath));
+            // URL 경로로 반환
+            return "/uploads/" + folder + "/" + fileName;
 
-            // 이미지 URL 반환 (예: "/uploads/파일명")
-            return "/uploads/" + fileName;
         } catch (IOException e) {
-            throw new RuntimeException("이미지 업로드 실패", e);
+            throw new RuntimeException("파일 업로드 실패", e);
         }
     }
+
+    public void delete(String fileUrl) {
+        if (fileUrl == null || fileUrl.isBlank()) {
+            return;
+        }
+
+        try {
+            // ex) /uploads/profile/abc.jpg → profile/abc.jpg
+            String relativePath = fileUrl.replaceFirst("^/uploads/", "");
+
+            Path path = Paths.get(uploadDir, relativePath); // ✅ OS 경로 조합
+            Files.deleteIfExists(path);
+
+            System.out.println("✅ 파일 삭제 완료: " + path.toAbsolutePath());
+        } catch (IOException e) {
+            System.out.println("❌ 파일 삭제 실패: " + e.getMessage());
+        }
+    }
+
+    private String getFileExtension(String fileName) {
+        int dotIndex = fileName.lastIndexOf(".");
+        return (dotIndex != -1) ? fileName.substring(dotIndex) : "";
+    }
 }
+

@@ -126,11 +126,15 @@ function AnonymousDetail() {
                   onClick={() => setShowModal(true)}
                 />
                 {showModal && (
-                  <div className="modal-overlay" onClick={() => setShowModal(false)}>
+                  <div
+                    className="modal-overlay"
+                    onClick={() => setShowModal(false)}
+                  >
                     <img
                       src={`http://localhost:8080${post.imageUrl}`}
                       alt="큰 이미지"
                       className="modal-image"
+                      onClick={(e) => e.stopPropagation()} // ✅ 모달 닫힘 방지
                     />
                   </div>
                 )}

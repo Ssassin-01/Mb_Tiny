@@ -1,49 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../../css/follow/FollowModal.css';
 
-function FollowButton({ targetId }) {
-  const [isFollowing, setIsFollowing] = useState(false);
-  const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
+function FollowModal({ type, targetId, onClose }) {
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const fetchFollowingList = async () => {
+    const fetchList = async () => {
       try {
-        const res = await axios.get('/api/follow/following', { withCredentials: true });
-        const followingList = res.data; // List<FollowDTO>
-
-        const isAlreadyFollowing = followingList.some(f => f.targetId === targetId);
-        setIsFollowing(isAlreadyFollowing);
+        const res = await axios.get(`/api/follow/${targetId}/${type}`, {
+          withCredentials: true,
+        });
+        setUsers(res.data); // 서버에서 사용자 목록 배열 반환
       } catch (error) {
-        console.error('팔로잉 리스트 가져오기 실패:', error);
+        console.error(`${type} 목록 불러오기 실패:`, error);
       }
     };
 
-    if (loginUser) {
-      fetchFollowingList();
+    if (targetId && type) {
+      fetchList();
     }
-  }, [targetId]);
-
-  const handleFollowToggle = async () => {
-    try {
-      if (isFollowing) {
-        await axios.delete(`/api/follow/${targetId}`, { withCredentials: true });
-      } else {
-        await axios.post(`/api/follow/${targetId}`, {}, { withCredentials: true });
-      }
-      setIsFollowing(!isFollowing);
-    } catch (error) {
-      console.error('팔로우/언팔로우 실패:', error);
-    }
-  };
+  }, [type, targetId]);
 
   return (
-    <button 
-      onClick={handleFollowToggle} 
-      className={`follow-btn ${isFollowing ? 'following' : ''}`}
-    >
-      {isFollowing ? '팔로잉' : '팔로우'}
-    </button>
+    <div className="follow-modal-overlay" onClick={onClose}>
+      <div className="follow-modal" onClick={(e) => e.stopPropagation()}>
+        <h3>{type === 'followers' ? '팔로워' : '팔로잉'} 목록</h3>
+        <ul className="follow-user-list">
+          {users.length === 0 ? (
+            <li className="no-follow">아직 아무도 없습니다.</li>
+          ) : (
+            users.map((user) => (
+              <li key={user.id} className="follow-user-item">
+                <img src={user.profileImage || '/img/default-profile.png'} alt="프로필" className="user-thumb" />
+                <span className="user-nickname">{user.nickname}</span>
+              </li>
+            ))
+          )}
+        </ul>
+        <button className="modal-close-btn" onClick={onClose}>닫기</button>
+      </div>
+    </div>
   );
 }
 
-export default FollowButton;
+export default FollowModal;

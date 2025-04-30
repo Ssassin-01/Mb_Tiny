@@ -10,7 +10,7 @@ const FriendRecommend = () => {
   const [recommendedFriends, setRecommendedFriends] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [requestedIds, setRequestedIds] = useState(new Set()); // ⭐️ Set으로 변경
+  const [requestedIds, setRequestedIds] = useState(new Set()); // Set으로 변경
   const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
   const [friendCount, setFriendCount] = useState(20);
 

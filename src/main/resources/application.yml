@@ -22,7 +22,7 @@ spring:
         format_sql: true
 
 file:
-  upload-dir: C:/spring/mega/Mb_Tiny/uploads
+  upload-dir: C:/Users/tj/CWT/Mb_Tiny/uploads
 
 logging:
   level:
