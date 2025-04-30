@@ -99,7 +99,10 @@ public class MemberService {
     }
 
     public MemberDTO getMyProfile(Member member) {
-        return convertToDTO(member);
+        Member me = memberRepository.findByNickname(member.getNickname())
+                .orElseThrow(()-> new IllegalArgumentException("없는 사람입니다."));
+
+        return convertToDTO(me);
     }
 
     public MemberDTO getOtherProfile(String nickname) {
@@ -195,4 +198,10 @@ public class MemberService {
                         .build()
                 ).collect(Collectors.toList());
     }
+
+    public Member getUpdatedMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 유저를 찾을 수 없습니다."));
+    }
+
 }
