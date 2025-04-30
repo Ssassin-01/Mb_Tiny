@@ -1,0 +1,16 @@
+.follow-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid #3de5d9;
+  color: #3de5d9;
+  transition: all 0.2s ease;
+}
+
+.follow-btn.following {
+  background-color: #3de5d9;
+  color: white;
+  border: none;
+}

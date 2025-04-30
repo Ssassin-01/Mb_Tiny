@@ -1,0 +1,13 @@
+.messages-layout {
+  display: flex;
+  height: 88vh;
+  overflow: hidden;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 85vh;
+  overflow: hidden;
+}

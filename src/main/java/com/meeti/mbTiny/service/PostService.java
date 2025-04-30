@@ -12,6 +12,7 @@
     import org.springframework.security.core.annotation.AuthenticationPrincipal;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
+    import org.springframework.web.multipart.MultipartFile;
 
     import java.time.format.DateTimeFormatter;
     import java.util.List;
@@ -23,25 +24,46 @@
     public class PostService {
         private final PostRepository postRepository;
         private final LikeRepository likeRepository;
+        private final FileUploadService fileUploadService;
 
         @Transactional
-        public void createPost(PostRequestDTO dto, Member member) {
+        public void createPost(PostRequestDTO dto, MultipartFile image, Member member) {
+            String imageUrl = null;
+            if(image != null && !image.isEmpty()) {
+                imageUrl = fileUploadService.upload(image, "post");
+            }
             Post post = Post.builder()
                     .title(dto.getTitle())
                     .content(dto.getContent())
                     .isAnonymous(false)
                     .viewCount(0L)
                     .member(member)
+                    .imageUrl(imageUrl)
                     .build();
             postRepository.save(post);
         }
 
         @Transactional
-        public void updatePost(Long postId, Member member, PostRequestDTO dto) {
+        public void updatePost(Long postId, Member member, PostRequestDTO dto, MultipartFile image) {
             Post post = validatePostOwner(member, postId);
+
             post.setTitle(dto.getTitle());
             post.setContent(dto.getContent());
-            post.setAnonymous(dto.isAnonymous());
+            post.setAnonymous(false);
+
+            if (image == null || image.isEmpty()) {
+                if (post.getImageUrl() != null) {
+                    fileUploadService.delete(post.getImageUrl());
+                }
+                post.setImageUrl(null);
+            } else {
+                if (post.getImageUrl() != null) {
+                    fileUploadService.delete(post.getImageUrl());
+                }
+                String imageUrl = fileUploadService.upload(image, "post");
+                post.setImageUrl(imageUrl);
+            }
+
             postRepository.save(post);
         }
 
@@ -49,6 +71,7 @@
         public void deletePost(Long postId, Member member) {
             Post post = validatePostOwner(member, postId);
             postRepository.delete(post);
+            fileUploadService.delete(post.getImageUrl());
         }
         public List<PostDTO> getAllPosts(Optional<Member> member) {
             List<Post> posts = postRepository.findByIsAnonymousFalseOrderByCreatedAtDesc();
@@ -58,7 +81,11 @@
         }
 
         public PostDTO getPost(Long postId, Member member) {
-            Post post = validatePostOwner(member, postId);
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+            if(post.isAnonymous()) {
+                throw new IllegalArgumentException("비익명 게시물이 아닙니다");
+            }
             post.setViewCount(post.getViewCount() + 1);
             postRepository.save(post);
             return convertToDTO(post, Optional.of(member));
@@ -109,13 +136,21 @@
                     .title(post.getTitle())
                     .content(post.getContent())
                     .nickname(nickname)
+                    .email(post.getMember().getEmail())
+                    .imageUrl(post.getImageUrl())
                     .mbti(post.getMember().getMbti())
                     .isAnonymous(post.isAnonymous())
                     .viewCount(post.getViewCount())
                     .likeCount(likeCount)
                     .liked(liked)
-                    .createdAt(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                    .createdAt(post.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")))
                     .build();
         }
 
+        public List<PostDTO> getPostsByMemberNickname(String nickname) {
+            List<Post> posts = postRepository.findByMemberNicknameAndIsAnonymousFalseOrderByCreatedAtDesc(nickname);
+            return posts.stream()
+                    .map(post -> convertToDTO(post, Optional.empty()))
+                    .collect(Collectors.toList());
+        }
     }

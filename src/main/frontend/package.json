@@ -9,6 +9,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.8.4",
+    "event-source-polyfill": "^1.0.31",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
@@ -16,8 +17,11 @@
     "react-router-dom": "^7.5.1",
     "react-scripts": "5.0.1",
     "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
     "web-vitals": "^2.1.4"
   },
+  "proxy": "http://localhost:8080",
+
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

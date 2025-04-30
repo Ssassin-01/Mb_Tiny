@@ -57,7 +57,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**", "/api/members/login", "/api/members/logout", "/api/members/register").permitAll()
                         .requestMatchers("/api/posts", "/api/anonymous-posts").permitAll()
-                        .requestMatchers("/chat/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/chat/**", "/api/notifications/**").permitAll()
                         .anyRequest().authenticated()
 
                 )

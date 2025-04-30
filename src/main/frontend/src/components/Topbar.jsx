@@ -1,31 +1,65 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import "../css/Topbar.css";
 
-const Topbar = () => {
-  const navigate = useNavigate();
+// import React from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import '../css/Topbar.css';
+// import NotificationBell from './NotificationBell';
 
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
+// const Topbar = () => {
+//   const navigate = useNavigate();
 
-  return (
-<div className="topbar">
-  <div className="logo">
-    <img src="/img/logo.png" alt="로고" className="logo-img" />
-  </div>
+//   const handleLoginClick = () => {
+//     navigate('/login');
+//   };
 
-  <div className="topbar-center">
-    <input type="text" className="search-input" placeholder="검색하기" />
-  </div>
+//   return (
+//     <div className='topbar'>
+//       <div className='logo'>
+//         <img src='/img/logo.png' alt='로고' className='logo-img' />
+//       </div>
 
-  <button className="join-button" onClick={handleLoginClick}>로그인</button>
-</div>
+//       <div className='topbar-center'>
+//         <input type='text' className='search-input' placeholder='검색하기' />
+//       </div>
+//       <NotificationBell />
+//       <button className='join-button' onClick={handleLoginClick}>
+//         로그인
+//           {/*테스트*/}
+//       </button>
+//     </div>
+//   );
+// };
 
+// export default Topbar;
 
+// // import React from 'react';
+// // import { useNavigate } from 'react-router-dom';
+// // import '../css/Topbar.css';
+// // import NotificationBell from './NotificationBell';
 
-  );
-};
+// // const Topbar = () => {
+// //   const navigate = useNavigate();
 
-export default Topbar;
+// //   const handleLoginClick = () => {
+// //     navigate('/login');
+// //   };
+
+// //   return (
+// //     <div className='topbar'>
+// //       <div className='logo'>
+// //         <img src='/img/logo.png' alt='로고' className='logo-img' />
+// //       </div>
+
+// //       <div className='topbar-center'>
+// //         <input type='text' className='search-input' placeholder='검색하기' />
+// //       </div>
+// //       <NotificationBell />
+// //       <button className='join-button' onClick={handleLoginClick}>
+// //         로그인
+// //           {/*테스트*/}
+// //       </button>
+// //     </div>
+// //   );
+// // };
+
+// // export default Topbar;
 

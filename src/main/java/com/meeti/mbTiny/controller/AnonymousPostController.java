@@ -1,5 +1,6 @@
 package com.meeti.mbTiny.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meeti.mbTiny.dto.PostDTO;
 import com.meeti.mbTiny.dto.PostRequestDTO;
 import com.meeti.mbTiny.entity.Member;
@@ -7,9 +8,11 @@ import com.meeti.mbTiny.security.CustomUserDetails;
 import com.meeti.mbTiny.service.AnonymousPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -21,15 +24,40 @@ import java.util.Optional;
 public class AnonymousPostController {
     private final AnonymousPostService anonymousPostService;
 
-    @PostMapping
-    public ResponseEntity<?> createPost(@AuthenticationPrincipal CustomUserDetails userDetails, @Valid @RequestBody PostRequestDTO dto) {
-        anonymousPostService.createPost(userDetails.getMember(), dto);
-        return ResponseEntity.ok(Map.of("message", "success"));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createPost(
+            @RequestPart("postData") String postDataJson,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            PostRequestDTO dto = mapper.readValue(postDataJson, PostRequestDTO.class); // 직접 파싱
+
+            anonymousPostService.createPost(dto, image, userDetails.getMember());
+            return ResponseEntity.ok(Map.of("message", "게시글 작성 완료"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
     }
-    @PutMapping("/{postId}")
-    public ResponseEntity<?> updatePost(@AuthenticationPrincipal CustomUserDetails userDetails, @Valid @RequestBody PostRequestDTO dto, @PathVariable Long postId) {
-        anonymousPostService.updatePost(userDetails.getMember(), dto, postId);
-        return ResponseEntity.ok(Map.of("message", "success"));
+    @PutMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updatePost(
+            @PathVariable Long postId,
+            @RequestPart("postData") String postDataJson,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            PostRequestDTO dto = mapper.readValue(postDataJson, PostRequestDTO.class);
+
+            anonymousPostService.updatePost(postId, userDetails.getMember(), dto, image);
+            return ResponseEntity.ok(Map.of("message", "게시글 수정 완료"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
     }
 
     @DeleteMapping("/{postId}")

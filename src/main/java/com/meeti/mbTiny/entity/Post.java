@@ -23,11 +23,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     private boolean isAnonymous;
 
@@ -43,7 +46,6 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
-
 
     @CreatedDate
     @Column(name = "created_at")

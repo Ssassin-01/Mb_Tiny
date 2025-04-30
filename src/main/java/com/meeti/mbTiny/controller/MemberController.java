@@ -1,12 +1,10 @@
     package com.meeti.mbTiny.controller;
 
-    import com.meeti.mbTiny.dto.LoginRequestDTO;
-    import com.meeti.mbTiny.dto.MemberDTO;
-    import com.meeti.mbTiny.dto.MemberRequestDTO;
-    import com.meeti.mbTiny.dto.MemberUpdateRequestDTO;
+    import com.meeti.mbTiny.dto.*;
     import com.meeti.mbTiny.entity.Member;
     import com.meeti.mbTiny.security.CustomUserDetails;
     import com.meeti.mbTiny.service.MemberService;
+    import com.meeti.mbTiny.service.PostService;
     import jakarta.servlet.http.Cookie;
     import jakarta.servlet.http.HttpServletRequest;
     import jakarta.servlet.http.HttpServletResponse;
@@ -37,6 +35,7 @@
     public class MemberController {
         private final MemberService memberService;
         private final AuthenticationManager authenticationManager;
+        private final PostService postService;
 
         @PostMapping("/register")
         public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody MemberRequestDTO dto) {
@@ -51,10 +50,11 @@
 
             try {
                 Authentication authentication = authenticationManager.authenticate(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                context.setAuthentication(authentication);
 
-                HttpSession session = request.getSession(true);
-                session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+                request.getSession(true)
+                        .setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
 
                 return ResponseEntity.ok(Map.of("message", "로그인 성공"));
             } catch (BadCredentialsException e) {
@@ -91,10 +91,17 @@
             return ResponseEntity.ok(profile);
         }
 
+        @GetMapping("/{nickname}/posts")
+        public ResponseEntity<List<PostDTO>> getPostsByMemberNickname(@PathVariable String nickname) {
+            List<PostDTO> posts = postService.getPostsByMemberNickname(nickname);
+            return ResponseEntity.ok(posts);
+        }
+
         //회원정보 수정
         @PutMapping("/modify")
         public ResponseEntity<?> modifyProfile(@ModelAttribute MemberUpdateRequestDTO dto,
-                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+                                               @AuthenticationPrincipal CustomUserDetails userDetails,
+                                               HttpServletRequest request) {
             MultipartFile profileImg = dto.getProfileImg();
             System.out.println(dto.getProfileImg());
             System.out.println(profileImg);
@@ -104,6 +111,19 @@
             }
 
             memberService.updateUser(userDetails.getUsername(), dto);
+
+            Member updatedMember = userDetails.getMember();
+            updatedMember = memberService.getUpdatedMemberByEmail(updatedMember.getEmail()); // DB에서 다시 조회
+
+            CustomUserDetails newDetails = new CustomUserDetails(updatedMember);
+            UsernamePasswordAuthenticationToken newAuth =
+                    new UsernamePasswordAuthenticationToken(newDetails, null, newDetails.getAuthorities());
+
+            // ✅ SecurityContext에 새로운 인증 정보로 교체
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(newAuth);
+            request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+
             return ResponseEntity.ok("프로필이 수정되었습니다.");
         }
 
@@ -129,18 +149,33 @@
             return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
         }
 
+        @GetMapping("/search")
+        public ResponseEntity<List<MemberDTO>> searchByNickname(@RequestParam("keyword") String keyword) {
+            List<MemberDTO> nicknames = memberService.searchByNickname(keyword);
+            return ResponseEntity.ok(nicknames);
+        }
 
+        @GetMapping("/search/exact")
+        public ResponseEntity<?> searchExactNickname(@RequestParam("nickname") String nickname) {
+            String exactNickname  = memberService.findExactNickname(nickname);
+            return ResponseEntity.ok(exactNickname );
+        }
 
-
-        @GetMapping("/filter/mbti")
-        public ResponseEntity<List<Member>> getMembersByMBTI(
+        @GetMapping("/random")
+        public ResponseEntity<?> getRandomMembers(@RequestParam(defaultValue = "20") int count) {
+            List<MemberListResponseDTO> members = memberService.getRandomMembers(count);
+            return ResponseEntity.ok(members);
+        }
+        @GetMapping("/random/mbti")
+        public ResponseEntity<?> getMembersByMBTI(
+                @RequestParam(defaultValue = "20") int count,
                 @RequestParam(defaultValue = "all") String IorE,
                 @RequestParam(defaultValue = "all") String NorS,
                 @RequestParam(defaultValue = "all") String TorF,
                 @RequestParam(defaultValue = "all") String JorP
         ) {
-            List<Member> filtered = memberService.getMembersByMBTI(IorE, NorS, TorF, JorP);
-            return ResponseEntity.ok(filtered);
+            List<MemberListResponseDTO> members = memberService.getRandomMembersByMBTI(count, IorE, NorS, TorF, JorP);
+            return ResponseEntity.ok(members);
         }
 
 
