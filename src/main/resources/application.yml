@@ -12,9 +12,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/mbtisns
     username : root
-    password: 1234
-
-
+    password: 12345789a
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,11 +22,10 @@ spring:
         format_sql: true
 
 file:
-  upload-dir: C:/spring/mega/Mb_Tiny/uploads
+  upload-dir: C:/Users/tj/CWT/Mb_Tiny/uploads
 
 logging:
   level:
     org.springframework.web.multipart: DEBUG
     org.springframework.web.servlet.DispatcherServlet: DEBUG
     org.hibernate: ERROR
-

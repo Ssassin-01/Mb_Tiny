@@ -35,7 +35,7 @@ const Sidebar = () => {
           <span className="label-text">메시지테스트</span>
         </li>
         <li
-          onClick={() => navigate("/profile")}
+          onClick={() => navigate("/profile/me")}
           title="프로필"
           aria-label="프로필"
         >
