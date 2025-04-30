@@ -60,11 +60,11 @@ public class FollowService {
     }
 
     public long countFollowers(Member member) {
-        return followRepository.countByFollower(member);
+        return followRepository.countByFollowing(member);
     }
 
     public long countFollowing(Member member) {
-        return followRepository.countByFollowing(member);
+        return followRepository.countByFollower(member);
     }
 
     public long countFollowersByNickname(String nickname) {

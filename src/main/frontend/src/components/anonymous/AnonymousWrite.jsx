@@ -134,24 +134,6 @@ function AnonymousWrite() {
 
           <form className='form-box' onSubmit={handleSubmit}>
             <div className='header'>
-              {isMobile && (
-                <div
-                  className='fake-select'
-                  onClick={() => document.getElementById('realSelect').click()}
-                >
-                  {form.category} ▼
-                </div>
-              )}
-              <select
-                id='realSelect'
-                name='category'
-                value={form.category}
-                onChange={handleChange}
-                className={isMobile ? 'hidden-select' : ''}
-              >
-                <option value='수다'>수다</option>
-                <option value='공지'>공지</option>
-              </select>
               <input
                 name='title'
                 value={form.title}
