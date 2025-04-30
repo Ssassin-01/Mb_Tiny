@@ -1,5 +1,5 @@
-// src/components/profile/ProfileLeft.jsx
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCamera } from 'react-icons/fa';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
 import DeleteId from './DeleteId';
 import mbtiDescriptions from './mbtiDescriptions';
+
 
 const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
   const onchangeImageUpload = async (e) => {
@@ -18,7 +19,7 @@ const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
     reader.onloadend = () => setUploadImgUrl(reader.result);
 
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('profileImg', file);
 
     try {
       const res = await axios.post(`http://localhost:8080/api/members/${targetId}/profile-image`, formData, {
@@ -28,7 +29,19 @@ const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
       setUploadImgUrl(`http://localhost:8080${res.data.imageUrl}`);
     } catch (err) {
       console.error('프로필 사진 업로드 실패:', err);
-      alert('프로필 사진 업로드에 실패했습니다.');
+    
+      // 상세 오류 분석
+      if (err.response) {
+        console.error('서버 응답 오류:', err.response.data);
+        console.error('상태 코드:', err.response.status);
+        console.error('응답 헤더:', err.response.headers);
+      } else if (err.request) {
+        console.error('요청은 갔지만 응답 없음:', err.request);
+      } else {
+        console.error('오류 발생:', err.message);
+      }
+    
+      alert('프로필 사진 업로드 중 오류가 발생했습니다.');
     }
   };
 
@@ -88,12 +101,17 @@ const ProfileLeft = ({
       console.error('회원 탈퇴 실패:', error);
       alert('탈퇴 중 오류가 발생했습니다.');
     }
+
   };
 
   return (
     <div className="profile-left">
       <div className="profile-card">
-        <ImageUpload uploadImgUrl={uploadImgUrl} setUploadImgUrl={setUploadImgUrl} targetId={targetId} />
+        <ImageUpload
+          uploadImgUrl={uploadImgUrl}
+          setUploadImgUrl={setUploadImgUrl}
+          targetId={targetId}
+        />
 
         <p className="profile-nickname">{nickname}</p>
         <div className="profile-info">
@@ -135,12 +153,14 @@ const ProfileLeft = ({
         />
       )}
 
+
       {showDeleteModal && (
         <DeleteId
           onClose={() => setShowDeleteModal(false)}
           onConfirm={handleDelete}
         />
       )}
+
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../css/feed/FeedComments.css';
+import { useNavigate } from 'react-router-dom';
+
 
 function FeedCard({ feed, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -9,6 +11,11 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const navigate = useNavigate();
+  const handleProfileClick = () => {
+    navigate(`/profile/${feed.nickname}`);
+  };
+  
 
   // 좋아요 상태 관리
   const [liked, setLiked] = useState(feed.liked);
@@ -85,9 +92,18 @@ function FeedCard({ feed, onUpdate, onDelete }) {
     <div className="feed-card">
       {/* 헤더 */}
       <div className="feed-header">
-        <img src="/img/default-profile.png" alt="프로필" className="feed-profile" />
+      <img
+        src="/img/default-profile.png"
+        alt="프로필"
+        className="feed-profile"
+        onClick={handleProfileClick}
+        style={{ cursor: 'pointer' }}
+      />
         <div className="feed-info">
-          <div className="feed-nickname">{feed.mbti ? `[${feed.mbti}] ` : ''}{feed.writer}</div>
+        <div className="feed-nickname" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
+          {feed.mbti ? `[${feed.mbti}] ` : ''}{feed.nickname}
+        </div>
+
           <div className="feed-time">{new Date(feed.createDate).toLocaleString('ko-KR', { hour12: false })}</div>
         </div>
       </div>
@@ -97,6 +113,7 @@ function FeedCard({ feed, onUpdate, onDelete }) {
         <>
           <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)} rows="4" className="edit-textarea" />
           <input type="file" accept="image/*" onChange={handleImageChange} />
+          
         </>
       ) : (
         <>
@@ -138,7 +155,7 @@ function FeedCard({ feed, onUpdate, onDelete }) {
             <div className="comments-list">
               {comments.map((comment) => (
                 <div key={comment.id} className="comment-item">
-                  <strong>{comment.writer}</strong>: {comment.content}
+                  <strong>{comment.nickname}</strong>: {comment.content}
                 </div>
               ))}
             </div>

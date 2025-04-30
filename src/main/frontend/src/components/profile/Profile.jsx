@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import ProfileLeft from './ProfileLeft';
 import ProfileRight from './ProfileRight';
 import '../../css/profile/Profile.css';
-import { useNavigate } from 'react-router-dom'; 
-import axios from 'axios'; // axios 추가
+import { useNavigate, useLocation } from 'react-router-dom'; 
+
+import axios from 'axios';
 
 const Profile = () => {
   const [showPosts, setShowPosts] = useState(false);
   const [userInfo, setUserInfo] = useState(null); // 사용자 정보 저장
   const navigate = useNavigate();
+  const currentLocation = useLocation();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -25,7 +27,7 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [navigate]);
+  }, [currentLocation.pathname]);
 
   if (!userInfo) {
     return <div>로딩 중...</div>; // 데이터 받아오기 전

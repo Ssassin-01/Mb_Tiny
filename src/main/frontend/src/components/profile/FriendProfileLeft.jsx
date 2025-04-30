@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCamera } from 'react-icons/fa';
 import axios from 'axios';
+import FollowButton from '../follow/FollowButton';
 import '../../css/profile/Profile.css';
 
 // 프로필 이미지 업로드 컴포넌트
@@ -42,45 +43,27 @@ const FriendProfileLeft = ({
 }) => {
   const navigate = useNavigate();
   const [uploadImgUrl, setUploadImgUrl] = useState('');
-  const [isFollowing, setIsFollowing] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
 
-  // 팔로우 상태, 팔로워 수, 팔로잉 수 불러오기
+  // 로그인 사용자의 팔로우 수 불러오기 (자기 프로필일 경우에만 유효)
+
   useEffect(() => {
-    const fetchProfileStats = async () => {
-      try {
-        const followersRes = await axios.get('/api/follow/followers', { withCredentials: true });
-        const followingRes = await axios.get('/api/follow/following', { withCredentials: true });
-
-        setFollowerCount(followersRes.data.length);
-        setFollowingCount(followingRes.data.length);
-
-        const followerIds = followersRes.data.map(user => user.id);
-        setIsFollowing(followerIds.includes(targetId));
-      } catch (error) {
-        console.error('프로필 정보 불러오기 실패:', error);
-      }
-    };
-
-    if (targetId) {
-      fetchProfileStats();
+    if (isOwner) {
+      fetchFollowCounts();
     }
-  }, [targetId]);
-
-  // 팔로우 / 언팔로우 버튼 클릭
-  const handleToggleFollow = async () => {
+  }, [isOwner]);
+  
+  const fetchFollowCounts = async () => {
     try {
-      if (isFollowing) {
-        await axios.delete(`/api/follow/${targetId}`, { withCredentials: true });
-      } else {
-        await axios.post(`/api/follow/${targetId}`, null, { withCredentials: true });
-      }
-      setIsFollowing(!isFollowing);
-    } catch (err) {
-      console.error('팔로우/언팔로우 실패:', err);
+      const res = await axios.get('/api/follow/count', { withCredentials: true });
+      setFollowerCount(res.data.followers);
+      setFollowingCount(res.data.following);
+    } catch (error) {
+      console.error('팔로우 수 불러오기 실패:', error);
     }
   };
+  
 
   return (
     <div className="profile-left">
@@ -105,15 +88,11 @@ const FriendProfileLeft = ({
             </button>
           </div>
 
-          {/* 팔로우 버튼 */}
+          {/* 팔로우 버튼 (다른 사용자일 때만 표시) */}
           {!isOwner && (
-            <button
-              className={`follow-btn ${isFollowing ? 'following' : ''}`}
-              onClick={handleToggleFollow}
-            >
-              {isFollowing ? '언팔로우' : '팔로우'}
-            </button>
-          )}
+  <FollowButton targetId={targetId} onFollowChange={fetchFollowCounts} />
+)}
+
 
           {/* MBTI 설명 */}
           <div className="mbti-description">

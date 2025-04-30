@@ -49,13 +49,15 @@ const FriendRecommend = () => {
         updated.delete(id); // 이미 팔로우 되어 있으면 제거
       } else {
         updated.add(id); // 아니면 추가
+
       }
       return updated;
     });
   };
 
-  const handleProfileClick = (id) => {
-    navigate(`/profile/${id}`);
+
+  const handleProfileClick = (nickname) => {
+    navigate(`/profile/${nickname}`);
   };
 
   const handleFilterChange = (idx, value) => {
@@ -118,7 +120,7 @@ const FriendRecommend = () => {
                 <li
                   key={friend.id}
                   className="friend-item"
-                  onClick={() => handleProfileClick(friend.id)}
+                  onClick={() => handleProfileClick(friend.nickname)}
                   style={{ cursor: "pointer" }}
                 >
                   <img
