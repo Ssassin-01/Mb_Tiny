@@ -124,6 +124,7 @@ public class MemberService {
 
     private MemberDTO convertToDTO(Member member) {
         return MemberDTO.builder()
+                .id(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .mbti(member.getMbti())

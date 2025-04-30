@@ -146,4 +146,10 @@
                     .build();
         }
 
+        public List<PostDTO> getPostsByMemberNickname(String nickname) {
+            List<Post> posts = postRepository.findByMemberNicknameAndIsAnonymousFalseOrderByCreatedAtDesc(nickname);
+            return posts.stream()
+                    .map(post -> convertToDTO(post, Optional.empty()))
+                    .collect(Collectors.toList());
+        }
     }

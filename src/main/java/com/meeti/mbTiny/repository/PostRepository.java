@@ -14,4 +14,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findNonAnonymousPostsByLikeCountDesc();
     List<Post> findByIsAnonymousTrueOrderByCreatedAtDesc();
     List<Post> findByIsAnonymousFalseOrderByCreatedAtDesc();
+    List<Post> findByMemberNicknameAndIsAnonymousFalseOrderByCreatedAtDesc(String nickname);
 }
