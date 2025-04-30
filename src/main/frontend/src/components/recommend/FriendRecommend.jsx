@@ -10,7 +10,7 @@ const FriendRecommend = () => {
   const [recommendedFriends, setRecommendedFriends] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [requestedIds, setRequestedIds] = useState(new Set());
+  const [requestedIds, setRequestedIds] = useState(new Set()); // Set으로 변경
   const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
   const [friendCount, setFriendCount] = useState(20);
 
@@ -42,17 +42,19 @@ const FriendRecommend = () => {
   };
 
   const handleFollowClick = (e, id) => {
-    e.stopPropagation();
+    e.stopPropagation(); // ⭐️ 버튼 클릭 시 부모로 이벤트 전파 막기
     setRequestedIds(prev => {
       const updated = new Set(prev);
       if (updated.has(id)) {
-        updated.delete(id);
+        updated.delete(id); // 이미 팔로우 되어 있으면 제거
       } else {
-        updated.add(id);
+        updated.add(id); // 아니면 추가
+
       }
       return updated;
     });
   };
+
 
   const handleProfileClick = (nickname) => {
     navigate(`/profile/${nickname}`);

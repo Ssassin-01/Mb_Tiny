@@ -22,6 +22,7 @@ const MessagesPage = () => {
           name: `사용자${i + 1}`,
           profileImg: `/img/profile${(i % 5) + 1}.png`,
           status: `안녕하세요 ${i + 1}번입니다.`,
+          preview: `안녕하세요 ${i + 1}번입니다.` // ✅ 추가!
         }));
         setUsers(dummyUsers);
       });

@@ -20,7 +20,6 @@ function App() {
         {/* 사이드바, 탑바 없이 보여지는 경로 */}
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUpPage />} />
-
         {/* 사이드바/탑바 포함 공통 레이아웃 */}
         <Route element={<Layout />}>
           <Route path='/' element={<HomePage />} />

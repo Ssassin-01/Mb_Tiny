@@ -4,6 +4,7 @@ import { FaPaperPlane } from 'react-icons/fa';
 import '../../css/layout/Topbar.css';
 import axios from 'axios';
 import NotificationBell from './NotificationBell';
+import Logout from './Logout';
 import SearchBar from './SearchBar';
 
 const Topbar = () => {
@@ -54,7 +55,7 @@ const Topbar = () => {
           <>
             {/* 알림벨 */}
             <NotificationBell key='notification' />
-
+            <Logout />
             {/* MBTI 카드 + 닉네임 */}
             <div className='mbti-card' onClick={goToMyProfile}>
               {user.nickname} ・ {user.mbti}

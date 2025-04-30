@@ -51,7 +51,8 @@
             post.setContent(dto.getContent());
             post.setAnonymous(false);
 
-            if (image == null || image.isEmpty()) {
+            if (image == null) {
+            } else if (image.isEmpty()) {
                 if (post.getImageUrl() != null) {
                     fileUploadService.delete(post.getImageUrl());
                 }
