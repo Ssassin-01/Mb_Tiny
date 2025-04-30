@@ -97,4 +97,10 @@ public class PostController {
         List<PostDTO> res = postService.getPostsByLikeCount(optionalMember);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/member/{nickname}")
+    public ResponseEntity<List<PostDTO>> getPostsByMemberNickname(@PathVariable String nickname) {
+        List<PostDTO> posts = postService.getPostsByMemberNickname(nickname);
+        return ResponseEntity.ok(posts);
+    }
 }
