@@ -94,7 +94,8 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   const handleLikeClick = async () => {
     try {
       const res = await axios.post(`http://localhost:8080/api/posts/${feed.id}/like`, null, { withCredentials: true });
-      setLiked(res.data.like);
+      setLiked(res.data.like); // true/false 값 받아서 liked 상태 갱신
+
     } catch (error) {
       console.error('좋아요 실패:', error);
       alert('좋아요에 실패했습니다.');

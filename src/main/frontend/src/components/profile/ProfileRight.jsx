@@ -22,14 +22,10 @@ function ProfileRight() {
       const loginUser = userRes.data;
 
       if (!loginUser) return;
-
-      // ✅ 내가 쓴 일반 피드
       const feedRes = await axios.get('http://localhost:8080/api/posts', { withCredentials: true });
       const myFeeds = feedRes.data.filter(post => post.email === loginUser.email);
       setFeedPosts(myFeeds);
       setHasMoreFeed(false);
-
-      // ✅ 내가 쓴 익명글
       const anonRes = await axios.get('http://localhost:8080/api/anonymous-posts', { withCredentials: true });
       const myAnons = anonRes.data.filter(post => post.email === loginUser.email);
       setAnonymousPosts(myAnons);

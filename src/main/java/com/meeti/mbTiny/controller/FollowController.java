@@ -50,4 +50,16 @@ public class FollowController {
                 "following", following
         ));
     }
+
+    @GetMapping("/count/{nickname}")
+    public ResponseEntity<?> getFollowCountsByNickname(@PathVariable String nickname) {
+        long followers = followService.countFollowersByNickname(nickname);
+        long following = followService.countFollowingByNickname(nickname);
+
+        return ResponseEntity.ok(Map.of(
+                "followers", followers,
+                "following", following
+        ));
+    }
+
 }

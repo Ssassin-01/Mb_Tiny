@@ -99,7 +99,7 @@ function FeedList() {
   // 좋아요 함수
   const handleLike = async (postId) => {
     try {
-      await axios.post(`http://localhost:8080/api/posts/${postId}/like`, null, { withCredentials: true });
+      await axios.post(`'http://localhost:8080/api/posts'${postId}/like`, null, { withCredentials: true });
       loadMoreFeeds(); // 좋아요 성공하면 피드 다시 불러오기
     } catch (error) {
       console.error('좋아요 실패:', error);
@@ -119,7 +119,6 @@ function FeedList() {
       if (newImage) {
         formData.append('image', newImage);
       }
-
       await axios.put(`http://localhost:8080/api/posts/${postId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

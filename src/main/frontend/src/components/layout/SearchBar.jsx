@@ -17,7 +17,7 @@ function SearchBar() {
 
     const delayDebounceFn = setTimeout(() => {
       axios
-        .get(`/api/members/search?keyword=${keyword}`)
+        .get(`http://localhost:8080/api/members/search?keyword=${keyword}`)
         .then((res) => {
           setResults(res.data);
         })
