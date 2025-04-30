@@ -77,12 +77,15 @@ public class MemberService {
         }
 
         MultipartFile profileImg = dto.getProfileImg();
-        if (profileImg == null || profileImg.isEmpty()) {
+        if (profileImg == null) {
+        }
+        else if (profileImg.isEmpty()) {
             if (member.getProfileImgUrl() != null) {
                 fileUploadService.delete(member.getProfileImgUrl());
             }
             member.setProfileImgUrl(null);
-        } else {
+        }
+        else {
             if (member.getProfileImgUrl() != null) {
                 fileUploadService.delete(member.getProfileImgUrl());
             }
