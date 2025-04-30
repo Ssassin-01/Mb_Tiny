@@ -11,7 +11,7 @@ import MessagesPage from './pages/MessagesPage';
 import MessagesTest from './pages/MessagesTest';
 import Layout from './components/layout/Layout';
 import Profile from './components/profile/Profile';
-import MbtiTest from './components/mbti/MBTITest';
+
 
 function App() {
   return (
@@ -29,7 +29,7 @@ function App() {
           <Route path='/anonymous/write' element={<AnonymousWrite />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/profile/:id' element={<FriendProfilePage />} />
-          <Route path='/mbtitest' element={<MbtiTest />} />
+
           <Route path='/messagespage' element={<MessagesPage />} />
           <Route path='/messagesTest' element={<MessagesTest />} />
         </Route>
