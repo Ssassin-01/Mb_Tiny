@@ -7,6 +7,8 @@ import com.meeti.mbTiny.dto.MemberUpdateRequestDTO;
 import com.meeti.mbTiny.entity.Member;
 import com.meeti.mbTiny.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+    @Value("${custom.default-profile-img:/uploads/profile/default.png}")
+    private String defaultProfileImage;
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -46,6 +50,7 @@ public class MemberService {
         member.setNickname(dto.getNickname());
         member.setMbti(dto.getMbti());
         member.setAddress(dto.getAddress());
+        member.setProfileImgUrl(defaultProfileImage);
         memberRepository.save(member);
     }
 
@@ -78,15 +83,13 @@ public class MemberService {
 
         MultipartFile profileImg = dto.getProfileImg();
         if (profileImg == null) {
-        }
-        else if (profileImg.isEmpty()) {
-            if (member.getProfileImgUrl() != null) {
+        } else if (profileImg.isEmpty()) {
+            if (member.getProfileImgUrl() != null && !member.getProfileImgUrl().equals(defaultProfileImage)) {
                 fileUploadService.delete(member.getProfileImgUrl());
             }
-            member.setProfileImgUrl(null);
-        }
-        else {
-            if (member.getProfileImgUrl() != null) {
+            member.setProfileImgUrl(defaultProfileImage);
+        } else {
+            if (member.getProfileImgUrl() != null && !member.getProfileImgUrl().equals(defaultProfileImage)) {
                 fileUploadService.delete(member.getProfileImgUrl());
             }
             String imageUrl = fileUploadService.upload(profileImg, "profile");
@@ -160,18 +163,20 @@ public class MemberService {
                 .orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public List<MemberListResponseDTO> getRandomMembersExcludeSelfAndFollowing(Member me, int count) {
-        // 내가 팔로우한 사람 ID 목록
-        List<Long> followingIds = me.getFollowing().stream()
-                .map(follow -> follow.getFollowing().getId())
+        Member memberWithFollowing = memberRepository.findWithFollowingById(me.getId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보 조회 실패"));
+
+        List<Long> followingIds = memberWithFollowing.getFollowing().stream()
+                .map(f -> f.getFollowing().getId())
                 .collect(Collectors.toList());
 
         List<Member> allMembers = memberRepository.findAll();
 
-        // 본인 + 팔로우한 사람 필터링
         List<Member> filtered = allMembers.stream()
-                .filter(member -> !member.getId().equals(me.getId())) // 본인 제외
-                .filter(member -> !followingIds.contains(member.getId())) // 팔로우한 사람 제외
+                .filter(m -> !m.getId().equals(memberWithFollowing.getId()))
+                .filter(m -> !followingIds.contains(m.getId()))
                 .collect(Collectors.toList());
 
         Collections.shuffle(filtered);
@@ -187,6 +192,7 @@ public class MemberService {
                         .build())
                 .collect(Collectors.toList());
     }
+
     public List<MemberListResponseDTO> getRandomMembers(int count) {
         List<Member> allMembers = memberRepository.findAll();
 
