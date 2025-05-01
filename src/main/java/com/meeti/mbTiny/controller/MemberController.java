@@ -166,6 +166,18 @@
             List<MemberListResponseDTO> members = memberService.getRandomMembers(count);
             return ResponseEntity.ok(members);
         }
+
+        @GetMapping("/random/exclude")
+        public ResponseEntity<?> getFilteredRandomMembers(
+                @RequestParam(defaultValue = "20") int count,
+                @AuthenticationPrincipal CustomUserDetails userDetails
+        ) {
+            Member me = userDetails.getMember();
+            List<MemberListResponseDTO> members = memberService.getRandomMembersExcludeSelfAndFollowing(me, count);
+            return ResponseEntity.ok(members);
+        }
+
+
         @GetMapping("/random/mbti")
         public ResponseEntity<?> getMembersByMBTI(
                 @RequestParam(defaultValue = "20") int count,
