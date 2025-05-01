@@ -1,42 +1,50 @@
+/* 댓글 모달 전체 배경 */
 .comment-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* ✅ 어두운 배경 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal-content {
-    background: white;
-    width: 400px;
-    padding: 20px;
-    border-radius: 10px;
-    max-height: 80%;
-    overflow-y: auto; /* 모달 내부만 스크롤 */
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    font-size: 20px;
-    float: right;
-    cursor: pointer;
-  }
-  .like-btn {
-    color: black;
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .like-btn.liked {
-    color: red;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 댓글 모달 내부 박스 */
+.modal-content {
+  background: white;
+  width: 400px;
+  padding: 20px;
+  border-radius: 10px;
+  max-height: 80%;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* 닫기 버튼 (공용) */
+.close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  cursor: pointer;
+  z-index: 10001;
+}
+
+/* 좋아요 버튼 */
+.like-btn {
+  color: black;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.like-btn.liked {
+  color: red;
+}
