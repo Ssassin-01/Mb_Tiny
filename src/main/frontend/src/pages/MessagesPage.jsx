@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+// src/pages/MessagesPage.jsx
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ChatList from '../components/chat/ChatList';
 import ChatRoom from '../components/chat/ChatRoom';
 import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs';
+import { CompatClient, Stomp } from '@stomp/stompjs';
 import '../css/chat/MessagesPage.css';
 
 const MessagesPage = () => {
@@ -16,13 +16,6 @@ const MessagesPage = () => {
   const [input, setInput] = useState('');
   const [roomId, setRoomId] = useState(null);
   const [myNickname, setMyNickname] = useState('');
-
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const targetNickname = queryParams.get('nickname');
-
-  // ✅ 중복 생성 방지용 ref
-  const isCreatingRoom = useRef(false);
 
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/chat", null, {
@@ -49,62 +42,15 @@ const MessagesPage = () => {
       .catch(err => console.error("닉네임 불러오기 실패", err));
   }, []);
 
-  // ✅ 채팅방 자동 진입 & 생성 (자기 자신 방지 + 중복 생성 방지)
-  useEffect(() => {
-    if (!targetNickname || !myNickname || !Array.isArray(chatRooms)) return;
-
-    if (targetNickname === myNickname) {
-      console.warn("❌ 자기 자신과는 채팅할 수 없습니다.");
-      return;
-    }
-
-    const existingRoom = chatRooms.find(room =>
-      room.receiverNickname === targetNickname || room.targetNickname === targetNickname
-    );
-
-    if (existingRoom) {
-      handleSelectChatRoom(existingRoom);
-    } else if (!isCreatingRoom.current) {
-      isCreatingRoom.current = true;
-
-      axios.post(
-        'http://localhost:8080/api/chatrooms',
-        { receiverNickname: targetNickname },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        }
-      )
-        .then(res => {
-          const newRoom = {
-            ...res.data,
-            targetNickname: res.data.receiverNickname
-          };
-
-          // 중복 방지: 닉네임 중복 여부 재확인
-          const alreadyExists = chatRooms.some(
-            room => room.receiverNickname === newRoom.receiverNickname || room.targetNickname === newRoom.receiverNickname
-          );
-          if (!alreadyExists) {
-            setChatRooms(prev => [newRoom, ...prev]);
-          }
-
-          handleSelectChatRoom(newRoom);
-        })
-        .catch(err => console.error("채팅방 생성 실패", err))
-        .finally(() => {
-          isCreatingRoom.current = false;
-        });
-    }
-  }, [targetNickname, chatRooms, myNickname]);
-
   const handleSelectChatRoom = async (chatRoom) => {
     try {
       const { roomId, targetNickname } = chatRoom;
       setRoomId(roomId);
       setSelectedFriend({ nickname: targetNickname });
 
-      if (subscription) subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
 
       const msgRes = await axios.get(`http://localhost:8080/api/chatrooms/${roomId}/messages`, { withCredentials: true });
       setMessages(msgRes.data);
@@ -128,6 +74,8 @@ const MessagesPage = () => {
           setChatRooms(sortedRooms);
         });
         setSubscription(sub);
+      } else {
+        console.warn("stompClient 연결되지 않아 구독 실패");
       }
     } catch (err) {
       console.error("메세지 불러오기 실패", err);
@@ -147,6 +95,7 @@ const MessagesPage = () => {
     };
     stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(message));
     setInput('');
+
 
     const updatedRooms = chatRooms.map(room =>
       room.roomId === roomId

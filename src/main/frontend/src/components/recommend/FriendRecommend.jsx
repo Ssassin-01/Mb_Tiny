@@ -84,11 +84,6 @@ const FriendRecommend = () => {
     );
   });
 
-  const getProfileImageUrl = (url) => {
-    if (!url || url.trim() === "") return "/img/default-profile.png";
-    return `http://localhost:8080${url}`;
-  };
-
   return (
     <>
       {isMobile && (
@@ -131,7 +126,11 @@ const FriendRecommend = () => {
                   style={{ cursor: "pointer" }}
                 >
                   <img
-                    src={getProfileImageUrl(friend.profileImgUrl)}
+                    src={
+                      friend.profileImgUrl
+                        ? `http://localhost:8080${friend.profileImgUrl}`
+                        : "/img/default-profile.png"
+                    }
                     alt={friend.nickname}
                     className="friend-profile-img"
                   />

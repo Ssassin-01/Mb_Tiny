@@ -43,20 +43,6 @@
   align-items: center;
   justify-content: center;
 }
-.default-profile-img {
-  width: 100%;
-  height: 100%;
-  background-color: #ddd;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.default-camera-icon {
-  font-size: 24px;
-  color: #666;
-}
 
 /* 프로필 기본 정보 */
 .profile-info p {
