@@ -98,17 +98,14 @@ const FriendProfileLeft = ({
           fetchFollowCounts();
         }, 200);
       }}
-        />
-      {!isOwner && nickname !== sessionStorage.getItem('loginUser')?.nickname && (
-        <button
-          className="message-btn"
-          onClick={() => navigate(`/messagespage?nickname=${nickname}`)}
-          style={{ marginTop: '10px' }}
-        >
-          💬 메시지 보내기
-        </button>
-      )}
-
+    />
+    <button
+      className="message-btn"
+      onClick={() => navigate('/messagespage')}
+      style={{ marginTop: '10px' }}
+    >
+      💬 메시지 보내기
+    </button>
   </>
 )}
 
