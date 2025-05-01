@@ -40,10 +40,15 @@ function FollowModal({ type, onClose }) {
               <li key={user.id} className="follow-user-item" onClick={() => handleProfileClick(user.nickname)}
               style={{cursor:'pointer'}}>
                 <img
-                  src={user.profileImgUrl || '/img/default-profile.png'}
+                  src={
+                    user.profileImgUrl
+                      ? `http://localhost:8080${user.profileImgUrl}`
+                      : '/img/default-profile.png'
+                  }
                   alt="프로필"
                   className="user-thumb"
                 />
+
                 <span className="user-nickname">{user.nickname}</span>
               </li>
             ))

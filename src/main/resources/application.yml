@@ -13,6 +13,7 @@ spring:
     url: jdbc:mysql://localhost:3306/mbtisns
     username : root
     password: hsgty588123s
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,6 +23,7 @@ spring:
         format_sql: true
 
 file:
+
   upload-dir: D:/hsg/Mb_Tiny/uploads
 
 custom:

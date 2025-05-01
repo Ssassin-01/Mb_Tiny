@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaCamera } from 'react-icons/fa';
+import axios from 'axios';
 import '../../css/profile/ProfileEditPage.css';
 
 const ProfileEditPage = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef();
   const [form, setForm] = useState({
     password: '',
     gender: '',
@@ -19,7 +21,7 @@ const ProfileEditPage = () => {
     const fetchProfile = async () => {
       try {
         const res = await axios.get('http://localhost:8080/api/members/me', { withCredentials: true });
-        const { gender, phone, birthday, mbti, profileImage } = res.data;
+        const { gender, phone, birthday, mbti, profileImgUrl } = res.data;
         setForm({
           password: '',
           gender: gender || '',
@@ -27,7 +29,7 @@ const ProfileEditPage = () => {
           birthday: birthday || '',
           mbti: mbti || '',
         });
-        setPreview(profileImage || null);
+        setPreview(profileImgUrl ? `http://localhost:8080${profileImgUrl}` : null);
       } catch (err) {
         console.error('프로필 정보 불러오기 실패', err);
         alert('로그인이 필요합니다.');
@@ -50,6 +52,14 @@ const ProfileEditPage = () => {
     }
   };
 
+  const handleResetToDefault = () => {
+    const emptyFile = new File([], ''); // 빈 파일을 전송하면 백엔드에서 default.png로 처리
+    setImageFile(emptyFile);
+    setPreview('http://localhost:8080/uploads/profile/default.png'); // 서버에 있는 기본 이미지 URL로 설정
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+  
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -60,8 +70,8 @@ const ProfileEditPage = () => {
       formData.append('phone', form.phone);
       formData.append('birthday', form.birthday);
       formData.append('mbti', form.mbti);
-      if (imageFile) {
-        formData.append('profileImg', imageFile); // DTO 필드명과 일치
+      if (imageFile !== null) {
+        formData.append('profileImg', imageFile);
       }
 
       await axios.put('http://localhost:8080/api/members/modify', formData, {
@@ -84,8 +94,17 @@ const ProfileEditPage = () => {
         <div className="form-group">
           <label>프로필 이미지</label>
           <div className="img-preview-wrapper">
-            {preview && <img src={preview} alt="preview" className="img-preview" />}
-            <input type="file" accept="image/*" onChange={handleImageChange} />
+            {preview ? (
+              <img src={preview} alt="preview" className="img-preview" />
+            ) : (
+              <div className="default-profile-img">
+                <FaCamera className="default-camera-icon" />
+              </div>
+            )}
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} />
+            <button type="button" className="reset-profile-btn" onClick={handleResetToDefault}>
+              기본 이미지로 변경
+            </button>
           </div>
         </div>
 
@@ -100,7 +119,6 @@ const ProfileEditPage = () => {
             <option value="">선택</option>
             <option value="남성">남성</option>
             <option value="여성">여성</option>
-            
           </select>
         </div>
 
@@ -115,20 +133,14 @@ const ProfileEditPage = () => {
         </div>
 
         <div className="form-group">
-  <label>MBTI</label>
-  <select name="mbti" value={form.mbti} onChange={handleChange}>
-    <option value="">선택</option>
-    {[
-      'ISTJ','ISFJ','INFJ','INTJ',
-      'ISTP','ISFP','INFP','INTP',
-      'ESTP','ESFP','ENFP','ENTP',
-      'ESTJ','ESFJ','ENFJ','ENTJ'
-    ].map((type) => (
-      <option key={type} value={type}>{type}</option>
-    ))}
-  </select>
-</div>
-
+          <label>MBTI</label>
+          <select name="mbti" value={form.mbti} onChange={handleChange}>
+            <option value="">선택</option>
+            {[ 'ISTJ','ISFJ','INFJ','INTJ','ISTP','ISFP','INFP','INTP','ESTP','ESFP','ENFP','ENTP','ESTJ','ESFJ','ENFJ','ENTJ' ].map((type) => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+        </div>
 
         <button type="submit" className="save-btn">저장</button>
       </form>
