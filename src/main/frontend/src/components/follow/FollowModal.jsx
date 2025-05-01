@@ -9,7 +9,7 @@ function FollowModal({ type, onClose }) {
 
 
   const handleProfileClick = (nickname) => {
-    navigate(`/profile/${encodeURIComponent(nickname)}`); // ✅ URI 인코딩 포함
+    navigate(`/profile/${encodeURIComponent(nickname)}`); // URI 인코딩 포함
     onClose(); // 모달 닫기
   };
   useEffect(() => {
@@ -31,7 +31,7 @@ function FollowModal({ type, onClose }) {
   return (
     <div className="follow-modal-overlay" onClick={onClose}>
       <div className="follow-modal" onClick={(e) => e.stopPropagation()}>
-        <h3>{type === 'followers' ? '팔로잉' : '팔로워'} 목록</h3>
+        <h3>{type === 'followers' ? '팔로워' : '팔로잉'} 목록</h3>
         <ul className="follow-user-list">
           {users.length === 0 ? (
             <li className="no-follow">아직 아무도 없습니다.</li>

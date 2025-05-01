@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import FollowButton from '../follow/FollowButton';
 import mbtiDescriptions from './mbtiDescriptions';
+import { FaCamera } from 'react-icons/fa'; 
 import '../../css/profile/Profile.css';
 
 const FriendProfileLeft = ({
@@ -16,12 +18,13 @@ const FriendProfileLeft = ({
 }) => {
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+  const navigate = useNavigate();
 
   // 팔로우 수 불러오기
   const fetchFollowCounts = async () => {
-    console.log('📥 fetchFollowCounts 호출됨');
-    console.log('🎯 targetId:', targetId);
-    console.log('🙋 isOwner:', isOwner);
+    console.log('fetchFollowCounts 호출됨');
+    console.log('targetId:', targetId);
+    console.log('isOwner:', isOwner);
 
     try {
       const url = isOwner
@@ -29,7 +32,7 @@ const FriendProfileLeft = ({
         : `http://localhost:8080/api/follow/count/${nickname}`;
 
       const res = await axios.get(url, { withCredentials: true });
-      console.log('📦 follow count 응답:', res.data);
+      console.log('follow count 응답:', res.data);
 
       setFollowerCount(res.data.followers);
       setFollowingCount(res.data.following);
@@ -53,13 +56,16 @@ const FriendProfileLeft = ({
   return (
     <div className="profile-left">
       <div className="profile-card">
-        <div className="profile-img-wrapper">
-          {profileImgUrl ? (
-            <img src={profileImgUrl} alt="프로필" className="profile-img" />
-          ) : (
-            <div className="default-profile-img">사진 없음</div>
-          )}
-        </div>
+      <div className="profile-img-wrapper">
+        {profileImgUrl ? (
+          <img src={profileImgUrl} alt="프로필" className="profile-img" />
+        ) : (
+          <div className="default-profile-img">
+            <FaCamera className="default-camera-icon" />
+          </div>
+        )}
+      </div>
+        
 
         <p className="profile-nickname">{nickname}</p>
         <div className="profile-info">
