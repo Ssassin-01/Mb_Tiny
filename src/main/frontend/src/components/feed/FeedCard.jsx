@@ -12,10 +12,35 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const navigate = useNavigate();
-  const handleProfileClick = () => {
-    navigate(`/profile/${feed.nickname}`);
-  };
+  const [loginUserNickname, setLoginUserNickname] = useState(null);
   
+  useEffect(() => {
+    const user = sessionStorage.getItem('loginUser');
+    if (user) {
+      try {
+        const parsed = JSON.parse(user);
+        setLoginUserNickname(parsed.nickname);
+      } catch (e) {
+        console.error('세션 파싱 오류:', e);
+      }
+    }
+  }, []);
+
+  const handleProfileClick = () => {
+    console.log('🔍 로그인 유저:', loginUserNickname);
+    console.log('📝 피드 작성자:', feed.nickname);
+
+    if (!loginUserNickname) {
+      alert('로그인 유저 정보가 없습니다.');
+      return;
+    }
+
+    if (loginUserNickname === feed.nickname) {
+      navigate('/profile/me');
+    } else {
+      navigate(`/profile/${feed.nickname}`);
+    }
+  };
 
   // 좋아요 상태 관리
   const [liked, setLiked] = useState(feed.liked);

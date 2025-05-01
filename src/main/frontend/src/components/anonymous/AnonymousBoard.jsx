@@ -12,15 +12,15 @@ function AnonymousBoard() {
   useEffect(() => {
     const checkLoginAndFetch = async () => {
       try {
-        // ✅ 로그인 유저 정보 확인
+        // 로그인 유저 정보 확인
         const userRes = await axios.get('http://localhost:8080/api/members/me', {
           withCredentials: true,
         });
 
-        // ✅ 세션스토리지에 저장 (기존 코드와 호환)
+        // 세션스토리지에 저장 (기존 코드와 호환)
         sessionStorage.setItem('loginUser', JSON.stringify(userRes.data));
 
-        // ✅ 게시글 가져오기
+        // 게시글 가져오기
         const res = await axios.get('http://localhost:8080/api/anonymous-posts', {
           withCredentials: true,
         });

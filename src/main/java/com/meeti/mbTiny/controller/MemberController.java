@@ -32,6 +32,7 @@
     @RequestMapping("/api/members")
     @RequiredArgsConstructor
     public class MemberController {
+
         private final MemberService memberService;
         private final AuthenticationManager authenticationManager;
         private final PostService postService;
