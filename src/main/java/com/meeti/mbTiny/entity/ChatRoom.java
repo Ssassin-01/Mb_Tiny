@@ -7,6 +7,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,10 +25,15 @@ public class ChatRoom {
 
     // 1:1 채팅 기준: 두 명의 사용자 ID 저장
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member sender; // 방을 만든 사람 (또는 사용자1)
+    @JoinColumn(name = "sender_id")
+    private Member sender; // 방을 만든 사람
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member receiver; // 대화 상대 (사용자2)
+    @JoinColumn(name = "receiver_id")
+    private Member receiver; // 대화 상대
+
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Message> messages = new ArrayList<>();
 
     @CreatedDate
     @Column(name = "created_at")

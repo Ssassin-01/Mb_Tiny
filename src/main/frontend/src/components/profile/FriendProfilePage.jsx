@@ -3,13 +3,13 @@ import { useParams } from 'react-router-dom';
 import FriendProfileLeft from './FriendProfileLeft';
 import FriendProfileRight from './FriendProfileRight';
 import '../../css/profile/FriendProfilePage.css';
+import axios from 'axios';
 
 const FriendProfilePage = () => {
-  const { nickname } = useParams(); // 이 id는 닉네임일 수도 있고, 숫자 id일 수도 있음
+  const { nickname } = useParams(); // 닉네임 또는 숫자 ID일 수 있음
   const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
-    
     const fetchProfile = async () => {
       try {
         
@@ -35,9 +35,7 @@ const FriendProfilePage = () => {
   }
 
   return (
-<div className="friend-profile-page">
-  {profileData && (
-    <>
+    <div className="friend-profile-page">
       <FriendProfileLeft
         nickname={profileData.nickname}
         mbti={profileData.mbti}
@@ -47,13 +45,8 @@ const FriendProfilePage = () => {
         targetId={profileData.id}
         profileImgUrl={profileData.profileImgUrl}
       />
-      <FriendProfileRight
-        targetNickname={profileData.nickname}
-      />
-    </>
-  )}
-</div>
-
+      <FriendProfileRight targetNickname={profileData.nickname} />
+    </div>
   );
 };
 

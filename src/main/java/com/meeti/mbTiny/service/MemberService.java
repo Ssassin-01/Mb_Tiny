@@ -160,6 +160,33 @@ public class MemberService {
                 .orElse(null);
     }
 
+    public List<MemberListResponseDTO> getRandomMembersExcludeSelfAndFollowing(Member me, int count) {
+        // 내가 팔로우한 사람 ID 목록
+        List<Long> followingIds = me.getFollowing().stream()
+                .map(follow -> follow.getFollowing().getId())
+                .collect(Collectors.toList());
+
+        List<Member> allMembers = memberRepository.findAll();
+
+        // 본인 + 팔로우한 사람 필터링
+        List<Member> filtered = allMembers.stream()
+                .filter(member -> !member.getId().equals(me.getId())) // 본인 제외
+                .filter(member -> !followingIds.contains(member.getId())) // 팔로우한 사람 제외
+                .collect(Collectors.toList());
+
+        Collections.shuffle(filtered);
+
+        return filtered.stream()
+                .limit(count)
+                .map(member -> MemberListResponseDTO.builder()
+                        .id(member.getId())
+                        .nickname(member.getNickname())
+                        .mbti(member.getMbti())
+                        .followerCount(member.getFollowers().size())
+                        .profileImgUrl(member.getProfileImgUrl())
+                        .build())
+                .collect(Collectors.toList());
+    }
     public List<MemberListResponseDTO> getRandomMembers(int count) {
         List<Member> allMembers = memberRepository.findAll();
 
@@ -206,5 +233,4 @@ public class MemberService {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 유저를 찾을 수 없습니다."));
     }
-
 }

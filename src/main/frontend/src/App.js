@@ -10,8 +10,8 @@ import Layout from './components/layout/Layout';
 import Profile from './components/profile/Profile';
 import FriendProfilePage from './components/profile/FriendProfilePage';
 import MessagesPage from './pages/MessagesPage';
-import MbtiTest from './components/mbti/MbtiTest';
 import ProfileEditPage from './components/profile/ProfileEditPage';
+import MbtiTest from './components/mbti/MbtiTest';
 
 function App() {
   return (
@@ -30,8 +30,7 @@ function App() {
           <Route path='profile/:nickname' element={<FriendProfilePage />} />
           <Route path='/mbtitest' element={<MbtiTest />} />
           <Route path='/messagespage' element={<MessagesPage />} />
-          <Route path="/profile/edit" element={<ProfileEditPage />} />
-
+          <Route path='/profile/edit' element={<ProfileEditPage />} />
         </Route>
       </Routes>
     </Router>
