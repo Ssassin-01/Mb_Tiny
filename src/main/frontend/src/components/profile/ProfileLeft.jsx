@@ -79,7 +79,7 @@ const ProfileLeft = ({
         <p className="profile-nickname" style={{ cursor: 'pointer' }}>{nickname}</p>
         <div className="profile-info">
           <p className="profile-mbti" style={{ cursor: 'pointer' }}>{mbti || 'MBTI 미설정'}</p>
-          <p><strong>가입일:</strong> {joinDate}</p>
+          {/* <p><strong>가입일:</strong> {joinDate}</p> */}
 
           <div className="profile-stats">
             <div className="stats-buttons">

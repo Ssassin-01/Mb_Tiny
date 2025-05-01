@@ -99,7 +99,7 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   // 댓글 모달 열기
   const openCommentsModal = async () => {
     try {
-      const res = await axios.get(`/api/posts/${feed.id}/comments`, { withCredentials: true });
+      const res = await axios.get(`http://localhost:8080/api/posts/${feed.id}/comments`, { withCredentials: true });
       setComments(res.data);
       setShowCommentsModal(true);
     } catch (error) {

@@ -70,13 +70,13 @@ const FriendProfileLeft = ({
         <p className="profile-nickname">{nickname}</p>
         <div className="profile-info">
           <p className="profile-mbti">{mbti}</p>
-          <p><strong>가입일:</strong> {joinDate}</p>
+          {/* <p><strong>가입일:</strong> {joinDate}</p> */}
 
           {/* 팔로우 수 표시 */}
           <div className="profile-stats">
             <div className="stats-buttons">
               <span className="stats-item" onClick={onTogglePosts}>
-                게시글 {postCount}
+                게시글 
               </span>
               <span className="stats-item">
                 팔로워 {followerCount}

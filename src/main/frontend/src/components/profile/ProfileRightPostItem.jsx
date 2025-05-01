@@ -2,7 +2,7 @@ import React from "react";
 import '../../css/profile/Profile.css';
 
 const PostItem = ({ post, isAnonymous }) => {
-  // ✅ 날짜 포맷 함수
+  // 날짜 포맷 함수
   const formatDate = (dateStr) => {
     if (!dateStr) return '날짜 없음';
     const date = new Date(dateStr);
