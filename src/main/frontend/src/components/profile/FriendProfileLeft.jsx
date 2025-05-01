@@ -104,7 +104,7 @@ const FriendProfileLeft = ({
       onClick={() => navigate('/messagespage')}
       style={{ marginTop: '10px' }}
     >
-      💬 메시지 보내기
+      메시지
     </button>
   </>
 )}
