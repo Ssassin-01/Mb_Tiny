@@ -3,6 +3,7 @@ import axios from 'axios';
 import '../../css/feed/FeedComments.css';
 import { useNavigate } from 'react-router-dom';
 
+
 function FeedCard({ feed, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(feed.content);
@@ -11,13 +12,9 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const navigate = useNavigate();
-  const [liked, setLiked] = useState(feed.liked);
-
-  const handleProfileClick = () => {
-    navigate(`/profile/${feed.nickname}`);
-  };
-
-  // ✅ 날짜 포맷 함수 추가
+  const [loginUserNickname, setLoginUserNickname] = useState(null);
+  
+  // 날짜 포맷 함수 추가
   const formatDateOrTime = (input) => {
     const raw = input || feed.createdAt || feed.createDate;
     if (!raw) return '날짜 없음';
@@ -43,6 +40,36 @@ function FeedCard({ feed, onUpdate, onDelete }) {
       return `${month}-${date}`;
     }
   };
+  useEffect(() => {
+    const user = sessionStorage.getItem('loginUser');
+    if (user) {
+      try {
+        const parsed = JSON.parse(user);
+        setLoginUserNickname(parsed.nickname);
+      } catch (e) {
+        console.error('세션 파싱 오류:', e);
+      }
+    }
+  }, []);
+
+  const handleProfileClick = () => {
+    console.log('🔍 로그인 유저:', loginUserNickname);
+    console.log('📝 피드 작성자:', feed.nickname);
+
+    if (!loginUserNickname) {
+      alert('로그인 유저 정보가 없습니다.');
+      return;
+    }
+
+    if (loginUserNickname === feed.nickname) {
+      navigate('/profile/me');
+    } else {
+      navigate(`/profile/${feed.nickname}`);
+    }
+  };
+
+  // 좋아요 상태 관리
+  const [liked, setLiked] = useState(feed.liked);
 
   const handleEditClick = () => setIsEditing(true);
   const handleCancelClick = () => {
@@ -59,15 +86,20 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   };
 
   useEffect(() => {
-    document.body.style.overflow = showCommentsModal ? 'hidden' : 'auto';
+    if (showCommentsModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, [showCommentsModal]);
 
+  // 댓글 모달 열기
   const openCommentsModal = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/api/posts/${feed.id}/comments`, { withCredentials: true });
+      const res = await axios.get(`/api/posts/${feed.id}/comments`, { withCredentials: true });
       setComments(res.data);
       setShowCommentsModal(true);
     } catch (error) {
@@ -75,6 +107,7 @@ function FeedCard({ feed, onUpdate, onDelete }) {
     }
   };
 
+  // 댓글 작성
   const handleCommentSubmit = async () => {
     if (newComment.trim() === '') return;
 
@@ -91,11 +124,11 @@ function FeedCard({ feed, onUpdate, onDelete }) {
     }
   };
 
+  // 좋아요 토글 (버튼 색깔 즉시 변경)
   const handleLikeClick = async () => {
     try {
       const res = await axios.post(`http://localhost:8080/api/posts/${feed.id}/like`, null, { withCredentials: true });
       setLiked(res.data.like); // true/false 값 받아서 liked 상태 갱신
-
     } catch (error) {
       console.error('좋아요 실패:', error);
       alert('좋아요에 실패했습니다.');
@@ -110,18 +143,24 @@ function FeedCard({ feed, onUpdate, onDelete }) {
     <div className="feed-card">
       {/* 헤더 */}
       <div className="feed-header">
-        <img
-          src="/img/default-profile.png"
-          alt="프로필"
-          className="feed-profile"
-          onClick={handleProfileClick}
-          style={{ cursor: 'pointer' }}
-        />
+      <img
+  src={
+    feed.memberImageUrl
+      ? `http://localhost:8080${feed.memberImageUrl}`
+      : '/img/default-profile.png'
+  }
+  onClick={handleProfileClick} 
+        alt="프로필"
+        className="feed-profile"
+        style={{ cursor: 'pointer' }}
+
+      />
         <div className="feed-info">
-          <div className="feed-nickname" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
-            {feed.mbti ? `[${feed.mbti}] ` : ''}{feed.nickname}
-          </div>
-          <div className="feed-time">{formatDateOrTime()}</div> {/* ✅ 수정된 부분 */}
+        <div className="feed-nickname" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
+          {feed.mbti ? `[${feed.mbti}] ` : ''}{feed.nickname}
+        </div>
+
+        <div className="feed-time">{formatDateOrTime()}</div>
         </div>
       </div>
 
@@ -130,6 +169,7 @@ function FeedCard({ feed, onUpdate, onDelete }) {
         <>
           <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)} rows="4" className="edit-textarea" />
           <input type="file" accept="image/*" onChange={handleImageChange} />
+          
         </>
       ) : (
         <>
@@ -167,6 +207,7 @@ function FeedCard({ feed, onUpdate, onDelete }) {
         <div className="comment-modal">
           <div className="modal-content">
             <button className="close-button" onClick={closeModal}>X</button>
+
             <div className="comments-list">
               {comments.map((comment) => (
                 <div key={comment.id} className="comment-item">
@@ -174,6 +215,7 @@ function FeedCard({ feed, onUpdate, onDelete }) {
                 </div>
               ))}
             </div>
+
             <div className="comment-input">
               <input
                 type="text"

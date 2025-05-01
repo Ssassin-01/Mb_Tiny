@@ -29,7 +29,7 @@ const Logout = () => {
   return (
     <button className="logout-button" onClick={handleLogout}>
       <FiLogOut className="logout-icon" />
-      로그아웃
+      <span className="logout-text">로그아웃</span>
     </button>
   );
 };

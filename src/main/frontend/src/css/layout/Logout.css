@@ -19,25 +19,6 @@
   transform: translateY(-2px);
 }
 
-.logout-icon {
-  font-size: 18px;
-}
-
-/* ✅ 로그아웃 완료 토스트 */
-.custom-toast {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #3de5d9;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  z-index: 9999;
-  animation: fadeInOut 2s forwards;
-}
 .logout-button:active {
   transform: scale(0.96);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -57,7 +38,42 @@
   transform: rotate(-15deg);
 }
 
-/* 토스트 애니메이션 */
+/* ✅ 로그아웃 텍스트 */
+.logout-text {
+  display: inline;
+}
+
+/* ✅ 반응형: 모바일에서는 텍스트 숨기고 버튼 작게 */
+@media screen and (max-width: 480px) {
+  .logout-text {
+    display: none;
+  }
+
+  .logout-button {
+    padding: 8px;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+  }
+}
+
+/* ✅ 로그아웃 완료 토스트 */
+.custom-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #3de5d9;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 9999;
+  animation: fadeInOut 2s forwards;
+}
+
+/* ✅ 토스트 애니메이션 */
 @keyframes fadeInOut {
   0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
   10% { opacity: 1; transform: translateX(-50%) translateY(0); }
