@@ -75,7 +75,7 @@ const MessagesPage = () => {
         });
         setSubscription(sub);
       } else {
-        console.warn("⚠ stompClient 연결되지 않아 구독 실패");
+        console.warn("stompClient 연결되지 않아 구독 실패");
       }
     } catch (err) {
       console.error("메세지 불러오기 실패", err);

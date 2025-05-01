@@ -87,18 +87,27 @@ const FriendProfileLeft = ({
             </div>
           </div>
 
-          {/* 팔로우 버튼 */}
+          {/* 팔로우 버튼 / 메시지 버튼*/}
           {!isOwner && (
-            <FollowButton
-              targetId={targetId}
-              onFollowChange={() => {
-                console.log('🔁 onFollowChange 실행됨');
-                setTimeout(() => {
-                  fetchFollowCounts();
-                }, 200); // 약간 대기 후 반영
-              }}
-            />
-          )}
+  <>
+    <FollowButton
+      targetId={targetId}
+      onFollowChange={() => {
+        console.log('🔁 onFollowChange 실행됨');
+        setTimeout(() => {
+          fetchFollowCounts();
+        }, 200);
+      }}
+    />
+    <button
+      className="message-btn"
+      onClick={() => navigate('/messagespage')}
+      style={{ marginTop: '10px' }}
+    >
+      💬 메시지 보내기
+    </button>
+  </>
+)}
 
           <div className="mbti-description">
             <h4>{mbti} 유형: {mbtiInfo.title}</h4>
