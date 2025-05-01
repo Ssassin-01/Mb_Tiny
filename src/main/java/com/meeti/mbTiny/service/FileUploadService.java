@@ -51,9 +51,7 @@ public class FileUploadService {
         if (fileUrl == null || fileUrl.isBlank()) {
             return;
         }
-
         try {
-            // ex) /uploads/profile/abc.jpg → profile/abc.jpg
             String relativePath = fileUrl.replaceFirst("^/uploads/", "");
 
             Path path = Paths.get(uploadDir, relativePath); // ✅ OS 경로 조합
