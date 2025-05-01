@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import '../../css/feed/FeedComments.css';
 
@@ -11,7 +11,6 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
   const [newComment, setNewComment] = useState('');
   const [liked, setLiked] = useState(feed.liked);
 
-  // ✅ 날짜 포맷 (익명게시판 스타일 + Invalid 대응)
   const formatDateOrTime = (input) => {
     const raw = input || feed.createdAt || feed.createDate;
     if (!raw) return '날짜 없음';
@@ -95,12 +94,10 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
 
   return (
     <div className="feed-card">
-      {/* ✅ 날짜만 표시 */}
       <div className="feed-time" style={{ fontSize: '13px', color: '#888', marginBottom: '10px' }}>
         {formatDateOrTime()}
       </div>
 
-      {/* 본문 */}
       {isEditing ? (
         <>
           <textarea
@@ -115,12 +112,16 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
         <>
           <div className="feed-content">{feed.content}</div>
           {feed.imageUrl && (
-            <img src={`http://localhost:8080${feed.imageUrl}`} alt="피드 이미지" className="feed-image" />
+            <img
+              src={`http://localhost:8080${feed.imageUrl}`}
+              alt="피드 이미지"
+              className="feed-image"
+              style={{ cursor: 'pointer' }}
+            />
           )}
         </>
       )}
 
-      {/* 액션 버튼 */}
       <div className="feed-actions">
         {isEditing ? (
           <>
@@ -142,7 +143,6 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
         )}
       </div>
 
-      {/* 댓글 모달 */}
       {showCommentsModal && (
         <div className="comment-modal">
           <div className="modal-content">

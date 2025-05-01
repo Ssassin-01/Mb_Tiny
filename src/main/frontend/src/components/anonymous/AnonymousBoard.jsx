@@ -10,29 +10,28 @@ function AnonymousBoard() {
   const POSTS_PER_PAGE = 20;
 
   useEffect(() => {
-    const checkLoginAndFetch = async () => {
+    const fetchPosts = async () => {
       try {
-        // ✅ 로그인 유저 정보 확인
-        const userRes = await axios.get('http://localhost:8080/api/members/me', {
-          withCredentials: true,
-        });
+        // ✅ 로그인 정보는 따로 시도
+        try {
+          const userRes = await axios.get('http://localhost:8080/api/members/me', {
+            withCredentials: true,
+          });
+          sessionStorage.setItem('loginUser', JSON.stringify(userRes.data));
+        } catch (e) {
+          console.log('비로그인 사용자입니다.');
+        }
 
-        // ✅ 세션스토리지에 저장 (기존 코드와 호환)
-        sessionStorage.setItem('loginUser', JSON.stringify(userRes.data));
-
-        // ✅ 게시글 가져오기
-        const res = await axios.get('http://localhost:8080/api/anonymous-posts', {
-          withCredentials: true,
-        });
+        // ✅ 게시글 가져오기 (로그인 여부 상관없음)
+        const res = await axios.get('http://localhost:8080/api/anonymous-posts');
         setPosts(res.data);
       } catch (err) {
-        alert('로그인이 필요합니다.');
-        navigate('/login');
+        console.error('게시글 로딩 실패', err);
       }
     };
 
-    checkLoginAndFetch();
-  }, [navigate]);
+    fetchPosts();
+  }, []);
 
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
   const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
@@ -126,7 +125,18 @@ function AnonymousBoard() {
           </div>
 
           <div className="actions">
-            <button className="write-btn" onClick={() => navigate('/anonymous/write')}>
+            <button
+              className="write-btn"
+              onClick={() => {
+                const loginUser = sessionStorage.getItem('loginUser');
+                if (!loginUser) {
+                  alert('글쓰기는 로그인 후 이용 가능합니다.');
+                  navigate('/login');
+                } else {
+                  navigate('/anonymous/write');
+                }
+              }}
+            >
               글쓰기
             </button>
           </div>
