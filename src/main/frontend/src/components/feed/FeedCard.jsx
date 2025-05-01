@@ -14,6 +14,32 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   const navigate = useNavigate();
   const [loginUserNickname, setLoginUserNickname] = useState(null);
   
+  // 날짜 포맷 함수 추가
+  const formatDateOrTime = (input) => {
+    const raw = input || feed.createdAt || feed.createDate;
+    if (!raw) return '날짜 없음';
+
+    const createdDate = new Date(raw);
+    if (isNaN(createdDate.getTime())) return '날짜 오류';
+
+    const now = new Date();
+    const isToday =
+      createdDate.getFullYear() === now.getFullYear() &&
+      createdDate.getMonth() === now.getMonth() &&
+      createdDate.getDate() === now.getDate();
+
+    if (isToday) {
+      return createdDate.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+    } else {
+      const month = String(createdDate.getMonth() + 1).padStart(2, '0');
+      const date = String(createdDate.getDate()).padStart(2, '0');
+      return `${month}-${date}`;
+    }
+  };
   useEffect(() => {
     const user = sessionStorage.getItem('loginUser');
     if (user) {
@@ -118,18 +144,23 @@ function FeedCard({ feed, onUpdate, onDelete }) {
       {/* 헤더 */}
       <div className="feed-header">
       <img
-        src="/img/default-profile.png"
+  src={
+    feed.memberImageUrl
+      ? `http://localhost:8080${feed.memberImageUrl}`
+      : '/img/default-profile.png'
+  }
+  onClick={handleProfileClick} 
         alt="프로필"
         className="feed-profile"
-        onClick={handleProfileClick}
         style={{ cursor: 'pointer' }}
+
       />
         <div className="feed-info">
         <div className="feed-nickname" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
           {feed.mbti ? `[${feed.mbti}] ` : ''}{feed.nickname}
         </div>
 
-          <div className="feed-time">{new Date(feed.createDate).toLocaleString('ko-KR', { hour12: false })}</div>
+        <div className="feed-time">{formatDateOrTime()}</div>
         </div>
       </div>
 
