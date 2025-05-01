@@ -160,18 +160,20 @@ public class MemberService {
                 .orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public List<MemberListResponseDTO> getRandomMembersExcludeSelfAndFollowing(Member me, int count) {
-        // 내가 팔로우한 사람 ID 목록
-        List<Long> followingIds = me.getFollowing().stream()
-                .map(follow -> follow.getFollowing().getId())
+        Member memberWithFollowing = memberRepository.findWithFollowingById(me.getId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보 조회 실패"));
+
+        List<Long> followingIds = memberWithFollowing.getFollowing().stream()
+                .map(f -> f.getFollowing().getId())
                 .collect(Collectors.toList());
 
         List<Member> allMembers = memberRepository.findAll();
 
-        // 본인 + 팔로우한 사람 필터링
         List<Member> filtered = allMembers.stream()
-                .filter(member -> !member.getId().equals(me.getId())) // 본인 제외
-                .filter(member -> !followingIds.contains(member.getId())) // 팔로우한 사람 제외
+                .filter(m -> !m.getId().equals(memberWithFollowing.getId()))
+                .filter(m -> !followingIds.contains(m.getId()))
                 .collect(Collectors.toList());
 
         Collections.shuffle(filtered);
@@ -187,6 +189,7 @@ public class MemberService {
                         .build())
                 .collect(Collectors.toList());
     }
+
     public List<MemberListResponseDTO> getRandomMembers(int count) {
         List<Member> allMembers = memberRepository.findAll();
 
