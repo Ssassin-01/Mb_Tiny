@@ -24,6 +24,9 @@ spring:
 file:
   upload-dir: C:/spring/mega/Mb_Tiny/uploads
 
+custom:
+  default-profile-img: /uploads/profile/default.png
+
 logging:
   level:
     org.springframework.web.multipart: DEBUG

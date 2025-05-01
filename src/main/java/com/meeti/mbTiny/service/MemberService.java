@@ -7,6 +7,8 @@ import com.meeti.mbTiny.dto.MemberUpdateRequestDTO;
 import com.meeti.mbTiny.entity.Member;
 import com.meeti.mbTiny.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+    @Value("${custom.default-profile-img:/uploads/profile/default.png}")
+    private String defaultProfileImage;
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -46,6 +50,7 @@ public class MemberService {
         member.setNickname(dto.getNickname());
         member.setMbti(dto.getMbti());
         member.setAddress(dto.getAddress());
+        member.setProfileImgUrl(defaultProfileImage);
         memberRepository.save(member);
     }
 
@@ -78,15 +83,13 @@ public class MemberService {
 
         MultipartFile profileImg = dto.getProfileImg();
         if (profileImg == null) {
-        }
-        else if (profileImg.isEmpty()) {
-            if (member.getProfileImgUrl() != null) {
+        } else if (profileImg.isEmpty()) {
+            if (member.getProfileImgUrl() != null && !member.getProfileImgUrl().equals(defaultProfileImage)) {
                 fileUploadService.delete(member.getProfileImgUrl());
             }
-            member.setProfileImgUrl(null);
-        }
-        else {
-            if (member.getProfileImgUrl() != null) {
+            member.setProfileImgUrl(defaultProfileImage);
+        } else {
+            if (member.getProfileImgUrl() != null && !member.getProfileImgUrl().equals(defaultProfileImage)) {
                 fileUploadService.delete(member.getProfileImgUrl());
             }
             String imageUrl = fileUploadService.upload(profileImg, "profile");
