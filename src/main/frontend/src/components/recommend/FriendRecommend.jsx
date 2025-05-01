@@ -11,13 +11,10 @@ const FriendRecommend = () => {
   const [recommendedFriends, setRecommendedFriends] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [requestedIds, setRequestedIds] = useState(new Set());
   const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
   const [friendCount, setFriendCount] = useState(20);
   const [followerCounts, setFollowerCounts] = useState({});
   const [disappearingIds, setDisappearingIds] = useState(new Set());
-
-  const loginUser = JSON.parse(sessionStorage.getItem("loginUser") || "{}");
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,35 +30,14 @@ const FriendRecommend = () => {
 
   const fetchFriends = async (count) => {
     try {
-      const saved = sessionStorage.getItem("recommendedFriends");
-      if (saved) {
-        setRecommendedFriends(JSON.parse(saved));
-      } else {
-        const res = await axios.get(`http://localhost:8080/api/members/random?count=${count}`, {
-          withCredentials: true,
-        });
-        setRecommendedFriends(res.data);
-        sessionStorage.setItem("recommendedFriends", JSON.stringify(res.data));
-      }
+      const res = await axios.get(`http://localhost:8080/api/members/random/exclude?count=${count}`, {
+        withCredentials: true,
+      });
+      setRecommendedFriends(res.data);
     } catch (err) {
       console.error("회원 목록 불러오기 실패", err);
     }
   };
-
-  useEffect(() => {
-    const fetchFollowings = async () => {
-      try {
-        const res = await axios.get("http://localhost:8080/api/follow/my-followings", {
-          withCredentials: true,
-        });
-        const ids = res.data.map((f) => f.id);
-        setRequestedIds(new Set(ids));
-      } catch (err) {
-        console.error("팔로우 목록 불러오기 실패:", err);
-      }
-    };
-    fetchFollowings();
-  }, []);
 
   const fetchFollowerCount = async (userId) => {
     try {
@@ -95,12 +71,10 @@ const FriendRecommend = () => {
 
   const handleFriendCountChange = (e) => {
     const selectedCount = parseInt(e.target.value);
-    sessionStorage.removeItem("recommendedFriends");
     setFriendCount(selectedCount);
   };
 
   const filteredFriends = recommendedFriends.filter((friend) => {
-    if (loginUser.email && friend.email === loginUser.email) return false;
     const mbti = friend.mbti;
     return (
       (mbtiFilter[0] === "선택 안함" || mbti[0] === mbtiFilter[0]) &&
@@ -167,7 +141,7 @@ const FriendRecommend = () => {
                         fetchFollowerCount(friend.id);
                         setDisappearingIds((prev) => new Set(prev).add(friend.id));
                         setTimeout(() => {
-                          setRecommendedFriends((prev) => prev.filter(f => f.id !== friend.id));
+                          setRecommendedFriends((prev) => prev.filter((f) => f.id !== friend.id));
                         }, 400);
                       }}
                     />
