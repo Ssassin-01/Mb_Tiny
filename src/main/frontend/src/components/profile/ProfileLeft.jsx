@@ -15,7 +15,7 @@ const ProfileLeft = ({
   postCount,
   isOwner,
   targetId,
-  profileImgUrl  // 추가: 상위 컴포넌트에서 전달
+  profileImgUrl  // 상위 컴포넌트에서 전달
 }) => {
   const navigate = useNavigate();
   const [modalType, setModalType] = useState(null);
