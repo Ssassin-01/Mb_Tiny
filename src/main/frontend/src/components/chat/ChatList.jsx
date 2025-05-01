@@ -1,8 +1,38 @@
 // src/components/ChatList.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../css/chat/ChatList.css';
 
 const ChatList = ({ chatRooms = [], onSelectChatRoom, selectedRoomId }) => {
+  const [profileImages, setProfileImages] = useState({});
+
+  useEffect(() => {
+    const fetchProfileImages = async () => {
+      const imageMap = {};
+  
+      await Promise.all(
+        chatRooms.map(async (room) => {
+          try {
+            const res = await fetch(`http://localhost:8080/api/members/${encodeURIComponent(room.targetNickname)}`, {
+              method: 'GET',
+              credentials: 'include',
+            });
+            const data = await res.json();
+            console.log('받은 profileData:', data);
+            imageMap[room.targetNickname] = data.profileImgUrl;
+          } catch (error) {
+            console.error(`❌ 프로필 이미지 불러오기 실패: ${room.targetNickname}`, error);
+          }
+        })
+      );
+  
+      setProfileImages(imageMap);
+    };
+  
+    if (chatRooms.length > 0) {
+      fetchProfileImages();
+    }
+  }, [chatRooms]);
+
   const formatTime = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -30,10 +60,14 @@ const ChatList = ({ chatRooms = [], onSelectChatRoom, selectedRoomId }) => {
           >
             <div className="chat-item-left">
               <img
-                src="/img/default-profile.png"
-                alt="프로필"
-                className="chat-avatar"
-              />
+  src={
+    profileImages[room.targetNickname]
+      ? `http://localhost:8080${profileImages[room.targetNickname]}`
+      : '/img/default-profile.png'
+  }
+  alt="프로필"
+  className="chat-avatar"
+/>
             </div>
             <div className="chat-info">
               <div className="chat-name">{room.targetNickname}</div>

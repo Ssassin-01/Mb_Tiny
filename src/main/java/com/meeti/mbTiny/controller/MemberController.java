@@ -86,7 +86,7 @@
         }
 
         @GetMapping("/{nickname}")
-        public ResponseEntity<MemberDTO> getOtherProfile(@PathVariable String nickname) {
+        public ResponseEntity<MemberDTO> getOtherProfile(@PathVariable("nickname") String nickname) {
             MemberDTO profile = memberService.getOtherProfile(nickname);
             return ResponseEntity.ok(profile);
         }
