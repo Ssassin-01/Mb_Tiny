@@ -12,6 +12,11 @@ function FeedList() {
   const [allFeeds, setAllFeeds] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
+  const [sortType, setSortType] = useState("recent"); // ✅ 누락되어 있던 상태 추가
+  const sortOptions = [
+    { value: 'recent', label: '최신순' },
+    { value: 'popular', label: '좋아요순' }
+  ];
 
   const [message, setMessage] = useState('');
   const [showBanner, setShowBanner] = useState(false);
@@ -28,7 +33,7 @@ function FeedList() {
 
   useEffect(() => {
     loadMoreFeeds();
-  }, []);
+  }, [sortType]);
 
   useEffect(() => {
     setFeeds(filterFeeds(allFeeds, mbtiFilter));
@@ -36,7 +41,12 @@ function FeedList() {
 
   const loadMoreFeeds = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/posts', { withCredentials: true });
+      const url =
+        sortType === "popular"
+          ? "http://localhost:8080/api/posts/popular"
+          : "http://localhost:8080/api/posts";
+
+      const response = await axios.get(url, { withCredentials: true });
       const fetchedFeeds = response.data;
       setAllFeeds(fetchedFeeds);
       setFeeds(filterFeeds(fetchedFeeds, mbtiFilter));
@@ -143,6 +153,21 @@ function FeedList() {
 
       <FeedInput onPost={handleNewPost} />
       <FeedFilter mbtiFilter={mbtiFilter} onChange={handleFilterChange} />
+
+         <div className="sort-buttons">
+          <button
+            className={sortType === 'recent' ? 'active' : ''}
+            onClick={() => setSortType('recent')}
+          >
+            최신순
+          </button>
+          <button
+            className={sortType === 'popular' ? 'active' : ''}
+            onClick={() => setSortType('popular')}
+          >
+            좋아요순
+          </button>
+        </div>
 
       <InfiniteScroll
         dataLength={feeds.length}

@@ -16,7 +16,6 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   const [showBanner, setShowBanner] = useState(false);
   const navigate = useNavigate();
 
-  // 로그인 알림 배너 + 자동 이동
   const showAutoBannerThenLogin = (text) => {
     setMessage(text);
     setShowBanner(true);
@@ -41,7 +40,6 @@ function FeedCard({ feed, onUpdate, onDelete }) {
   const formatDateOrTime = (input) => {
     const raw = input || feed.createdAt || feed.createDate;
     if (!raw) return '날짜 없음';
-
     const createdDate = new Date(raw);
     if (isNaN(createdDate.getTime())) return '날짜 오류';
 
@@ -61,7 +59,6 @@ function FeedCard({ feed, onUpdate, onDelete }) {
       showAutoBannerThenLogin('로그인이 필요합니다.');
       return;
     }
-
     if (loginUserNickname === feed.nickname) {
       navigate('/profile/me');
     } else {
@@ -83,17 +80,11 @@ function FeedCard({ feed, onUpdate, onDelete }) {
     setEditedImage(e.target.files[0]);
   };
 
-  useEffect(() => {
-    document.body.style.overflow = showCommentsModal ? 'hidden' : 'auto';
-    return () => (document.body.style.overflow = 'auto');
-  }, [showCommentsModal]);
-
   const openCommentsModal = async () => {
     if (!loginUserNickname) {
       showAutoBannerThenLogin('로그인이 필요합니다.');
       return;
     }
-
     try {
       const res = await axios.get(`http://localhost:8080/api/posts/${feed.id}/comments`, {
         withCredentials: true,
@@ -110,7 +101,6 @@ function FeedCard({ feed, onUpdate, onDelete }) {
       showAutoBannerThenLogin('로그인이 필요합니다.');
       return;
     }
-
     if (newComment.trim() === '') return;
 
     try {
@@ -119,7 +109,6 @@ function FeedCard({ feed, onUpdate, onDelete }) {
         { content: newComment },
         { withCredentials: true }
       );
-
       setNewComment('');
       const res = await axios.get(`http://localhost:8080/api/posts/${feed.id}/comments`, {
         withCredentials: true,
@@ -135,7 +124,6 @@ function FeedCard({ feed, onUpdate, onDelete }) {
       showAutoBannerThenLogin('로그인이 필요합니다.');
       return;
     }
-
     try {
       const res = await axios.post(
         `http://localhost:8080/api/posts/${feed.id}/like`,
@@ -152,7 +140,6 @@ function FeedCard({ feed, onUpdate, onDelete }) {
 
   return (
     <>
-      {/* ✅ 상단 고정 알림 배너 */}
       {showBanner && <div className="alert-message">{message}</div>}
 
       <div className="feed-card">
@@ -195,53 +182,49 @@ function FeedCard({ feed, onUpdate, onDelete }) {
           </>
         )}
 
-<div className="feed-actions">
-  {isEditing ? (
-    <>
-      <button onClick={handleSaveClick}>저장</button>
-      <button onClick={handleCancelClick}>취소</button>
-    </>
-  ) : (
-    <>
-      <button onClick={handleLikeClick} className={liked ? 'like-btn liked' : 'like-btn'}>
-        ❤️ 좋아요
-      </button>
-      <button onClick={openCommentsModal}>💬 댓글</button>
-
-      {/* 수정/삭제는 내가 쓴 글일 때만 */}
-      {loginUserNickname === feed.nickname && (
-        <>
-          <button onClick={handleEditClick}>✏️ 수정</button>
-          <button onClick={() => onDelete(feed.id)}>🗑 삭제</button>
-        </>
-      )}
-    </>
-  )}
-</div>
-
+        <div className="feed-actions">
+          {isEditing ? (
+            <>
+              <button onClick={handleSaveClick}>저장</button>
+              <button onClick={handleCancelClick}>취소</button>
+            </>
+          ) : (
+            <>
+              <button onClick={handleLikeClick} className={liked ? 'like-btn liked' : 'like-btn'}>
+                ❤️ 좋아요
+              </button>
+              <button onClick={openCommentsModal}>💬 댓글</button>
+              {loginUserNickname === feed.nickname && (
+                <>
+                  <button onClick={handleEditClick}>✏️ 수정</button>
+                  <button onClick={() => onDelete(feed.id)}>🗑 삭제</button>
+                </>
+              )}
+            </>
+          )}
+        </div>
 
         {showCommentsModal && (
-          <div className="comment-modal">
-            <div className="modal-content">
-              <button className="close-button" onClick={closeModal}>X</button>
-
-              <div className="comments-list">
-                {comments.map((comment) => (
-                  <div key={comment.id} className="comment-item">
-                    <strong>{comment.nickname}</strong>: {comment.content}
-                  </div>
-                ))}
-              </div>
-
-              <div className="comment-input">
-                <input
-                  type="text"
-                  placeholder="댓글을 입력하세요..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                />
-                <button onClick={handleCommentSubmit}>작성</button>
-              </div>
+          <div className="floating-comment-box">
+            <div className="comment-header">
+              <span>💬 댓글</span>
+              <button className="close-button" onClick={closeModal}>✖</button>
+            </div>
+            <div className="comments-list">
+              {comments.map((comment) => (
+                <div key={comment.id} className="comment-item">
+                  <strong>{comment.nickname}</strong>: {comment.content}
+                </div>
+              ))}
+            </div>
+            <div className="comment-input">
+              <input
+                type="text"
+                placeholder="댓글을 입력하세요..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <button onClick={handleCommentSubmit}>작성</button>
             </div>
           </div>
         )}
