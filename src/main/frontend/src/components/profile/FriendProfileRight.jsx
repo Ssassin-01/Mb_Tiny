@@ -64,7 +64,7 @@ function FriendProfileRight({ targetNickname }) {  // props 받는 거 맞음
             scrollableTarget="profileScroll"
           >
             {feedPosts.map(feed => (
-              <PostItem key={feed.id} post={feed} />
+              <PostItem key={feed.id} post={feed}  createdAt={feed.createdAt} />
             ))}
           </InfiniteScroll>
         )}

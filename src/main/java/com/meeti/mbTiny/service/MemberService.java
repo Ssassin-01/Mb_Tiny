@@ -187,7 +187,7 @@ public class MemberService {
                         .id(member.getId())
                         .nickname(member.getNickname())
                         .mbti(member.getMbti())
-                        .followerCount(member.getFollowers().size())
+
                         .profileImgUrl(member.getProfileImgUrl())
                         .build())
                 .collect(Collectors.toList());
