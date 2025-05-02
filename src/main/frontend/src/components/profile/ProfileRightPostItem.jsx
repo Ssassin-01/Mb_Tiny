@@ -2,12 +2,21 @@ import React from "react";
 import '../../css/profile/Profile.css';
 
 const PostItem = ({ post, isAnonymous }) => {
-  // ✅ 날짜 포맷 함수
+  // ✅ 오늘이면 시간, 아니면 MM-DD
   const formatDate = (dateStr) => {
     if (!dateStr) return '날짜 없음';
     const date = new Date(dateStr);
     if (isNaN(date)) return '날짜 오류';
-    return date.toLocaleString('ko-KR');
+
+    const now = new Date();
+    const isToday =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
+
+    return isToday
+      ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+      : `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
 
   return (
@@ -31,7 +40,7 @@ const PostItem = ({ post, isAnonymous }) => {
           {post.imageUrl && (
             <img src={`http://localhost:8080${post.imageUrl}`} alt="피드 이미지" />
           )}
-          <p className="date">{formatDate(post.createDate)}</p>
+          <p className="date"> {formatDate(post.createdAt || post.createDate)}</p>
         </>
       )}
     </div>

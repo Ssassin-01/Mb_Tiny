@@ -23,7 +23,7 @@
   position: relative;
 }
 
-/* 닫기 버튼 (공용) */
+/* 닫기 버튼 */
 .close-button {
   background: none;
   border: none;
@@ -47,4 +47,42 @@
 
 .like-btn.liked {
   color: red;
+}
+
+/* ✅ 중앙 상단 고정 알림 메시지 */
+.alert-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #30d5c8;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 14px;
+  z-index: 9999;
+  max-width: 90%;
+  text-align: center;
+  animation: popUp 0.5s ease, fadeOut 0.5s ease 1.5s forwards;
+}
+
+/* 애니메이션 효과 (위치 고정 포함) */
+@keyframes popUp {
+  0% {
+    transform: translateX(-50%) scale(0.5);
+    opacity: 0;
+  }
+  70% {
+    transform: translateX(-50%) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }

@@ -11,66 +11,55 @@ function AnonymousDetail() {
   const [showModal, setShowModal] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
-  const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
+  // ✅ 로그인 배너용 상태
+  const [message, setMessage] = useState('');
+  const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
+    const loginUser = sessionStorage.getItem('loginUser');
     if (!loginUser) {
-      alert('로그인이 필요합니다.');
-      navigate('/login');
+      setMessage('로그인이 필요합니다.');
+      setShowBanner(true);
+      setTimeout(() => {
+        setShowBanner(false);
+        navigate('/login');
+      }, 2000);
+      return;
     }
-  }, [loginUser, navigate]);
-
-  useEffect(() => {
-    if (!id) return;
-
-    let isMounted = true;
 
     const fetchPost = async () => {
       try {
         const res = await axios.get(`http://localhost:8080/api/anonymous-posts/${id}`, {
           withCredentials: true,
         });
-
-        if (isMounted) {
-          setPost(res.data);
-          setIsLiked(res.data.liked); // ✅ 서버에서 내려온 liked로 초기화
-        }
+        setPost(res.data);
+        setIsLiked(res.data.liked);
       } catch (err) {
         console.error('게시글 불러오기 실패', err);
-        alert('게시글 불러오기 실패');
       }
     };
 
     fetchPost();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [id]);
+  }, [id, navigate]);
 
   const handleLikeToggle = async () => {
     try {
       const res = await axios.post(`http://localhost:8080/api/anonymous-posts/${id}/like`, {}, {
         withCredentials: true,
       });
-
       const liked = res.data.like;
-
       setPost((prev) => ({
         ...prev,
         likeCount: liked ? prev.likeCount + 1 : prev.likeCount - 1,
       }));
-
       setIsLiked(liked);
     } catch (err) {
       console.error('추천 토글 실패', err);
-      alert('오류가 발생했습니다.');
     }
   };
 
   const handleDelete = async () => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
-
     try {
       await axios.delete(`http://localhost:8080/api/anonymous-posts/${id}`, {
         withCredentials: true,
@@ -79,7 +68,6 @@ function AnonymousDetail() {
       navigate('/anonymous');
     } catch (err) {
       console.error('삭제 실패', err);
-      alert('삭제 실패');
     }
   };
 
@@ -87,10 +75,16 @@ function AnonymousDetail() {
     navigate(`/anonymous/write?id=${id}`);
   };
 
-  if (!post) return <div>로딩 중...</div>;
+  if (!post) return (
+    <div className="anonymous-page">
+      {showBanner && <div className="alert-message">{message}</div>}
+    </div>
+  );
 
   return (
     <div className="anonymous-page">
+      {showBanner && <div className="alert-message">{message}</div>}
+
       <div className="anonymous-layout">
         <div className="detail">
           <h1 className="title">{post.title}</h1>
@@ -134,7 +128,7 @@ function AnonymousDetail() {
                       src={`http://localhost:8080${post.imageUrl}`}
                       alt="큰 이미지"
                       className="modal-image"
-                      onClick={(e) => e.stopPropagation()} // ✅ 모달 닫힘 방지
+                      onClick={(e) => e.stopPropagation()}
                     />
                   </div>
                 )}

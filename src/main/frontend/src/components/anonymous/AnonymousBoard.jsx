@@ -9,55 +9,54 @@ function AnonymousBoard() {
   const [currentPage, setCurrentPage] = useState(1);
   const POSTS_PER_PAGE = 20;
 
+  const [message, setMessage] = useState('');
+  const [showBanner, setShowBanner] = useState(false);
+
+  const showLoginBanner = (msg) => {
+    setMessage(msg);
+    setShowBanner(true);
+    setTimeout(() => {
+      setShowBanner(false);
+      navigate('/login');
+    }, 2000);
+  };
+
   useEffect(() => {
-    const checkLoginAndFetch = async () => {
+    const fetchPosts = async () => {
       try {
-        // 로그인 유저 정보 확인
-        const userRes = await axios.get('http://localhost:8080/api/members/me', {
-          withCredentials: true,
-        });
-
-        // 세션스토리지에 저장 (기존 코드와 호환)
-        sessionStorage.setItem('loginUser', JSON.stringify(userRes.data));
-
-        // 게시글 가져오기
         const res = await axios.get('http://localhost:8080/api/anonymous-posts', {
           withCredentials: true,
         });
         setPosts(res.data);
       } catch (err) {
-        alert('로그인이 필요합니다.');
-        navigate('/login');
+        console.error('게시글 불러오기 실패:', err);
       }
     };
 
-    checkLoginAndFetch();
-  }, [navigate]);
+    fetchPosts();
+  }, []);
 
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
   const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
   const currentPosts = posts.slice(startIdx, startIdx + POSTS_PER_PAGE);
 
-  function formatDateOrTime(createdAt) {
+  const formatDateOrTime = (createdAt) => {
     const createdDate = new Date(createdAt);
     const now = new Date();
-
     const isToday =
       createdDate.getFullYear() === now.getFullYear() &&
       createdDate.getMonth() === now.getMonth() &&
       createdDate.getDate() === now.getDate();
 
-    if (isToday) {
-      return createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-    } else {
-      const month = String(createdDate.getMonth() + 1).padStart(2, '0');
-      const date = String(createdDate.getDate()).padStart(2, '0');
-      return `${month}-${date}`;
-    }
-  }
+    return isToday
+      ? createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+      : `${String(createdDate.getMonth() + 1).padStart(2, '0')}-${String(createdDate.getDate()).padStart(2, '0')}`;
+  };
 
   return (
     <div className="anonymous-page">
+      {showBanner && <div className="alert-message">{message}</div>}
+
       <div className="anonymous-layout">
         <div className="anonymous-board">
           <div className="table-wrapper pc-only">
@@ -126,7 +125,17 @@ function AnonymousBoard() {
           </div>
 
           <div className="actions">
-            <button className="write-btn" onClick={() => navigate('/anonymous/write')}>
+            <button
+              className="write-btn"
+              onClick={() => {
+                const loginUser = sessionStorage.getItem('loginUser');
+                if (!loginUser) {
+                  showLoginBanner('글쓰기는 로그인 후 가능합니다.');
+                  return;
+                }
+                navigate('/anonymous/write');
+              }}
+            >
               글쓰기
             </button>
           </div>
