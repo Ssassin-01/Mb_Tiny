@@ -42,22 +42,7 @@
     margin-top: 10px;
   }
   
-  /* 팔로우 버튼 */
-  .follow-btn {
-    margin-top: 16px;
-    padding: 10px 20px;
-    background-color: #30d5c8;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .follow-btn:hover {
-    background-color: #24b7ac;
-  }
+   
   
   /* MBTI 설명 */
   .friend-mbti-description {
@@ -77,5 +62,18 @@
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     min-height: 400px;
+  }
+  .fixed-follow-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; /* 다른 요소 위에 표시 */
+  }
+  
+  .fixed-follow-button .message-btn, 
+  .fixed-follow-button .follow-btn {
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 15px;
   }
   

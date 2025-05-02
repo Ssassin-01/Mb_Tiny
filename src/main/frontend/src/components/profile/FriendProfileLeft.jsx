@@ -5,6 +5,7 @@ import FollowButton from '../follow/FollowButton';
 import mbtiDescriptions from './mbtiDescriptions';
 import { FaCamera } from 'react-icons/fa'; 
 import '../../css/profile/Profile.css';
+import '../../css/chat/MessageButton.css';
 
 const FriendProfileLeft = ({
   nickname,
@@ -18,21 +19,16 @@ const FriendProfileLeft = ({
 }) => {
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // ✅ 상태 재갱신 트리거
   const navigate = useNavigate();
 
-  // 팔로우 수 불러오기
+  // ✅ follower/following 수 불러오기
   const fetchFollowCounts = async () => {
-    console.log('fetchFollowCounts 호출됨');
-    console.log('targetId:', targetId);
-    console.log('isOwner:', isOwner);
-
     try {
       const url = isOwner
         ? 'http://localhost:8080/api/follow/count'
         : `http://localhost:8080/api/follow/count/${nickname}`;
-
       const res = await axios.get(url, { withCredentials: true });
-      console.log('follow count 응답:', res.data);
 
       setFollowerCount(res.data.followers);
       setFollowingCount(res.data.following);
@@ -42,10 +38,15 @@ const FriendProfileLeft = ({
   };
 
   useEffect(() => {
-    if (targetId) {
-      fetchFollowCounts();
-    }
-  }, [targetId, isOwner]);
+    if (!targetId) return;
+    fetchFollowCounts(); // ✅ targetId 또는 refreshTrigger 바뀔 때만 호출
+  }, [targetId, refreshTrigger]);
+
+  // ✅ 팔로우 상태 변경 시 count 반영 + 서버 fetch
+  const handleFollowChange = (delta) => {
+    setFollowerCount(prev => prev + delta);       // 프론트 즉시 반영
+    setRefreshTrigger(prev => prev + 1);          // 서버 최신값 재요청
+  };
 
   const mbtiInfo = mbtiDescriptions[mbti?.toUpperCase()] || {
     title: '성격유형',
@@ -56,23 +57,20 @@ const FriendProfileLeft = ({
   return (
     <div className="profile-left">
       <div className="profile-card">
-      <div className="profile-img-wrapper">
-        {profileImgUrl ? (
-          <img src={profileImgUrl} alt="프로필" className="profile-img" />
-        ) : (
-          <div className="default-profile-img">
-            <FaCamera className="default-camera-icon" />
-          </div>
-        )}
-      </div>
-        
+        <div className="profile-img-wrapper">
+          {profileImgUrl ? (
+            <img src={profileImgUrl} alt="프로필" className="profile-img" />
+          ) : (
+            <div className="default-profile-img">
+              <FaCamera className="default-camera-icon" />
+            </div>
+          )}
+        </div>
 
         <p className="profile-nickname">{nickname}</p>
         <div className="profile-info">
           <p className="profile-mbti">{mbti}</p>
-          {/* <p><strong>가입일:</strong> {joinDate}</p> */}
 
-          {/* 팔로우 수 표시 */}
           <div className="profile-stats">
             <div className="stats-buttons">
               <span className="stats-item" onClick={onTogglePosts}>
@@ -87,27 +85,22 @@ const FriendProfileLeft = ({
             </div>
           </div>
 
-          {/* 팔로우 버튼 / 메시지 버튼*/}
+          {/* 팔로우/메시지 버튼 (하단 고정) */}
           {!isOwner && (
-  <>
-    <FollowButton
-      targetId={targetId}
-      onFollowChange={() => {
-        console.log('🔁 onFollowChange 실행됨');
-        setTimeout(() => {
-          fetchFollowCounts();
-        }, 200);
-      }}
-    />
-    <button
-      className="message-btn"
-      onClick={() => navigate('/messagespage')}
-      style={{ marginTop: '10px' }}
-    >
-      메시지
-    </button>
-  </>
-)}
+            <div className="fixed-follow-btn-wrapper">
+              <FollowButton
+                targetId={targetId}
+                onFollowChange={handleFollowChange}
+              />
+              <button
+                className="message-btn"
+                onClick={() => navigate(`/messages?user=${targetId}`)}
+                style={{ marginLeft: '10px' }}
+              >
+                메시지
+              </button>
+            </div>
+          )}
 
           <div className="mbti-description">
             <h4>{mbti} 유형: {mbtiInfo.title}</h4>
