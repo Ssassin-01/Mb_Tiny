@@ -22,9 +22,6 @@ const FriendProfileLeft = ({
 
   // 팔로우 수 불러오기
   const fetchFollowCounts = async () => {
-    console.log('fetchFollowCounts 호출됨');
-    console.log('targetId:', targetId);
-    console.log('isOwner:', isOwner);
 
     try {
       const url = isOwner
@@ -32,7 +29,6 @@ const FriendProfileLeft = ({
         : `http://localhost:8080/api/follow/count/${nickname}`;
 
       const res = await axios.get(url, { withCredentials: true });
-      console.log('follow count 응답:', res.data);
 
       setFollowerCount(res.data.followers);
       setFollowingCount(res.data.following);
@@ -93,19 +89,45 @@ const FriendProfileLeft = ({
     <FollowButton
       targetId={targetId}
       onFollowChange={() => {
-        console.log('🔁 onFollowChange 실행됨');
         setTimeout(() => {
           fetchFollowCounts();
         }, 200);
       }}
     />
-    <button
-      className="message-btn"
-      onClick={() => navigate('/messagespage')}
-      style={{ marginTop: '10px' }}
-    >
-      메시지
-    </button>
+  <button
+    className="message-btn"
+    onClick={async () => {
+      try {
+        // 1. 채팅방 생성
+        const res = await axios.post(
+          'http://localhost:8080/api/chatrooms',
+          { receiverNickname: nickname },
+          { withCredentials: true }
+        );
+        const roomId = res.data.roomId;
+    
+        // 2. 전체 채팅방 다시 불러오기
+        const listRes = await axios.get('http://localhost:8080/api/chatrooms', { withCredentials: true });
+        const updatedRooms = listRes.data.map(room => ({
+          ...room,
+          targetNickname: room.receiverNickname
+        }));
+    
+        // 3. 찾은 채팅방으로 바로 navigate
+        const targetRoom = updatedRooms.find(r => r.roomId === roomId);
+        if (targetRoom) {
+          navigate(`/messagespage?roomId=${roomId}`);
+        }
+    
+      } catch (err) {
+        console.error("❌ 메시지 버튼 실패:", err);
+      }
+    }}
+    style={{ marginTop: '10px' }}
+  >
+    메시지
+  </button>
+
   </>
 )}
 

@@ -17,7 +17,6 @@ const ChatList = ({ chatRooms = [], onSelectChatRoom, selectedRoomId }) => {
               credentials: 'include',
             });
             const data = await res.json();
-            console.log('받은 profileData:', data);
             imageMap[room.targetNickname] = data.profileImgUrl;
           } catch (error) {
             console.error(`❌ 프로필 이미지 불러오기 실패: ${room.targetNickname}`, error);
