@@ -3,15 +3,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
-
-  padding: 6px 10px;
+  gap: 6px;
+  height: 36px;
+  padding: 4px 16px;
   border: 2px solid #3de5d9;
   border-radius: 999px;
-  background-color: rgba(61, 229, 217, 0.01);
+  background-color: rgba(61, 229, 217, 0.05);
   color: #3de5d9;
-  font-weight: 400;
   font-size: 15px;
+  font-weight: 500;
   font-family: 'Pretendard', 'Segoe UI', sans-serif;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(1px);
@@ -33,26 +33,13 @@
 .message-btn:active {
   transform: scale(0.96);
 }
-
-.follow-btn.following,
-.message-btn.following {
+.follow-btn.following {
   background-color: rgba(220, 250, 248, 0.6);
   color: #239d95;
   border: 2px solid #a2e7e1;
 }
 
-.follow-btn.following:hover,
-.message-btn.following:hover {
+.follow-btn.following:hover {
   background-color: #a2e7e1;
   color: #fff;
-}
-
-.fixed-follow-btn-wrapper {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  display: flex;
-  gap: 12px;
 }

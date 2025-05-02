@@ -1,13 +1,29 @@
-/* .messages-layout {
+.messages-layout {
   display: flex;
   height: 88vh;
   overflow: hidden;
+  padding: 10px; /* 전체 여백 */
+  gap: 10px;
 }
 
+/* 왼쪽 채팅방 리스트 */
+.chat-list {
+  width: 300px;
+  background-color: white;
+  border-radius: 12px; /* ✅ 둥근 모서리 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* ✅ 살짝 그림자 */
+  overflow-y: auto;
+  padding: 10px;
+}
+
+/* 오른쪽 상세 채팅창 */
 .chat-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  height: 85vh;
-  overflow: hidden;
-} */
+  height: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 10px;
+}

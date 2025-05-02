@@ -12,7 +12,7 @@ function FeedList() {
   const [allFeeds, setAllFeeds] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
-  const [sortType, setSortType] = useState("recent"); // ✅ 누락되어 있던 상태 추가
+  const [sortType, setSortType] = useState("recent"); // 누락되어 있던 상태 추가
   const sortOptions = [
     { value: 'recent', label: '최신순' },
     { value: 'popular', label: '좋아요순' }

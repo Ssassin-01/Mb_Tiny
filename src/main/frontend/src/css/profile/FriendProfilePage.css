@@ -31,6 +31,23 @@
   border-radius: 50%;
   margin-bottom: 20px;
 }
+.mbti-and-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap; /* 줄바꿈 대응 */
+  justify-content: center; /* 모바일 대응 시 가운데 정렬 */
+}
+.inline-button-wrapper {
+  display: flex;
+  gap: 10px;
+}
+.friend-mbti {
+  font-weight: bold;
+  font-size: 18px;
+  margin: 0;
+}
 
 /* 텍스트 정보 */
 .friend-profile-info p {

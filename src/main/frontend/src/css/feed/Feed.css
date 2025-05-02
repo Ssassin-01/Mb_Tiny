@@ -228,6 +228,49 @@
   }
 }
 
+@media screen and (max-width: 1253px) {
+  .feed-filter-select {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 1085px) {
+  .feed-card {
+    padding: 12px;
+    margin-bottom: 24px;
+  }
+
+  .feed-profile {
+    width: 32px;
+    height: 32px;
+  }
+
+  .feed-content {
+    font-size: 13px;
+  }
+
+  .feed-nickname {
+    font-size: 14px;
+  }
+
+  .feed-time {
+    font-size: 11px;
+  }
+
+  .feed-actions {
+    gap: 12px;
+  }
+
+  .feed-actions button {
+    font-size: 12px;
+  }
+
+  .feed-image {
+    max-height: 200px;
+  }
+}
+
+
 /* 반응형 - 모바일 (480px 이하) */
 @media screen and (max-width: 480px) {
   .feed-card {

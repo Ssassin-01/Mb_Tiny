@@ -6,9 +6,6 @@ import mbtiDescriptions from './mbtiDescriptions';
 import { FaCamera } from 'react-icons/fa'; 
 import { MessageCircle } from 'lucide-react';
 import '../../css/profile/Profile.css';
-import '../../css/chat/MessageButton.css';
-
-
 
 const FriendProfileLeft = ({
   nickname,
@@ -22,17 +19,15 @@ const FriendProfileLeft = ({
 }) => {
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
-  const [refreshTrigger, setRefreshTrigger] = useState(0); // 상태 재갱신 트리거
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const navigate = useNavigate();
 
-  // follower/following 수 불러오기
   const fetchFollowCounts = async () => {
     try {
       const url = isOwner
         ? 'http://localhost:8080/api/follow/count'
         : `http://localhost:8080/api/follow/count/${nickname}`;
       const res = await axios.get(url, { withCredentials: true });
-
       setFollowerCount(res.data.followers);
       setFollowingCount(res.data.following);
     } catch (error) {
@@ -42,13 +37,12 @@ const FriendProfileLeft = ({
 
   useEffect(() => {
     if (!targetId) return;
-    fetchFollowCounts(); // targetId 또는 refreshTrigger 바뀔 때만 호출
+    fetchFollowCounts();
   }, [targetId, refreshTrigger]);
 
-  // 팔로우 상태 변경 시 count 반영 + 서버 fetch
   const handleFollowChange = (delta) => {
-    setFollowerCount(prev => prev + delta);       // 프론트 즉시 반영
-    setRefreshTrigger(prev => prev + 1);          // 서버 최신값 재요청
+    setFollowerCount(prev => prev + delta);
+    setRefreshTrigger(prev => prev + 1);
   };
 
   const mbtiInfo = mbtiDescriptions[mbti?.toUpperCase()] || {
@@ -71,40 +65,59 @@ const FriendProfileLeft = ({
         </div>
 
         <p className="profile-nickname">{nickname}</p>
+
         <div className="profile-info">
-          <p className="profile-mbti">{mbti}</p>
+          <div className="mbti-and-buttons">
+            <p className="profile-mbti">{mbti}</p>
+
+            {!isOwner && (
+              <div className="inline-button-wrapper">
+                <FollowButton
+                  targetId={targetId}
+                  onFollowChange={handleFollowChange}
+                />
+                <button
+                  className="message-btn"
+                  onClick={async () => {
+                    try {
+                      const res = await axios.post(
+                        'http://localhost:8080/api/chatrooms',
+                        { receiverNickname: nickname },
+                        { withCredentials: true }
+                      );
+                      const roomId = res.data.roomId;
+
+                      const listRes = await axios.get('http://localhost:8080/api/chatrooms', {
+                        withCredentials: true
+                      });
+                      const updatedRooms = listRes.data.map(room => ({
+                        ...room,
+                        targetNickname: room.receiverNickname
+                      }));
+
+                      const targetRoom = updatedRooms.find(r => r.roomId === roomId);
+                      if (targetRoom) {
+                        navigate(`/messagespage?roomId=${roomId}`);
+                      }
+                    } catch (err) {
+                      console.error("❌ 메시지 버튼 실패:", err);
+                    }
+                  }}
+                >
+                  <MessageCircle size={16} />
+                  메시지
+                </button>
+              </div>
+            )}
+          </div>
 
           <div className="profile-stats">
             <div className="stats-buttons">
-              <span className="stats-item" onClick={onTogglePosts}>
-                게시글 
-              </span>
-              <span className="stats-item">
-                팔로워 {followerCount}
-              </span>
-              <span className="stats-item">
-                팔로잉 {followingCount}
-              </span>
+              <span className="stats-item" onClick={onTogglePosts}>게시글</span>
+              <span className="stats-item">팔로워 {followerCount}</span>
+              <span className="stats-item">팔로잉 {followingCount}</span>
             </div>
           </div>
-
-          {/* 팔로우/메시지 버튼 (하단 고정) */}
-          {!isOwner && (
-            <div className="fixed-follow-btn-wrapper">
-              <FollowButton
-                targetId={targetId}
-                onFollowChange={handleFollowChange}
-              />
-              <button
-                className="message-btn"
-                onClick={() => navigate(`/messages?user=${targetId}`)}
-                style={{ marginLeft: '10px' }}
-              >
-                <MessageCircle size={18} style={{ marginRight: 6 }} />
-                메시지
-              </button>
-            </div>
-          )}
 
           <div className="mbti-description">
             <h4>{mbti} 유형: {mbtiInfo.title}</h4>
