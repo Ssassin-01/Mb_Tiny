@@ -195,23 +195,30 @@ function FeedCard({ feed, onUpdate, onDelete }) {
           </>
         )}
 
-        <div className="feed-actions">
-          {isEditing ? (
-            <>
-              <button onClick={handleSaveClick}>저장</button>
-              <button onClick={handleCancelClick}>취소</button>
-            </>
-          ) : (
-            <>
-              <button onClick={handleLikeClick} className={liked ? 'like-btn liked' : 'like-btn'}>
-                ❤️ 좋아요
-              </button>
-              <button onClick={openCommentsModal}>💬 댓글</button>
-              <button onClick={handleEditClick}>✏️ 수정</button>
-              <button onClick={() => onDelete(feed.id)}>🗑 삭제</button>
-            </>
-          )}
-        </div>
+<div className="feed-actions">
+  {isEditing ? (
+    <>
+      <button onClick={handleSaveClick}>저장</button>
+      <button onClick={handleCancelClick}>취소</button>
+    </>
+  ) : (
+    <>
+      <button onClick={handleLikeClick} className={liked ? 'like-btn liked' : 'like-btn'}>
+        ❤️ 좋아요
+      </button>
+      <button onClick={openCommentsModal}>💬 댓글</button>
+
+      {/* 수정/삭제는 내가 쓴 글일 때만 */}
+      {loginUserNickname === feed.nickname && (
+        <>
+          <button onClick={handleEditClick}>✏️ 수정</button>
+          <button onClick={() => onDelete(feed.id)}>🗑 삭제</button>
+        </>
+      )}
+    </>
+  )}
+</div>
+
 
         {showCommentsModal && (
           <div className="comment-modal">

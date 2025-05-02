@@ -4,8 +4,11 @@ import axios from 'axios';
 import FollowButton from '../follow/FollowButton';
 import mbtiDescriptions from './mbtiDescriptions';
 import { FaCamera } from 'react-icons/fa'; 
+import { MessageCircle } from 'lucide-react';
 import '../../css/profile/Profile.css';
 import '../../css/chat/MessageButton.css';
+
+
 
 const FriendProfileLeft = ({
   nickname,
@@ -19,10 +22,10 @@ const FriendProfileLeft = ({
 }) => {
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
-  const [refreshTrigger, setRefreshTrigger] = useState(0); // ✅ 상태 재갱신 트리거
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // 상태 재갱신 트리거
   const navigate = useNavigate();
 
-  // ✅ follower/following 수 불러오기
+  // follower/following 수 불러오기
   const fetchFollowCounts = async () => {
     try {
       const url = isOwner
@@ -39,10 +42,10 @@ const FriendProfileLeft = ({
 
   useEffect(() => {
     if (!targetId) return;
-    fetchFollowCounts(); // ✅ targetId 또는 refreshTrigger 바뀔 때만 호출
+    fetchFollowCounts(); // targetId 또는 refreshTrigger 바뀔 때만 호출
   }, [targetId, refreshTrigger]);
 
-  // ✅ 팔로우 상태 변경 시 count 반영 + 서버 fetch
+  // 팔로우 상태 변경 시 count 반영 + 서버 fetch
   const handleFollowChange = (delta) => {
     setFollowerCount(prev => prev + delta);       // 프론트 즉시 반영
     setRefreshTrigger(prev => prev + 1);          // 서버 최신값 재요청
@@ -97,6 +100,7 @@ const FriendProfileLeft = ({
                 onClick={() => navigate(`/messages?user=${targetId}`)}
                 style={{ marginLeft: '10px' }}
               >
+                <MessageCircle size={18} style={{ marginRight: 6 }} />
                 메시지
               </button>
             </div>

@@ -104,6 +104,9 @@
   letter-spacing: 1px;
 }
 
+.date {
+  font-size: 12px;
+}
 .profile-mbti:hover {
   background: linear-gradient(135deg, #c0f0f0, #e0f7f7);
   transform: scale(1.05);
@@ -113,6 +116,7 @@
 /* 프로필 통계 버튼 (게시글 수, 친구 수 등) */
 .stats-buttons {
   display: flex;
+  flex-wrap: nowrap;  
   justify-content: center;
   gap: 50px; /* 간격 */
   margin-top: 12px;
@@ -284,8 +288,8 @@
   }
 
   .stats-buttons {
-    flex-direction: column;
-    gap: 10px;
+    gap: 10px; 
+    flex-wrap: nowrap; 
   }
 
   .mbti-description p {
@@ -322,6 +326,7 @@
 
   .stats-buttons {
     flex-direction: column;
+    flex-wrap: nowrap;
     align-items: center;
     gap: 8px;
   }

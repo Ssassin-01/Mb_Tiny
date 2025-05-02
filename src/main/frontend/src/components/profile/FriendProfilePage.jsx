@@ -9,7 +9,7 @@ const FriendProfilePage = () => {
   const { nickname } = useParams(); // 닉네임 또는 숫자 ID일 수 있음
   const [profileData, setProfileData] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [showPosts, setShowPosts] = useState(true);
+  const [showPosts, setShowPosts] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -52,7 +52,11 @@ const FriendProfilePage = () => {
         }
         onTogglePosts={() => setShowPosts(!showPosts)}
       />
-      <FriendProfileRight targetNickname={profileData.nickname} />
+      <FriendProfileRight
+        targetNickname={profileData.nickname}
+        showPosts={showPosts}
+      />
+
     </div>
   );
 };

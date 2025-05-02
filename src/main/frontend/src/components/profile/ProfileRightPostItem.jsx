@@ -6,32 +6,41 @@ const PostItem = ({ post, isAnonymous }) => {
   const formatDate = (dateStr) => {
     if (!dateStr) return '날짜 없음';
     const date = new Date(dateStr);
-    if (isNaN(date)) return '날짜 오류';
-    return date.toLocaleString('ko-KR');
+    return isNaN(date) ? '날짜 오류' : date.toLocaleString('ko-KR');
   };
+
+  const formattedDate = formatDate(post.createdAt || post.createDate);
 
   return (
     <div className="feed-card">
       {isAnonymous ? (
         <>
-          <h4>{post.title}</h4>
-          <p>{post.content}</p>
+          <h4 className="post-title">{post.title}</h4>
+          <p className="post-content">{post.content}</p>
           {post.imageUrl && (
-            <img src={`http://localhost:8080${post.imageUrl}`} alt="게시글 이미지" />
+            <img
+              src={`http://localhost:8080${post.imageUrl}`}
+              alt="게시글 이미지"
+              className="feed-image"
+            />
           )}
           <div className="post-meta">
-            <p className="date">🕒 {formatDate(post.createdAt || post.createDate)}</p>
+            <p className="date">🕒 {formattedDate}</p>
             <p className="info">👁 조회 {post.viewCount || 0} · ❤️ 추천 {post.likeCount || 0}</p>
           </div>
         </>
       ) : (
         <>
-          <p><strong>{post.writer}</strong></p>
-          <p>{post.content}</p>
+          <p className="post-writer"><strong>{post.writer || post.nickname}</strong></p>
+          <p className="post-content">{post.content}</p>
           {post.imageUrl && (
-            <img src={`http://localhost:8080${post.imageUrl}`} alt="피드 이미지" />
+            <img
+              src={`http://localhost:8080${post.imageUrl}`}
+              alt="피드 이미지"
+              className="feed-image"
+            />
           )}
-          <p className="date">{formatDate(post.createDate)}</p>
+          <p className="date">🕒 {formattedDate}</p>
         </>
       )}
     </div>

@@ -1,26 +1,32 @@
-/* 공통 버튼 스타일 (팔로우, 메시지 동일) */
 .follow-btn,
 .message-btn {
-  padding: 10px 24px;
-  border: 1.5px solid rgba(61, 229, 217, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+
+  padding: 6px 10px;
+  border: 2px solid #3de5d9;
   border-radius: 999px;
-  background: rgba(61, 229, 217, 0.2);
+  background-color: rgba(61, 229, 217, 0.01);
   color: #3de5d9;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 15px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 12px rgba(61, 229, 217, 0.25);
+  font-family: 'Pretendard', 'Segoe UI', sans-serif;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(1px);
+  box-shadow: 0 4px 12px rgba(61, 229, 217, 0.15);
   cursor: pointer;
-  transition: all 0.25s ease-in-out;
+  transition: all 0.3s ease;
+  letter-spacing: -0.3px;
 }
 
 .follow-btn:hover,
 .message-btn:hover {
-  background: rgba(61, 229, 217, 0.35);
-  color: white;
+  background-color: #3de5d9;
+  color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(61, 229, 217, 0.35);
+  box-shadow: 0 6px 16px rgba(61, 229, 217, 0.4);
 }
 
 .follow-btn:active,
@@ -28,20 +34,19 @@
   transform: scale(0.96);
 }
 
-/* 팔로잉 상태 */
 .follow-btn.following,
 .message-btn.following {
-  background: rgba(200, 200, 200, 0.2);
-  color: #444;
-  border: 1.5px solid rgba(150, 150, 150, 0.4);
-  backdrop-filter: blur(6px);
+  background-color: rgba(220, 250, 248, 0.6);
+  color: #239d95;
+  border: 2px solid #a2e7e1;
 }
 
 .follow-btn.following:hover,
 .message-btn.following:hover {
-  background: rgba(180, 180, 180, 0.3);
-  color: #222;
+  background-color: #a2e7e1;
+  color: #fff;
 }
+
 .fixed-follow-btn-wrapper {
   position: fixed;
   bottom: 20px;

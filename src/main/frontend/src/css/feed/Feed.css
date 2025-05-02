@@ -65,8 +65,8 @@
 .feed-image {
   width: 100%;
   height: auto;
-  max-height: 400px;
-  object-fit: cover;
+  max-height: 500px;
+  object-fit: contain;
   border-radius: 10px;
   margin-top: 12px;
   display: block;
