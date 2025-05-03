@@ -12,4 +12,5 @@ public class ChatRoomDTO {
     private String receiverNickname;
     private String lastMessage;
     private LocalDateTime lastSentAt;
+    private String profileImgUrl;
 }

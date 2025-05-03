@@ -11,7 +11,6 @@ function AnonymousDetail() {
   const [showModal, setShowModal] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
-  // ✅ 로그인 배너용 상태
   const [message, setMessage] = useState('');
   const [showBanner, setShowBanner] = useState(false);
 

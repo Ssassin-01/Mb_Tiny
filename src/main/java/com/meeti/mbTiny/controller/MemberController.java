@@ -33,6 +33,7 @@
     @RequestMapping("/api/members")
     @RequiredArgsConstructor
     public class MemberController {
+
         private final MemberService memberService;
         private final AuthenticationManager authenticationManager;
         private final PostService postService;
@@ -86,7 +87,7 @@
         }
 
         @GetMapping("/{nickname}")
-        public ResponseEntity<MemberDTO> getOtherProfile(@PathVariable String nickname) {
+        public ResponseEntity<MemberDTO> getOtherProfile(@PathVariable("nickname") String nickname) {
             MemberDTO profile = memberService.getOtherProfile(nickname);
             return ResponseEntity.ok(profile);
         }
