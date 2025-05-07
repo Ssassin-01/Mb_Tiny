@@ -5,6 +5,12 @@
   font-family: 'Pretendard', sans-serif;
   background-color: #fff;
 }
+.mbti-description p {
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
 
 /* 프로필 우측 영역 */
 .profile-right {
@@ -23,6 +29,7 @@
 
 /* 프로필 카드 영역 */
 .profile-card {
+  width: 400px;
   background-color: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -97,6 +104,9 @@
   letter-spacing: 1px;
 }
 
+.date {
+  font-size: 12px;
+}
 .profile-mbti:hover {
   background: linear-gradient(135deg, #c0f0f0, #e0f7f7);
   transform: scale(1.05);
@@ -106,6 +116,7 @@
 /* 프로필 통계 버튼 (게시글 수, 친구 수 등) */
 .stats-buttons {
   display: flex;
+  flex-wrap: nowrap;  
   justify-content: center;
   gap: 50px; /* 간격 */
   margin-top: 12px;
@@ -134,9 +145,10 @@
 /* MBTI 태그 및 설명 */
 .mbti-tags {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   flex-wrap: wrap;
   margin-top: 10px;
+  justify-content: center;
 }
 
 .mbti-tags span {
@@ -241,7 +253,7 @@
 }
 
 /* 반응형 처리 (화면 900px 이하일 때 세로 배치) */
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1076px) {
   .profile-page {
     flex-direction: column;
     padding: 30px 20px;
@@ -258,5 +270,74 @@
 
   .profile-right-container {
     padding: 15px;
+  }
+}
+/* 태블릿용 (768px 이하) */
+@media screen and (max-width: 768px) {
+  .profile-card {
+    width: 100%;
+  }
+
+  .profile-nickname {
+    font-size: 22px;
+  }
+
+  .profile-mbti {
+    font-size: 14px;
+    padding: 6px 14px;
+  }
+
+  .stats-buttons {
+    gap: 10px; 
+    flex-wrap: nowrap; 
+  }
+
+  .mbti-description p {
+    font-size: 14px;
+  }
+}
+
+/* 모바일용 (480px 이하) */
+@media screen and (max-width: 480px) {
+  .profile-card {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .profile-nickname {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .profile-mbti {
+    font-size: 13px;
+    padding: 5px 12px;
+  }
+
+  .mbti-tags span {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .mbti-description p {
+    font-size: 13px;
+    max-height: 120px;
+  }
+
+  .stats-buttons {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .profile-tab-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .profile-post-item {
+    padding: 12px;
+    width: 100%;
   }
 }

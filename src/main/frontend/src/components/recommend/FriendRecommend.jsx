@@ -13,7 +13,6 @@ const FriendRecommend = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
   const [friendCount, setFriendCount] = useState(20);
-  const [followerCounts, setFollowerCounts] = useState({});
   const [disappearingIds, setDisappearingIds] = useState(new Set());
 
   useEffect(() => {
@@ -25,7 +24,10 @@ const FriendRecommend = () => {
   }, []);
 
   useEffect(() => {
-    fetchFriends(friendCount);
+    const loginUser = sessionStorage.getItem("loginUser");
+    if (loginUser) {
+      fetchFriends(friendCount);
+    }
   }, [friendCount]);
 
   const fetchFriends = async (count) => {
@@ -38,26 +40,6 @@ const FriendRecommend = () => {
       console.error("회원 목록 불러오기 실패", err);
     }
   };
-
-  const fetchFollowerCount = async (userId) => {
-    try {
-      const res = await axios.get(`http://localhost:8080/api/follow/count/${userId}`, {
-        withCredentials: true,
-      });
-      setFollowerCounts((prev) => ({
-        ...prev,
-        [userId]: res.data.followers,
-      }));
-    } catch (err) {
-      console.error("팔로워 수 불러오기 실패:", err);
-    }
-  };
-
-  useEffect(() => {
-    recommendedFriends.forEach((friend) => {
-      fetchFollowerCount(friend.id);
-    });
-  }, [recommendedFriends]);
 
   const handleProfileClick = (nickname) => {
     navigate(`/profile/${nickname}`);
@@ -142,7 +124,6 @@ const FriendRecommend = () => {
                     <FollowButton
                       targetId={friend.id}
                       onFollowChange={() => {
-                        fetchFollowerCount(friend.id);
                         setDisappearingIds((prev) => new Set(prev).add(friend.id));
                         setTimeout(() => {
                           setRecommendedFriends((prev) => prev.filter((f) => f.id !== friend.id));

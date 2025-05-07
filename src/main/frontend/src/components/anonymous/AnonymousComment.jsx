@@ -154,16 +154,6 @@ function AnonymousComment({ postId }) {
           ))
         )}
       </div>
-
-      <div className='color-picker' style={{ marginBottom: '10px' }}>
-        <label style={{ marginRight: '8px' }}>MBTI 닉네임 색상 선택:</label>
-        <input
-          type='color'
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
-        />
-      </div>
-
       <div className='comment-form'>
         <textarea
           value={newComment}

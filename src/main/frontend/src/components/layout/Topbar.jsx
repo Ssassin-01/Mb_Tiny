@@ -10,18 +10,11 @@ import SearchBar from './SearchBar';
 const Topbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [notifications, setNotifications] = useState([]);
 
-  // useEffect(() => {
-  //   // ****백엔드 안 되는 동안 강제 로그인된 상태로 보기****
-  //   setUser({
-  //     nickname: "nickname",
-  //     mbti: "MBTI"
-  //   });
-  // }, []);
-
-  // 로그인한 사용자 정보 불러오기
   useEffect(() => {
+    const sessionUser = sessionStorage.getItem('loginUser');
+    if (!sessionUser) return; // ❗ 로그인 안 되어 있으면 요청 자체 생략
+
     axios
       .get('http://localhost:8080/api/members/me', {
         withCredentials: true,
@@ -38,8 +31,6 @@ const Topbar = () => {
     navigate('/profile/me');
   };
 
-  const unreadCount = notifications.length;
-
   return (
     <div className='topbar'>
       <div className='logo' onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
@@ -53,10 +44,8 @@ const Topbar = () => {
       <div className='topbar-right'>
         {user ? (
           <>
-            {/* 알림벨 */}
             <NotificationBell key='notification' />
             <Logout />
-            {/* MBTI 카드 + 닉네임 */}
             <div className='mbti-card' onClick={goToMyProfile}>
               {user.nickname} ・ {user.mbti}
             </div>
