@@ -1,4 +1,3 @@
-// src/pages/MessagesPage.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ChatList from '../components/chat/ChatList';
@@ -12,6 +11,7 @@ const MessagesPage = () => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const preselectedRoomId = query.get('roomId');
+
   const [stompClient, setStompClient] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [chatRooms, setChatRooms] = useState([]);
@@ -21,6 +21,7 @@ const MessagesPage = () => {
   const [roomId, setRoomId] = useState(null);
   const [myNickname, setMyNickname] = useState('');
 
+  // ✅ WebSocket 연결
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/chat", null, {
       transports: ["websocket"]
@@ -28,9 +29,13 @@ const MessagesPage = () => {
     const client = Stomp.over(socket);
 
     client.connect({}, () => {
+      console.log("✅ WebSocket 연결 완료");
       setStompClient(client);
     });
+  }, []);
 
+  // ✅ 채팅방 목록 & 나의 닉네임 불러오기
+  useEffect(() => {
     axios.get('http://localhost:8080/api/chatrooms', { withCredentials: true })
       .then(res => {
         const updatedRooms = res.data.map(room => ({
@@ -51,6 +56,7 @@ const MessagesPage = () => {
       .catch(err => console.error("닉네임 불러오기 실패", err));
   }, [preselectedRoomId]);
 
+  // ✅ 채팅방 선택 (구독 제거됨)
   const handleSelectChatRoom = async (chatRoom) => {
     try {
       const { roomId, targetNickname } = chatRoom;
@@ -63,33 +69,45 @@ const MessagesPage = () => {
 
       const msgRes = await axios.get(`http://localhost:8080/api/chatrooms/${roomId}/messages`, { withCredentials: true });
       setMessages(msgRes.data);
-
-      if (stompClient && stompClient.connected) {
-        const sub = stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
-          const newMessage = JSON.parse(msg.body);
-          setMessages(prev => [...prev, newMessage]);
-
-          const updatedRooms = chatRooms.map(room =>
-            room.roomId === roomId
-              ? {
-                  ...room,
-                  lastMessage: newMessage.content,
-                  lastSentAt: newMessage.sentAt
-                }
-              : room
-          );
-
-          const sortedRooms = [...updatedRooms].sort((a, b) => new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0));
-          setChatRooms(sortedRooms);
-        });
-        setSubscription(sub);
-      } else {
-        console.warn("stompClient 연결되지 않아 구독 실패");
-      }
     } catch (err) {
       console.error("메세지 불러오기 실패", err);
     }
   };
+
+  // ✅ stomp 연결 후 구독 수행
+  useEffect(() => {
+    if (roomId && stompClient && stompClient.connected) {
+      console.log("📡 stomp 구독 시도:", roomId);
+
+      const sub = stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
+        const newMessage = JSON.parse(msg.body);
+        console.log("📨 실시간 수신:", newMessage);
+        setMessages(prev => [...prev, newMessage]);
+
+        const updatedRooms = chatRooms.map(room =>
+          room.roomId === roomId
+            ? {
+                ...room,
+                lastMessage: newMessage.content,
+                lastSentAt: newMessage.sentAt
+              }
+            : room
+        );
+
+        const sortedRooms = [...updatedRooms].sort((a, b) =>
+          new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0)
+        );
+        setChatRooms(sortedRooms);
+      });
+
+      setSubscription(sub);
+
+      return () => {
+        console.log("❌ stomp 구독 해제:", roomId);
+        sub.unsubscribe();
+      };
+    }
+  }, [roomId, stompClient?.connected]);
 
   const handleSend = () => {
     if (!input.trim() || !roomId || !stompClient) return;
@@ -105,7 +123,6 @@ const MessagesPage = () => {
     stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(message));
     setInput('');
 
-
     const updatedRooms = chatRooms.map(room =>
       room.roomId === roomId
         ? {
@@ -116,7 +133,9 @@ const MessagesPage = () => {
         : room
     );
 
-    const sortedRooms = [...updatedRooms].sort((a, b) => new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0));
+    const sortedRooms = [...updatedRooms].sort((a, b) =>
+      new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0)
+    );
     setChatRooms(sortedRooms);
   };
 
