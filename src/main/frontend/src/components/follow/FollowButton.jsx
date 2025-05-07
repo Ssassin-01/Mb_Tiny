@@ -1,60 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { UserPlus, UserCheck } from 'lucide-react';
+import axios from 'axios';
 import '../../css/follow/FollowButton.css';
 
 function FollowButton({ targetId, onFollowChange }) {
-  const [isFollowing, setIsFollowing] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
-  
 
-  // 현재 팔로우 상태 조회
+  // targetId 로그 확인 (디버그용)
+  useEffect(() => {
+    console.log('targetId:', targetId);
+  }, [targetId]);
+
+  // 팔로우 상태 확인
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/follow/following', {
-          withCredentials: true,
-        });
-        const isAlreadyFollowing = res.data.some(user => user.id === targetId);
+        const res = await axios.get('http://localhost:8080/api/follow/following', { withCredentials: true });
+        const followingList = res.data;
+        const isAlreadyFollowing = followingList.some(user => user.id === targetId);
         setIsFollowing(isAlreadyFollowing);
       } catch (err) {
         console.error('팔로잉 상태 조회 실패:', err);
       }
     };
 
-    if (targetId != null) {
+    if (targetId) {
       fetchStatus();
-    }
+    }  
   }, [targetId]);
 
-  // 버튼 클릭 핸들러
+  // 팔로우/언팔로우 토글
   const handleToggleFollow = async () => {
-    if (loading || isFollowing === null) return;
+    if (loading) return;
     setLoading(true);
-  
+
     try {
       if (isFollowing) {
-        await axios.delete(`http://localhost:8080/api/follow/${targetId}`, {
-          withCredentials: true,
-        });
+        await axios.delete(`http://localhost:8080/api/follow/${targetId}`, { withCredentials: true });
+        setIsFollowing(false);
       } else {
-        await axios.post(`http://localhost:8080/api/follow/${targetId}`, {}, {
-          withCredentials: true,
-        });
+        await axios.post(`http://localhost:8080/api/follow/${targetId}`, {}, { withCredentials: true });
+        setIsFollowing(true);
       }
-  
-      // 새로고침으로 상태 강제 동기화
-      window.location.reload();
+
+
+      if (onFollowChange) {
+        onFollowChange();
+      }
     } catch (err) {
-      console.error('❌ 팔로우/언팔로우 실패:', err);
-      window.location.reload();
+      console.error('팔로우/언팔로우 실패:', err);
     } finally {
       setLoading(false);
     }
   };
-  
-
-  if (isFollowing === null) return null;
 
   return (
     <button
