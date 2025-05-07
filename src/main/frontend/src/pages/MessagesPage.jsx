@@ -21,7 +21,7 @@ const MessagesPage = () => {
   const [roomId, setRoomId] = useState(null);
   const [myNickname, setMyNickname] = useState('');
 
-  // ✅ WebSocket 연결
+  // WebSocket 연결
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/chat", null, {
       transports: ["websocket"]
@@ -29,12 +29,12 @@ const MessagesPage = () => {
     const client = Stomp.over(socket);
 
     client.connect({}, () => {
-      console.log("✅ WebSocket 연결 완료");
+      console.log("WebSocket 연결 완료");
       setStompClient(client);
     });
   }, []);
 
-  // ✅ 채팅방 목록 & 나의 닉네임 불러오기
+  // 채팅방 목록 & 나의 닉네임 불러오기
   useEffect(() => {
     axios.get('http://localhost:8080/api/chatrooms', { withCredentials: true })
       .then(res => {
@@ -56,7 +56,7 @@ const MessagesPage = () => {
       .catch(err => console.error("닉네임 불러오기 실패", err));
   }, [preselectedRoomId]);
 
-  // ✅ 채팅방 선택 (구독 제거됨)
+  // 채팅방 선택 (구독 제거됨)
   const handleSelectChatRoom = async (chatRoom) => {
     try {
       const { roomId, targetNickname } = chatRoom;
@@ -74,14 +74,14 @@ const MessagesPage = () => {
     }
   };
 
-  // ✅ stomp 연결 후 구독 수행
+  // stomp 연결 후 구독 수행
   useEffect(() => {
     if (roomId && stompClient && stompClient.connected) {
-      console.log("📡 stomp 구독 시도:", roomId);
+      console.log("stomp 구독 시도:", roomId);
 
       const sub = stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
         const newMessage = JSON.parse(msg.body);
-        console.log("📨 실시간 수신:", newMessage);
+        console.log("실시간 수신:", newMessage);
         setMessages(prev => [...prev, newMessage]);
 
         const updatedRooms = chatRooms.map(room =>
@@ -103,7 +103,7 @@ const MessagesPage = () => {
       setSubscription(sub);
 
       return () => {
-        console.log("❌ stomp 구독 해제:", roomId);
+        console.log("stomp 구독 해제:", roomId);
         sub.unsubscribe();
       };
     }

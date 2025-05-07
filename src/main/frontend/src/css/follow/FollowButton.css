@@ -20,6 +20,9 @@
   transition: all 0.3s ease;
   letter-spacing: -0.3px;
 }
+.message-btn {
+  width: 105px;
+}
 
 .follow-btn:hover,
 .message-btn:hover {

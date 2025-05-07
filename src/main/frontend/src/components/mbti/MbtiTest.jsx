@@ -124,7 +124,6 @@ const MbtiTest = () => {
 
 </div>
 
-
       {/* 선택된 MBTI 유형 상세 설명 출력 */}
       {selectedMbti && (
         <div className='mbti-detail-container'>

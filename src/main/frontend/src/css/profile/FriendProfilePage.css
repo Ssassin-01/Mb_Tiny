@@ -82,20 +82,6 @@
   box-sizing: border-box;
 }
 
-.fixed-follow-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000; /* 다른 요소 위에 표시 */
-}
-
-.fixed-follow-button .message-btn, 
-.fixed-follow-button .follow-btn {
-  padding: 10px 20px;
-  border-radius: 999px;
-  font-size: 15px;
-}
-
 /* 반응형 처리 */
 @media screen and (max-width: 1024px) {
   .friend-profile-page {

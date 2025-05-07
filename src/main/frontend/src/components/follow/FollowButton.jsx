@@ -63,12 +63,12 @@ function FollowButton({ targetId, onFollowChange }) {
     >
       {isFollowing ? (
         <>
-          <UserCheck size={18} style={{ marginRight: 6 }} />
+          <UserCheck size={16} style={{ marginRight: 6 }} />
           팔로잉
         </>
       ) : (
         <>
-          <UserPlus size={18} style={{ marginRight: 6 }} />
+          <UserPlus size={16} style={{ marginRight: 6 }} />
           팔로우
         </>
       )}
