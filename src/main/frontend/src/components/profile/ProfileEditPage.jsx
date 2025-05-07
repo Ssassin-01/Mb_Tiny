@@ -7,6 +7,7 @@ import '../../css/profile/ProfileEditPage.css';
 const ProfileEditPage = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef();
+
   const [form, setForm] = useState({
     password: '',
     gender: '',
@@ -14,13 +15,19 @@ const ProfileEditPage = () => {
     birthday: '',
     mbti: '',
   });
+
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmError, setConfirmError] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/members/me', { withCredentials: true });
+        const res = await axios.get('http://localhost:8080/api/members/me', {
+          withCredentials: true,
+        });
         const { gender, phone, birthday, mbti, profileImgUrl } = res.data;
         setForm({
           password: '',
@@ -39,9 +46,49 @@ const ProfileEditPage = () => {
     fetchProfile();
   }, [navigate]);
 
+  // 비밀번호 유효성 검사 (영문+숫자, 8자 이상)
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return regex.test(password);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // 전화번호는 숫자만 입력
+    if (name === 'phone') {
+      const onlyNumbers = value.replace(/\D/g, '');
+      setForm((prev) => ({ ...prev, [name]: onlyNumbers }));
+      return;
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
+
+    // 비밀번호 유효성 + 확인 처리
+    if (name === 'password') {
+      if (!validatePassword(value)) {
+        setPasswordError('비밀번호는 8자 이상, 영문과 숫자를 포함해야 합니다.');
+      } else {
+        setPasswordError('');
+      }
+
+      if (confirmPassword && value !== confirmPassword) {
+        setConfirmError('비밀번호가 일치하지 않습니다.');
+      } else {
+        setConfirmError('');
+      }
+    }
+  };
+
+  const handleConfirmChange = (e) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+
+    if (value !== form.password) {
+      setConfirmError('비밀번호가 일치하지 않습니다.');
+    } else {
+      setConfirmError('');
+    }
   };
 
   const handleImageChange = (e) => {
@@ -53,15 +100,25 @@ const ProfileEditPage = () => {
   };
 
   const handleResetToDefault = () => {
-    const emptyFile = new File([], ''); // 빈 파일을 전송하면 백엔드에서 default.png로 처리
+    const emptyFile = new File([], '');
     setImageFile(emptyFile);
-    setPreview('http://localhost:8080/uploads/profile/default.png'); // 서버에 있는 기본 이미지 URL로 설정
+    setPreview('http://localhost:8080/uploads/profile/default.png');
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
-  
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (form.password) {
+      if (!validatePassword(form.password)) {
+        setPasswordError('비밀번호는 8자 이상, 영문과 숫자를 포함해야 합니다.');
+        return;
+      }
+      if (form.password !== confirmPassword) {
+        setConfirmError('비밀번호가 일치하지 않습니다.');
+        return;
+      }
+    }
 
     try {
       const formData = new FormData();
@@ -111,6 +168,13 @@ const ProfileEditPage = () => {
         <div className="form-group">
           <label>비밀번호</label>
           <input type="password" name="password" value={form.password} onChange={handleChange} />
+          {passwordError && <div className="error">{passwordError}</div>}
+        </div>
+
+        <div className="form-group">
+          <label>비밀번호 확인</label>
+          <input type="password" name="confirmPassword" value={confirmPassword} onChange={handleConfirmChange} />
+          {confirmError && <div className="error">{confirmError}</div>}
         </div>
 
         <div className="form-group">
@@ -124,7 +188,13 @@ const ProfileEditPage = () => {
 
         <div className="form-group">
           <label>전화번호</label>
-          <input type="text" name="phone" value={form.phone} onChange={handleChange} />
+          <input
+            type="text"
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            placeholder="- 없이 숫자만 입력해주세요"
+          />
         </div>
 
         <div className="form-group">
@@ -134,9 +204,14 @@ const ProfileEditPage = () => {
 
         <div className="form-group">
           <label>MBTI</label>
-          <select name="mbti" value={form.mbti} onChange={handleChange}>
+          <select name="mbti" value={form.mbti} onChange={handleChange} required>
             <option value="">선택</option>
-            {[ 'ISTJ','ISFJ','INFJ','INTJ','ISTP','ISFP','INFP','INTP','ESTP','ESFP','ENFP','ENTP','ESTJ','ESFJ','ENFJ','ENTJ' ].map((type) => (
+            {[
+              'ISTJ', 'ISFJ', 'INFJ', 'INTJ',
+              'ISTP', 'ISFP', 'INFP', 'INTP',
+              'ESTP', 'ESFP', 'ENFP', 'ENTP',
+              'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ'
+            ].map((type) => (
               <option key={type} value={type}>{type}</option>
             ))}
           </select>
