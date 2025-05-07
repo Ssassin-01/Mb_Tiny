@@ -227,7 +227,23 @@
     font-size: 13px;
   }
 }
+.like-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
 
+.like-btn:hover {
+  color: #30d5c8;
+}
+
+.like-btn.liked {
+  color: #ff4d6d; /* 빨간색 계열로 강조 */
+  font-weight: bold;
+}
 @media screen and (max-width: 1253px) {
   .feed-filter-select {
     width: 100%;
