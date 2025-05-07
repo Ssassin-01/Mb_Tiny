@@ -26,7 +26,7 @@ function FollowButton({ targetId, onFollowChange }) {
 
     if (targetId) {
       fetchStatus();
-    }
+    }  
   }, [targetId]);
 
   // 팔로우/언팔로우 토글
@@ -43,7 +43,7 @@ function FollowButton({ targetId, onFollowChange }) {
         setIsFollowing(true);
       }
 
-      // 팔로우 변경 시 부모 콜백 호출
+
       if (onFollowChange) {
         onFollowChange();
       }

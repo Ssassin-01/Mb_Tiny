@@ -5,9 +5,13 @@ import ChatList from '../components/chat/ChatList';
 import ChatRoom from '../components/chat/ChatRoom';
 import SockJS from 'sockjs-client';
 import { CompatClient, Stomp } from '@stomp/stompjs';
+import { useLocation } from 'react-router-dom';
 import '../css/chat/MessagesPage.css';
 
 const MessagesPage = () => {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const preselectedRoomId = query.get('roomId');
   const [stompClient, setStompClient] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [chatRooms, setChatRooms] = useState([]);
@@ -34,19 +38,24 @@ const MessagesPage = () => {
           targetNickname: room.receiverNickname
         }));
         setChatRooms(updatedRooms);
+
+        if (preselectedRoomId) {
+          const found = updatedRooms.find(room => room.roomId === Number(preselectedRoomId));
+          if (found) handleSelectChatRoom(found);
+        }
       })
       .catch(err => console.error("채팅방 목록 불러오기 실패", err));
 
     axios.get('http://localhost:8080/api/members/me', { withCredentials: true })
       .then(res => setMyNickname(res.data.nickname))
       .catch(err => console.error("닉네임 불러오기 실패", err));
-  }, []);
+  }, [preselectedRoomId]);
 
   const handleSelectChatRoom = async (chatRoom) => {
     try {
       const { roomId, targetNickname } = chatRoom;
       setRoomId(roomId);
-      setSelectedFriend({ nickname: targetNickname });
+      setSelectedFriend({ nickname: targetNickname, profileImgUrl: chatRoom.profileImgUrl });
 
       if (subscription) {
         subscription.unsubscribe();
