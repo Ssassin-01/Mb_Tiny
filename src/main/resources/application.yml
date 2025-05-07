@@ -24,7 +24,7 @@ spring:
 
 file:
 
-  upload-dir: C:/Users/jokyuhoon/jkh/Mb_Tiny/uploads
+  upload-dir: C:/Users/tj/CWT/Mb_Tiny/uploads
 
 custom:
   default-profile-img: /uploads/profile/default.png
