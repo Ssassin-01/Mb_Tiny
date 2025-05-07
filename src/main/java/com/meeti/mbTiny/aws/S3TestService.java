@@ -20,6 +20,14 @@ public class S3TestService {
         }
     }
 
+    public String updateFileOnS3(MultipartFile newFile, String oldFileUrl) {
+        try {
+            return s3Uploader.update(newFile, oldFileUrl, "test"); // "test" 폴더에 저장
+        } catch (IOException e) {
+            throw new RuntimeException("S3 이미지 수정 실패", e);
+        }
+    }
+
     public void deleteFromS3(String fileUrl) {
         s3Uploader.delete(fileUrl);
     }

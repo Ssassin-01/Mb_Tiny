@@ -18,6 +18,15 @@ public class S3TestController {
         return ResponseEntity.ok(fileUrl);
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<String> updateFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("oldUrl") String oldFileUrl) {
+
+        String newUrl = s3TestService.updateFileOnS3(file, oldFileUrl);
+        return ResponseEntity.ok(newUrl);
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteFile(@RequestParam("url") String fileUrl) {
         s3TestService.deleteFromS3(fileUrl);
