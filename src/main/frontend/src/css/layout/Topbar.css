@@ -33,10 +33,11 @@
 }
 .search-bar-wrapper {
   width: 100%;
-  max-width: 700px;
+  
   min-width: 220px;
   flex-shrink: 1;
   position: relative;
+  
 }
 .search-input {
   width: 100%;
@@ -204,6 +205,7 @@
 
 /* 종 버튼 */
 .notification-bell {
+  padding-left: 20px;
   background: none;
   border: none;
   position: relative;
@@ -332,7 +334,11 @@
     border-radius: 20px;
   }
 }
-
+@media (max-width: 595px) {
+  .mbti-card {
+    display: none;
+  }
+}
 
 /* 반응형 */
 @media screen and (max-width: 480px) {
@@ -353,9 +359,6 @@
     padding: 8px;
   }
   .mbti-card {
-    font-size: 12px;
-    padding: 6px 14px;
-    border-radius: 16px;
-    animation: gradientFlow 8s ease infinite;
+    display: none; 
   }
 }

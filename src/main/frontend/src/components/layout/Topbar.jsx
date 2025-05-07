@@ -13,7 +13,7 @@ const Topbar = () => {
 
   useEffect(() => {
     const sessionUser = sessionStorage.getItem('loginUser');
-    if (!sessionUser) return; // ❗ 로그인 안 되어 있으면 요청 자체 생략
+    if (!sessionUser) return; // 로그인 안 되어 있으면 요청 자체 생략
 
     axios
       .get('http://localhost:8080/api/members/me', {

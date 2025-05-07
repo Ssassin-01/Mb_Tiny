@@ -90,6 +90,7 @@
   white-space: nowrap;
   font-weight: 600;
   flex-shrink: 0;
+  border: 1px solid #12b3a8;
 }
 
 /* 팔로우 버튼 */

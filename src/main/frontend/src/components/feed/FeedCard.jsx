@@ -153,7 +153,10 @@ function FeedCard({ feed, onUpdate, onDelete }) {
           />
           <div className="feed-info">
             <div className="feed-nickname" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
-              {feed.mbti ? `[${feed.mbti}] ` : ''}{feed.nickname}
+            <span className="feed-mbti-tag">
+              {feed.mbti ? `${feed.mbti}` : ''}
+            </span>
+              {feed.nickname}
             </div>
             <div className="feed-time">{formatDateOrTime()}</div>
           </div>

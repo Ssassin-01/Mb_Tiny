@@ -72,7 +72,6 @@ function FeedList() {
     }, 500); // 스피너 보일 수 있게 0.5초 지연
   };
   
-
   const filterFeeds = (feeds, mbtiFilter) => {
     const [IorE, NorS, TorF, JorP] = mbtiFilter;
     return feeds.filter(feed => {

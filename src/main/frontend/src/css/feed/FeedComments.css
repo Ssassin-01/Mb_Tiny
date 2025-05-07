@@ -7,6 +7,19 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.feed-mbti-tag {
+  background-color: #e8fafa;
+  margin-right: 8px;
+  color: #1ca89d;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  font-weight: 600;
+  flex-shrink: 0;
+  border: 1px solid #12b3a8;
+}
+
 .comment-header {
   display: flex;
   justify-content: space-between;
