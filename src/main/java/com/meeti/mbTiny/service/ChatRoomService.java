@@ -31,15 +31,17 @@ public class ChatRoomService {
                 .orElseThrow(() -> new IllegalArgumentException("받는 사람 없음"));
 
         Optional<ChatRoom> existing = chatRoomRepository
-                .findBySenderAndReceiverOrReceiverAndSender(sender, receiver, sender, receiver);
+                .findWithMessagesBySenderAndReceiverOrReceiverAndSender(sender, receiver);
 
         return existing.orElseGet(() -> chatRoomRepository.save(
                 ChatRoom.builder()
                         .sender(sender)
                         .receiver(receiver)
+                        .messages(new ArrayList<>())
                         .build()
         ));
     }
+
 
     public List<ChatRoomDTO> getChatRoomsForMember(Member member) {
         List<ChatRoom> chatRooms = chatRoomRepository.findBySenderOrReceiver(member, member);
@@ -80,8 +82,12 @@ public class ChatRoomService {
                 ? chatRoom.getReceiver()
                 : chatRoom.getSender();
 
-        // 마지막 메시지
         List<Message> messages = chatRoom.getMessages();
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
+
+        // 마지막 메시지
         messages.sort(Comparator.comparing(Message::getSentAt));
         Message lastMessage = messages.isEmpty() ? null : messages.get(messages.size() - 1);
 

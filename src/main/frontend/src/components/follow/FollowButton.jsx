@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { UserPlus, UserCheck } from 'lucide-react';
 import axios from 'axios';
 import '../../css/follow/FollowButton.css';
 
@@ -60,7 +61,17 @@ function FollowButton({ targetId, onFollowChange }) {
       onClick={handleToggleFollow}
       disabled={loading}
     >
-      {isFollowing ? '팔로잉' : '팔로우'}
+      {isFollowing ? (
+        <>
+          <UserCheck size={18} style={{ marginRight: 6 }} />
+          팔로잉
+        </>
+      ) : (
+        <>
+          <UserPlus size={18} style={{ marginRight: 6 }} />
+          팔로우
+        </>
+      )}
     </button>
   );
 }
