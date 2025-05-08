@@ -37,6 +37,7 @@
   min-width: 220px;
   flex-shrink: 1;
   position: relative;
+  margin-right: 10px;
   
 }
 .search-input {
