@@ -27,3 +27,24 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 10px;
 }
+.login-banner {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #3de5d9;
+  color: white;
+  padding: 12px 24px;
+  font-weight: bold;
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  z-index: 9999;
+  animation: fadeInOut 2s ease forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px) translateX(-50%); }
+  10% { opacity: 1; transform: translateY(0) translateX(-50%); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px) translateX(-50%); }
+}

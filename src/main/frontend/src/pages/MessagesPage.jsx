@@ -4,10 +4,11 @@ import ChatList from '../components/chat/ChatList';
 import ChatRoom from '../components/chat/ChatRoom';
 import SockJS from 'sockjs-client';
 import { CompatClient, Stomp } from '@stomp/stompjs';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../css/chat/MessagesPage.css';
 
-const MessagesPage = () => {
+const MessagesPage = ({ user }) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const preselectedRoomId = query.get('roomId');
@@ -20,7 +21,23 @@ const MessagesPage = () => {
   const [input, setInput] = useState('');
   const [roomId, setRoomId] = useState(null);
   const [myNickname, setMyNickname] = useState('');
+  const [message, setMessage] = useState('');
+  const [showBanner, setShowBanner] = useState(false);
+  
 
+  // 로그인 필요 배너 후 이동
+  const showAutoBannerThenLogin = (text) => {
+    setMessage(text);
+    setShowBanner(true);
+  
+    // 직접 함수 호출로 래핑해서 navigate 안전하게 실행
+    setTimeout(() => {
+      setShowBanner(false);
+      navigate('/login');
+    }, 1000);
+    
+  };
+  
   // WebSocket 연결
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/chat", null, {
@@ -34,7 +51,7 @@ const MessagesPage = () => {
     });
   }, []);
 
-  // 채팅방 목록 & 나의 닉네임 불러오기
+  // 채팅방 목록 불러오기
   useEffect(() => {
     axios.get('http://localhost:8080/api/chatrooms', { withCredentials: true })
       .then(res => {
@@ -50,13 +67,9 @@ const MessagesPage = () => {
         }
       })
       .catch(err => console.error("채팅방 목록 불러오기 실패", err));
-
-    axios.get('http://localhost:8080/api/members/me', { withCredentials: true })
-      .then(res => setMyNickname(res.data.nickname))
-      .catch(err => console.error("닉네임 불러오기 실패", err));
   }, [preselectedRoomId]);
 
-  // 채팅방 선택 (구독 제거됨)
+  // 채팅방 선택 시 메시지 불러오기
   const handleSelectChatRoom = async (chatRoom) => {
     try {
       const { roomId, targetNickname } = chatRoom;
@@ -67,14 +80,16 @@ const MessagesPage = () => {
         subscription.unsubscribe();
       }
 
-      const msgRes = await axios.get(`http://localhost:8080/api/chatrooms/${roomId}/messages`, { withCredentials: true });
+      const msgRes = await axios.get(`http://localhost:8080/api/chatrooms/${roomId}/messages`, {
+        withCredentials: true
+      });
       setMessages(msgRes.data);
     } catch (err) {
       console.error("메세지 불러오기 실패", err);
     }
   };
 
-  // stomp 연결 후 구독 수행
+  // stomp 구독
   useEffect(() => {
     if (roomId && stompClient && stompClient.connected) {
       console.log("stomp 구독 시도:", roomId);
@@ -109,6 +124,7 @@ const MessagesPage = () => {
     }
   }, [roomId, stompClient?.connected]);
 
+  // 메시지 전송
   const handleSend = () => {
     if (!input.trim() || !roomId || !stompClient) return;
 
@@ -139,6 +155,7 @@ const MessagesPage = () => {
     setChatRooms(sortedRooms);
   };
 
+  // 채팅방 나가기
   const handleLeaveChat = () => {
     setSelectedFriend(null);
     setRoomId(null);
@@ -147,24 +164,31 @@ const MessagesPage = () => {
   };
 
   return (
-    <div className="messages-layout">
-      <ChatList
-        chatRooms={chatRooms}
-        onSelectChatRoom={handleSelectChatRoom}
-        selectedRoomId={roomId}
-      />
-      <div className="chat-container">
-        <ChatRoom
-          friend={selectedFriend}
-          myNickname={myNickname}
-          messages={messages}
-          input={input}
-          setInput={setInput}
-          handleSend={handleSend}
-          onLeaveChat={handleLeaveChat}
+    <>
+      {/* 상단 배너 */}
+      {showBanner && (
+        <div className="login-banner">{message}</div>
+      )}
+
+      <div className="messages-layout">
+        <ChatList
+          chatRooms={chatRooms}
+          onSelectChatRoom={handleSelectChatRoom}
+          selectedRoomId={roomId}
         />
+        <div className="chat-container">
+          <ChatRoom
+            friend={selectedFriend}
+            myNickname={myNickname}
+            messages={messages}
+            input={input}
+            setInput={setInput}
+            handleSend={handleSend}
+            onLeaveChat={handleLeaveChat}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
