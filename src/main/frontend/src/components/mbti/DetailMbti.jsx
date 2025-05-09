@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../css/mbti/MbtiTest.css';
-
+ 
 const DetailMbti = ({ type }) => {
   const mbtiDescriptions = {
     INFP: {
