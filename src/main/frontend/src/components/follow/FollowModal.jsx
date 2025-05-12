@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '../../css/follow/FollowModal.css';
 
-function FollowModal({ type, targetId, onClose }) {
+function FollowModal({ type, onClose }) {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate(); 
 
+
+  const handleProfileClick = (nickname) => {
+    navigate(`/profile/${encodeURIComponent(nickname)}`); // URI 인코딩 포함
+    onClose(); // 모달 닫기
+  };
   useEffect(() => {
     const fetchList = async () => {
       try {
-        const res = await axios.get(`/api/follow/${targetId}/${type}`, {
-          withCredentials: true,
-        });
-        setUsers(res.data); // 서버에서 사용자 목록 배열 반환
+        // 상대방 ID로 조회는 불가능 → 본인 기준의 followers/following만 가능
+        const res = await axios.get(`http://localhost:8080/api/follow/${type}`, { withCredentials: true });
+        setUsers(res.data);
       } catch (error) {
         console.error(`${type} 목록 불러오기 실패:`, error);
       }
     };
 
-    if (targetId && type) {
+    if (type) {
       fetchList();
     }
-  }, [type, targetId]);
+  }, [type]);
 
   return (
     <div className="follow-modal-overlay" onClick={onClose}>
@@ -31,8 +37,18 @@ function FollowModal({ type, targetId, onClose }) {
             <li className="no-follow">아직 아무도 없습니다.</li>
           ) : (
             users.map((user) => (
-              <li key={user.id} className="follow-user-item">
-                <img src={user.profileImage || '/img/default-profile.png'} alt="프로필" className="user-thumb" />
+              <li key={user.id} className="follow-user-item" onClick={() => handleProfileClick(user.nickname)}
+              style={{cursor:'pointer'}}>
+                <img
+                  src={
+                    user.profileImgUrl
+                      ? `http://localhost:8080${user.profileImgUrl}`
+                      : '/img/default-profile.png'
+                  }
+                  alt="프로필"
+                  className="user-thumb"
+                />
+
                 <span className="user-nickname">{user.nickname}</span>
               </li>
             ))

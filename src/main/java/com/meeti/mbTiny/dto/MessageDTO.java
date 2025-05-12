@@ -1,12 +1,20 @@
 package com.meeti.mbTiny.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageDTO {
-    private String roomId;
-    private String sender;
+
+    private Long id;
+    private Long roomId;
+    private String senderNickname;
     private String content;
+    private LocalDateTime sentAt;
 }

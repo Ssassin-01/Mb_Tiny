@@ -1,97 +1,163 @@
-// src/pages/MessagesPage.jsx
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ChatList from '../components/chat/ChatList';
 import ChatRoom from '../components/chat/ChatRoom';
-import '../css/pages/MessagesPage.css';
+import SockJS from 'sockjs-client';
+import { CompatClient, Stomp } from '@stomp/stompjs';
+import { useLocation } from 'react-router-dom';
+import '../css/chat/MessagesPage.css';
 
 const MessagesPage = () => {
-  const [users, setUsers] = useState([]);
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const preselectedRoomId = query.get('roomId');
+
+  const [stompClient, setStompClient] = useState(null);
+  const [subscription, setSubscription] = useState(null);
+  const [chatRooms, setChatRooms] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [roomId, setRoomId] = useState(null);
-  const myId = 1; // 로그인된 사용자 ID (예시)
+  const [myNickname, setMyNickname] = useState('');
 
+  // ✅ WebSocket 연결
   useEffect(() => {
-    axios.get('/api/users')
-      .then(res => setUsers(res.data))
-      .catch(() => {
-        const dummyUsers = Array.from({ length: 50 }, (_, i) => ({
-          id: i + 1,
-          name: `사용자${i + 1}`,
-          profileImg: `/img/profile${(i % 5) + 1}.png`,
-          status: `안녕하세요 ${i + 1}번입니다.`,
-          preview: `안녕하세요 ${i + 1}번입니다.` // ✅ 추가!
-        }));
-        setUsers(dummyUsers);
-      });
+    const socket = new SockJS("http://localhost:8080/chat", null, {
+      transports: ["websocket"]
+    });
+    const client = Stomp.over(socket);
+
+    client.connect({}, () => {
+      console.log("✅ WebSocket 연결 완료");
+      setStompClient(client);
+    });
   }, []);
 
-  const handleSelectUser = async (user) => {
+  // ✅ 채팅방 목록 & 나의 닉네임 불러오기
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/chatrooms', { withCredentials: true })
+      .then(res => {
+        const updatedRooms = res.data.map(room => ({
+          ...room,
+          targetNickname: room.receiverNickname
+        }));
+        setChatRooms(updatedRooms);
+
+        if (preselectedRoomId) {
+          const found = updatedRooms.find(room => room.roomId === Number(preselectedRoomId));
+          if (found) handleSelectChatRoom(found);
+        }
+      })
+      .catch(err => console.error("채팅방 목록 불러오기 실패", err));
+
+    axios.get('http://localhost:8080/api/members/me', { withCredentials: true })
+      .then(res => setMyNickname(res.data.nickname))
+      .catch(err => console.error("닉네임 불러오기 실패", err));
+  }, [preselectedRoomId]);
+
+  // ✅ 채팅방 선택 (구독 제거됨)
+  const handleSelectChatRoom = async (chatRoom) => {
     try {
-      const res = await axios.post('/api/chatroom/create', {
-        senderId: myId,
-        receiverId: user.id,
-      });
+      const { roomId, targetNickname } = chatRoom;
+      setRoomId(roomId);
+      setSelectedFriend({ nickname: targetNickname, profileImgUrl: chatRoom.profileImgUrl });
 
-      const createdRoom = res.data;
-      setRoomId(createdRoom.roomId);
-      setSelectedFriend(user);
+      if (subscription) {
+        subscription.unsubscribe();
+      }
 
-      const msgRes = await axios.get(`/api/chatroom/${createdRoom.roomId}/messages`);
+      const msgRes = await axios.get(`http://localhost:8080/api/chatrooms/${roomId}/messages`, { withCredentials: true });
       setMessages(msgRes.data);
     } catch (err) {
-      setSelectedFriend(user);
-      setRoomId(user.id); // 더미 roomId
-      setMessages([
-        { id: 1, sender: 'you', content: `${user.name}와의 더미 대화입니다.` },
-        { id: 2, sender: 'me', content: '안녕!' }
-      ]);
+      console.error("메세지 불러오기 실패", err);
     }
   };
+
+  // ✅ stomp 연결 후 구독 수행
+  useEffect(() => {
+    if (roomId && stompClient && stompClient.connected) {
+      console.log("📡 stomp 구독 시도:", roomId);
+
+      const sub = stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
+        const newMessage = JSON.parse(msg.body);
+        console.log("📨 실시간 수신:", newMessage);
+        setMessages(prev => [...prev, newMessage]);
+
+        const updatedRooms = chatRooms.map(room =>
+          room.roomId === roomId
+            ? {
+                ...room,
+                lastMessage: newMessage.content,
+                lastSentAt: newMessage.sentAt
+              }
+            : room
+        );
+
+        const sortedRooms = [...updatedRooms].sort((a, b) =>
+          new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0)
+        );
+        setChatRooms(sortedRooms);
+      });
+
+      setSubscription(sub);
+
+      return () => {
+        console.log("❌ stomp 구독 해제:", roomId);
+        sub.unsubscribe();
+      };
+    }
+  }, [roomId, stompClient?.connected]);
 
   const handleSend = () => {
-    if (!input.trim()) return;
-    setMessages(prev => [
-      ...prev,
-      {
-        id: Date.now(),
-        sender: 'me',
-        content: input,
-      }
-    ]);
+    if (!input.trim() || !roomId || !stompClient) return;
+
+    const now = new Date();
+
+    const message = {
+      roomId,
+      content: input,
+      senderNickname: myNickname,
+      sentAt: now
+    };
+    stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(message));
     setInput('');
+
+    const updatedRooms = chatRooms.map(room =>
+      room.roomId === roomId
+        ? {
+            ...room,
+            lastMessage: message.content,
+            lastSentAt: now
+          }
+        : room
+    );
+
+    const sortedRooms = [...updatedRooms].sort((a, b) =>
+      new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0)
+    );
+    setChatRooms(sortedRooms);
   };
 
-  const handleLeaveChat = (userId) => {
-    setUsers(prev => prev.filter(user => user.id !== userId));
+  const handleLeaveChat = () => {
     setSelectedFriend(null);
+    setRoomId(null);
     setMessages([]);
     setInput('');
-  };
-
-  const handleDeleteUsers = (ids) => {
-    setUsers(prev => prev.filter(user => !ids.includes(user.id)));
-    if (selectedFriend && ids.includes(selectedFriend.id)) {
-      setSelectedFriend(null);
-      setMessages([]);
-    }
   };
 
   return (
     <div className="messages-layout">
       <ChatList
-        users={users}
-        onSelectUser={handleSelectUser}
-        selectedUser={selectedFriend}
-        onDelete={handleDeleteUsers} // ✅ 전달 필수
+        chatRooms={chatRooms}
+        onSelectChatRoom={handleSelectChatRoom}
+        selectedRoomId={roomId}
       />
       <div className="chat-container">
         <ChatRoom
           friend={selectedFriend}
+          myNickname={myNickname}
           messages={messages}
-          setMessages={setMessages}
           input={input}
           setInput={setInput}
           handleSend={handleSend}

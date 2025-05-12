@@ -23,7 +23,7 @@
   font-size: 18px;
 }
 
-/* ✅ 로그아웃 완료 토스트 */
+/* 로그아웃 완료 토스트 */
 .custom-toast {
   position: fixed;
   top: 20px;
@@ -63,4 +63,20 @@
   10% { opacity: 1; transform: translateX(-50%) translateY(0); }
   90% { opacity: 1; transform: translateX(-50%) translateY(0); }
   100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+
+/* 작은 화면에서 텍스트 숨기기 */
+@media (max-width: 768px) {
+  .logout-button {
+    padding: 10px;
+    justify-content: center;
+  }
+
+  .logout-text {
+    display: none;
+  }
+
+  .logout-icon {
+    font-size: 15px;
+  }
 }

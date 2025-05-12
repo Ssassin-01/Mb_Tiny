@@ -137,6 +137,7 @@
                     .title(post.getTitle())
                     .content(post.getContent())
                     .nickname(nickname)
+                    .memberImageUrl(post.getMember().getProfileImgUrl())
                     .email(post.getMember().getEmail())
                     .imageUrl(post.getImageUrl())
                     .mbti(post.getMember().getMbti())

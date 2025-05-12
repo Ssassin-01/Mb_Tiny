@@ -19,12 +19,12 @@ const MbtiTest = () => {
   const [result, setResult] = useState('');
 
   const handleAnswer = (isAgree) => {
-    const { dimension, direction } = questions[currentQuestion];
+    const { direction, weight = 1 } = questions[currentQuestion];
+    const target = isAgree ? direction : getOpposite(direction);
 
     setScores((prev) => ({
       ...prev,
-      [isAgree ? direction : getOpposite(direction)]:
-        prev[isAgree ? direction : getOpposite(direction)] + 1,
+      [target]: prev[target] + weight,
     }));
 
     if (currentQuestion < questions.length - 1) {
@@ -32,7 +32,7 @@ const MbtiTest = () => {
     } else {
       const finalResult = calculateResult();
       setResult(finalResult);
-      setIsFinished(true); // 검사 끝남 표시
+      setIsFinished(true); // 검사 종료
     }
   };
 
@@ -83,7 +83,6 @@ const MbtiTest = () => {
             <h1>{result}</h1>
           </div>
           <MbtiMatchResult userMbti={result} />
-          <h3></h3>
         </div>
       )}
     </div>

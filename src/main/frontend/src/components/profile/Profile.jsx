@@ -44,6 +44,7 @@ const Profile = () => {
         followerCount={userInfo.followerCount || 0}
         followingCount={userInfo.followingCount || 0}
         targetId={userInfo.id}
+        profileImgUrl={userInfo.profileImgUrl}
       />
       {showPosts && <ProfileRight />}
     </div>

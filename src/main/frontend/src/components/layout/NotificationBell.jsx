@@ -24,7 +24,7 @@ export default function NotificationBell() {
     };
 
     const connect = () => {
-      if (eventSourceRef.current) return; // ✅ 이미 연결된 경우 재연결 금지
+      if (eventSourceRef.current) return; // 이미 연결된 경우 재연결 금지
 
       const source = new EventSourcePolyfill(
         'http://localhost:8080/api/notifications/subscribe',

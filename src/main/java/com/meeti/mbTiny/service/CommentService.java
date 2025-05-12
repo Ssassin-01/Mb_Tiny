@@ -31,7 +31,7 @@ public class CommentService {
                 .build();
         commentRepository.save(comment);
         if(!post.getMember().getId().equals(member.getId())) {
-            notificationService.sendNotification(post.getMember().getId(), member.getNickname() + "님이 댓글을 남겼습니다.");
+            notificationService.sendNotification(post.getMember().getId(), "📑" + member.getNickname() + "님이 댓글을 남겼습니다.");
         }
     }
     public List<CommentDTO> getComment(Long postId, Member member, boolean isAnonymous) {

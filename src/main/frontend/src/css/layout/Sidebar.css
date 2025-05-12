@@ -1,15 +1,22 @@
-/* 공통 스타일 */
 .sidebar {
   width: 200px;
   background-color: white;
   border-right: 1px solid #ddd;
-  height: 100vh;
+  /* height: 100vh; */
+  display: flex;
+  flex-direction: column;
   padding: 20px 0;
   box-sizing: border-box;
-  transition: width 0.3s ease;
+  justify-content: space-between;
   overflow-y: auto;
+  
 }
 
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
 .menu {
   list-style: none;
   padding: 0;
@@ -71,6 +78,29 @@
   font-weight: bold;
 }
 
+/* 하단 푸터 스타일 */
+.sidebar-footer {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+  border-top: 1px solid #eee;
+  background-color: white;
+}
+
+.sidebar-footer a {
+  color: #30d5c8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.sidebar-footer a:hover {
+  text-decoration: underline;
+}
+
+
+
 /* 사이드바 축소 (태블릿 이하: 768px) */
 @media screen and (max-width: 768px) {
   .sidebar {
@@ -131,9 +161,16 @@
     font-size: 12px;
     padding: 10px 0;
   }
+  .menu li {
+    padding: 20px 0;
+    font-size: 10px;
+  }
 
   .label-text {
     opacity: 1;
     pointer-events: auto;
+  }
+  .sidebar-footer {
+    display: none;
   }
 }
