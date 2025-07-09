@@ -1,6 +1,7 @@
 package com.meeti.mbTiny.aws;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,15 @@ public class S3Uploader {
         metadata.setContentType(file.getContentType());
         metadata.setContentLength(file.getSize());
 
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata));
+        try (var inputStream = file.getInputStream()) {
+            PutObjectRequest request = new PutObjectRequest(bucket, fileName, inputStream, metadata);
+            amazonS3.putObject(request); // ACL 제거
+        }
 
         return amazonS3.getUrl(bucket, fileName).toString();
     }
+
+
 
     public String update(MultipartFile newFile, String oldFileUrl, String dir) throws IOException {
         if (oldFileUrl != null && !oldFileUrl.isBlank()) {

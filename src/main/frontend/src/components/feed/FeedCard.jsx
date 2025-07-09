@@ -50,8 +50,14 @@ function FeedCard({ feed, onUpdate, onDelete }) {
       createdDate.getDate() === now.getDate();
 
     return isToday
-      ? createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
-      : `${String(createdDate.getMonth() + 1).padStart(2, '0')}-${String(createdDate.getDate()).padStart(2, '0')}`;
+      ? createdDate.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        })
+      : `${String(createdDate.getMonth() + 1).padStart(2, '0')}-${String(
+          createdDate.getDate()
+        ).padStart(2, '0')}`;
   };
 
   const handleProfileClick = () => {
@@ -86,9 +92,12 @@ function FeedCard({ feed, onUpdate, onDelete }) {
       return;
     }
     try {
-      const res = await axios.get(`http://localhost:8080/api/posts/${feed.id}/comments`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `http://localhost:8080/api/posts/${feed.id}/comments`,
+        {
+          withCredentials: true,
+        }
+      );
       setComments(res.data);
       setShowCommentsModal(true);
     } catch (error) {
@@ -110,9 +119,12 @@ function FeedCard({ feed, onUpdate, onDelete }) {
         { withCredentials: true }
       );
       setNewComment('');
-      const res = await axios.get(`http://localhost:8080/api/posts/${feed.id}/comments`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `http://localhost:8080/api/posts/${feed.id}/comments`,
+        {
+          withCredentials: true,
+        }
+      );
       setComments(res.data);
     } catch (error) {
       console.error('댓글 작성 실패:', error);
@@ -140,25 +152,33 @@ function FeedCard({ feed, onUpdate, onDelete }) {
 
   return (
     <>
-      {showBanner && <div className="alert-message">{message}</div>}
+      {showBanner && <div className='alert-message'>{message}</div>}
 
-      <div className="feed-card">
-        <div className="feed-header">
+      <div className='feed-card'>
+        <div className='feed-header'>
           <img
-            src={feed.memberImageUrl ? `http://localhost:8080${feed.memberImageUrl}` : '/img/default-profile.png'}
+            src={
+              feed.memberImageUrl
+                ? `${feed.memberImageUrl}`
+                : '/img/default-profile.png'
+            }
             onClick={handleProfileClick}
-            alt="프로필"
-            className="feed-profile"
+            alt='프로필'
+            className='feed-profile'
             style={{ cursor: 'pointer' }}
           />
-          <div className="feed-info">
-            <div className="feed-nickname" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
-            <span className="feed-mbti-tag">
-              {feed.mbti ? `${feed.mbti}` : ''}
-            </span>
+          <div className='feed-info'>
+            <div
+              className='feed-nickname'
+              onClick={handleProfileClick}
+              style={{ cursor: 'pointer' }}
+            >
+              <span className='feed-mbti-tag'>
+                {feed.mbti ? `${feed.mbti}` : ''}
+              </span>
               {feed.nickname}
             </div>
-            <div className="feed-time">{formatDateOrTime()}</div>
+            <div className='feed-time'>{formatDateOrTime()}</div>
           </div>
         </div>
 
@@ -167,25 +187,25 @@ function FeedCard({ feed, onUpdate, onDelete }) {
             <textarea
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
-              rows="4"
-              className="edit-textarea"
+              rows='4'
+              className='edit-textarea'
             />
-            <input type="file" accept="image/*" onChange={handleImageChange} />
+            <input type='file' accept='image/*' onChange={handleImageChange} />
           </>
         ) : (
           <>
-            <div className="feed-content">{feed.content}</div>
+            <div className='feed-content'>{feed.content}</div>
             {feed.imageUrl && (
               <img
-                src={`http://localhost:8080${feed.imageUrl}`}
-                alt="피드 이미지"
-                className="feed-image"
+                src={`${feed.imageUrl}`}
+                alt='피드 이미지'
+                className='feed-image'
               />
             )}
           </>
         )}
 
-        <div className="feed-actions">
+        <div className='feed-actions'>
           {isEditing ? (
             <>
               <button onClick={handleSaveClick}>저장</button>
@@ -193,7 +213,10 @@ function FeedCard({ feed, onUpdate, onDelete }) {
             </>
           ) : (
             <>
-              <button onClick={handleLikeClick} className={liked ? 'like-btn liked' : 'like-btn'}>
+              <button
+                onClick={handleLikeClick}
+                className={liked ? 'like-btn liked' : 'like-btn'}
+              >
                 ❤️ 좋아요
               </button>
               <button onClick={openCommentsModal}>💬 댓글</button>
@@ -208,22 +231,24 @@ function FeedCard({ feed, onUpdate, onDelete }) {
         </div>
 
         {showCommentsModal && (
-          <div className="floating-comment-box">
-            <div className="comment-header">
+          <div className='floating-comment-box'>
+            <div className='comment-header'>
               <span>💬 댓글</span>
-              <button className="close-button" onClick={closeModal}>✖</button>
+              <button className='close-button' onClick={closeModal}>
+                ✖
+              </button>
             </div>
-            <div className="comments-list">
+            <div className='comments-list'>
               {comments.map((comment) => (
-                <div key={comment.id} className="comment-item">
+                <div key={comment.id} className='comment-item'>
                   <strong>{comment.nickname}</strong>: {comment.content}
                 </div>
               ))}
             </div>
-            <div className="comment-input">
+            <div className='comment-input'>
               <input
-                type="text"
-                placeholder="댓글을 입력하세요..."
+                type='text'
+                placeholder='댓글을 입력하세요...'
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
               />
