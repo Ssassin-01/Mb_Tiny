@@ -8,6 +8,7 @@
     import jakarta.servlet.http.Cookie;
     import jakarta.servlet.http.HttpServletRequest;
     import jakarta.servlet.http.HttpServletResponse;
+    import jakarta.servlet.http.HttpSession;
     import jakarta.validation.Valid;
     import lombok.RequiredArgsConstructor;
     import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@
     @RequestMapping("/api/members")
     @RequiredArgsConstructor
     public class MemberController {
+
         private final MemberService memberService;
         private final AuthenticationManager authenticationManager;
         private final PostService postService;
@@ -85,7 +87,7 @@
         }
 
         @GetMapping("/{nickname}")
-        public ResponseEntity<MemberDTO> getOtherProfile(@PathVariable String nickname) {
+        public ResponseEntity<MemberDTO> getOtherProfile(@PathVariable("nickname") String nickname) {
             MemberDTO profile = memberService.getOtherProfile(nickname);
             return ResponseEntity.ok(profile);
         }
@@ -165,6 +167,18 @@
             List<MemberListResponseDTO> members = memberService.getRandomMembers(count);
             return ResponseEntity.ok(members);
         }
+
+        @GetMapping("/random/exclude")
+        public ResponseEntity<?> getFilteredRandomMembers(
+                @RequestParam(defaultValue = "20") int count,
+                @AuthenticationPrincipal CustomUserDetails userDetails
+        ) {
+            Member me = userDetails.getMember();
+            List<MemberListResponseDTO> members = memberService.getRandomMembersExcludeSelfAndFollowing(me, count);
+            return ResponseEntity.ok(members);
+        }
+
+
         @GetMapping("/random/mbti")
         public ResponseEntity<?> getMembersByMBTI(
                 @RequestParam(defaultValue = "20") int count,

@@ -10,8 +10,9 @@ import Layout from './components/layout/Layout';
 import Profile from './components/profile/Profile';
 import FriendProfilePage from './components/profile/FriendProfilePage';
 import MessagesPage from './pages/MessagesPage';
-import MbtiTest from './components/mbti/MbtiTest';
 import ProfileEditPage from './components/profile/ProfileEditPage';
+import MbtiTest from './components/mbti/MbtiTest';
+import RequireLoginWithBanner from './components/etc/RequireLoginWithBanner';
 
 function App() {
   return (
@@ -27,11 +28,19 @@ function App() {
           <Route path='/anonymous/:id' element={<AnonymousDetail />} />
           <Route path='/anonymous/write' element={<AnonymousWrite />} />
           <Route path='/profile/me' element={<Profile />} />
-          <Route path="/profile/:nickname" element={<FriendProfilePage />} />
+          
+          <Route path='profile/:nickname' element={<FriendProfilePage />} />
           <Route path='/mbtitest' element={<MbtiTest />} />
-          <Route path='/messagespage' element={<MessagesPage />} />
-          <Route path="/profile/edit" element={<ProfileEditPage />} />
+          <Route
+              path="/messagespage"
+              element={
+                <RequireLoginWithBanner>
+                  {(user) => <MessagesPage user={user} />}
+                </RequireLoginWithBanner>
+              }
+            />
 
+          <Route path='/profile/edit' element={<ProfileEditPage />} />
         </Route>
       </Routes>
     </Router>

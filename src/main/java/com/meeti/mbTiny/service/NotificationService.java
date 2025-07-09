@@ -33,7 +33,6 @@ public class NotificationService {
         emitter.onError(e -> removeEmitter(memberId));
 
         try {
-            // ✅ 최초 연결 직후 더미 데이터라도 하나 보내야 끊어지지 않음
             emitter.send(SseEmitter.event().name("connect").data("Connected"));
         } catch (IOException e) {
             throw new RuntimeException("SSE 연결 오류", e);
@@ -49,7 +48,8 @@ public class NotificationService {
         return scheduler.scheduleAtFixedRate(() -> {
             if (emitters.containsKey(memberId)) {
                 try {
-                    emitters.get(memberId).send(SseEmitter.event().name("heartbeat").data("heartbeat"));
+                    emitters.get(memberId).send(SseEmitter.event().name("heartbeat")
+                            .data("check OK"));
                 } catch (IOException e) {
                     System.out.println("Heartbeat 실패, emitter 제거: memberId = " + memberId);
                     removeEmitter(memberId);

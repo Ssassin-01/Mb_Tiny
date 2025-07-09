@@ -3,14 +3,26 @@ import ProfileLeft from './ProfileLeft';
 import ProfileRight from './ProfileRight';
 import '../../css/profile/Profile.css';
 import { useNavigate, useLocation } from 'react-router-dom'; 
-
 import axios from 'axios';
 
 const Profile = () => {
   const [showPosts, setShowPosts] = useState(false);
-  const [userInfo, setUserInfo] = useState(null); // 사용자 정보 저장
+  const [userInfo, setUserInfo] = useState(null);
+  const [message, setMessage] = useState('');
+  const [showBanner, setShowBanner] = useState(false);
+
   const navigate = useNavigate();
   const currentLocation = useLocation();
+
+  // 로그인 필요 배너 후 이동
+  const showAutoBannerThenLogin = (text) => {
+    setMessage(text);
+    setShowBanner(true);
+    setTimeout(() => {
+      setShowBanner(false);
+      navigate('/login');
+    }, 2000);
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -18,11 +30,10 @@ const Profile = () => {
         const response = await axios.get('http://localhost:8080/api/members/me', {
           withCredentials: true
         });
-        setUserInfo(response.data); // 받아온 데이터 저장
+        setUserInfo(response.data);
       } catch (error) {
         console.error('프로필 정보 가져오기 실패:', error);
-        // 로그인 안 한 경우 로그인 페이지로 이동
-        navigate('/login');
+        showAutoBannerThenLogin('로그인이 필요합니다.');
       }
     };
 
@@ -30,23 +41,32 @@ const Profile = () => {
   }, [currentLocation.pathname]);
 
   if (!userInfo) {
-    return <div>로딩 중...</div>; // 데이터 받아오기 전
+    return (
+      <>
+        {showBanner && <div className="login-banner">{message}</div>}
+        
+      </>
+    );
   }
 
   return (
-    <div className="profile-page">
-      <ProfileLeft
-        nickname={userInfo.nickname}
-        mbti={userInfo.mbti}
-        joinDate={userInfo.joinDate}
-        onTogglePosts={() => setShowPosts(!showPosts)}
-        isOwner={true}
-        followerCount={userInfo.followerCount || 0}
-        followingCount={userInfo.followingCount || 0}
-        targetId={userInfo.id}
-      />
-      {showPosts && <ProfileRight />}
-    </div>
+    <>
+      {showBanner && <div className="login-banner">{message}</div>}
+      <div className="profile-page">
+        <ProfileLeft
+          nickname={userInfo.nickname}
+          mbti={userInfo.mbti}
+          joinDate={userInfo.joinDate}
+          onTogglePosts={() => setShowPosts(!showPosts)}
+          isOwner={true}
+          followerCount={userInfo.followerCount || 0}
+          followingCount={userInfo.followingCount || 0}
+          targetId={userInfo.id}
+          profileImgUrl={userInfo.profileImgUrl}
+        />
+        {showPosts && <ProfileRight />}
+      </div>
+    </>
   );
 };
 

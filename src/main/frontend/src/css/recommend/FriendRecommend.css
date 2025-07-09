@@ -90,6 +90,7 @@
   white-space: nowrap;
   font-weight: 600;
   flex-shrink: 0;
+  border: 1px solid #12b3a8;
 }
 
 /* 팔로우 버튼 */
@@ -202,6 +203,29 @@
   overflow-y: auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
+.friend-item.disappear {
+  animation: popFadeOut 0.5s forwards ease-in-out;
+  transform-origin: center;
+}
+
+@keyframes popFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.1); /* 잠깐 커졌다가 */
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+    height: 0;
+    margin-bottom: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+}
+
 
 /* 모바일 반응형 */
 @media screen and (max-width: 480px) {

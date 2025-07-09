@@ -33,7 +33,8 @@ public class FollowService {
                 .build();
         followRepository.save(follow);
         if(!follower.getId().equals(following.getId())) {
-            notificationService.sendNotification(following.getId(), follower.getNickname() + "님이 회원님을 하였습니다.");
+            notificationService.sendNotification(following.getId(),"💏" + follower.getNickname() + "님이 회원님을 팔로우 하였습니다.");
+
         }
     }
 
@@ -60,11 +61,11 @@ public class FollowService {
     }
 
     public long countFollowers(Member member) {
-        return followRepository.countByFollower(member);
+        return followRepository.countByFollowing(member);
     }
 
     public long countFollowing(Member member) {
-        return followRepository.countByFollowing(member);
+        return followRepository.countByFollower(member);
     }
 
     public long countFollowersByNickname(String nickname) {
