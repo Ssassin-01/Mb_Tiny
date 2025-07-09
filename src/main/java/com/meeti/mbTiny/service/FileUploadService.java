@@ -1,5 +1,6 @@
 package com.meeti.mbTiny.service;
 
+import com.meeti.mbTiny.aws.S3Uploader;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -17,55 +18,41 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileUploadService {
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
 
+    private final S3Uploader s3Uploader;
+
+    /**
+     * 파일 업로드 (폴더명 지정)
+     */
     public String upload(MultipartFile file, String folder) {
         if (file == null || file.isEmpty()) {
             return null;
         }
 
         try {
-            String extension = getFileExtension(file.getOriginalFilename());
-            String fileName = UUID.randomUUID() + extension;
-
-            String fullPath = Paths.get(uploadDir, folder).toString() + "/";
-
-            File directory = new File(fullPath);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-
-            File saveFile = new File(fullPath + fileName);
-            file.transferTo(saveFile);
-
-            // URL 경로로 반환
-            return "/uploads/" + folder + "/" + fileName;
-
+            return s3Uploader.upload(file, folder); // ✅ S3 업로드 방식으로 교체
         } catch (IOException e) {
             throw new RuntimeException("파일 업로드 실패", e);
         }
     }
 
+    /**
+     * 파일 삭제
+     */
     public void delete(String fileUrl) {
-        if (fileUrl == null || fileUrl.isBlank()) {
-            return;
-        }
-        try {
-            String relativePath = fileUrl.replaceFirst("^/uploads/", "");
-
-            Path path = Paths.get(uploadDir, relativePath); // ✅ OS 경로 조합
-            Files.deleteIfExists(path);
-
-            System.out.println("✅ 파일 삭제 완료: " + path.toAbsolutePath());
-        } catch (IOException e) {
-            System.out.println("❌ 파일 삭제 실패: " + e.getMessage());
-        }
+        if (fileUrl == null || fileUrl.isBlank()) return;
+        s3Uploader.delete(fileUrl); // ✅ S3 삭제 방식
     }
 
-    private String getFileExtension(String fileName) {
-        int dotIndex = fileName.lastIndexOf(".");
-        return (dotIndex != -1) ? fileName.substring(dotIndex) : "";
+    /**
+     * 파일 수정 (기존 → 새 파일로 교체)
+     */
+    public String update(MultipartFile newFile, String oldFileUrl, String folder) {
+        try {
+            return s3Uploader.update(newFile, oldFileUrl, folder); // ✅ S3 수정 방식
+        } catch (IOException e) {
+            throw new RuntimeException("파일 수정 실패", e);
+        }
     }
 }
 
