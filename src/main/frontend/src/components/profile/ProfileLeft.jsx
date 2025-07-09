@@ -7,47 +7,6 @@ import FollowModal from '../follow/FollowModal';
 import mbtiDescriptions from './mbtiDescriptions';
 import DeleteId from './DeleteId';
 
-const ImageUpload = ({ uploadImgUrl, setUploadImgUrl, targetId }) => {
-  const onchangeImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => setUploadImgUrl(reader.result);
-
-    const formData = new FormData();
-    formData.append('profileImg', file);
-
-    try {
-      const res = await axios.post(`http://localhost:8080/api/members/${targetId}/profile-image`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        withCredentials: true,
-      });
-      setUploadImgUrl(`http://localhost:8080${res.data.imageUrl}`);
-    } catch (err) {
-      console.error('프로필 사진 업로드 실패:', err);
-      alert('프로필 사진 업로드 중 오류가 발생했습니다.');
-    }
-  };
-
-  return (
-    <div className="profile-img-wrapper">
-      {uploadImgUrl ? (
-        <img src={uploadImgUrl} alt="프로필" className="profile-img" />
-      ) : (
-        <div className="default-profile-img">
-          <FaCamera className="default-camera-icon" />
-        </div>
-      )}
-      <label htmlFor="img-upload" className="upload-icon">
-        <FaCamera className="camera-icon" />
-      </label>
-      <input type="file" id="img-upload" accept="image/*" onChange={onchangeImageUpload} hidden />
-    </div>
-  );
-};
-
 const ProfileLeft = ({
   nickname,
   mbti,
@@ -55,14 +14,15 @@ const ProfileLeft = ({
   onTogglePosts,
   postCount,
   isOwner,
-  targetId
+  targetId,
+  profileImgUrl  // 상위 컴포넌트에서 전달
 }) => {
   const navigate = useNavigate();
   const [modalType, setModalType] = useState(null);
-  const [uploadImgUrl, setUploadImgUrl] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
+  console.log('profileImgUrl:', profileImgUrl);
 
   const openModal = (type) => setModalType(type);
   const closeModal = () => setModalType(null);
@@ -72,8 +32,6 @@ const ProfileLeft = ({
     tags: [],
     description: '아직 등록되지 않은 MBTI입니다.',
   };
-
- // 회원탈퇴 처리 함수 (새로고침 포함)
   const handleDelete = async () => {
     try {
       await axios.delete('http://localhost:8080/api/members/delete', {
@@ -82,16 +40,13 @@ const ProfileLeft = ({
       alert('회원탈퇴가 완료되었습니다.');
       sessionStorage.clear();
       navigate('/');
-      window.location.reload(); // 새로고침
+      window.location.reload();
     } catch (error) {
       console.error('회원 탈퇴 실패:', error);
       alert('탈퇴 중 오류가 발생했습니다.');
     }
-
   };
 
-
-  // 팔로워/팔로잉 수 가져오기
   useEffect(() => {
     const fetchFollowCount = async () => {
       try {
@@ -111,16 +66,20 @@ const ProfileLeft = ({
   return (
     <div className="profile-left">
       <div className="profile-card">
-        <ImageUpload
-          uploadImgUrl={uploadImgUrl}
-          setUploadImgUrl={setUploadImgUrl}
-          targetId={targetId}
-        />
+        <div className="profile-img-wrapper">
+          {profileImgUrl ? (
+            <img src={`http://localhost:8080${profileImgUrl}`} alt="프로필" className="profile-img" />
+          ) : (
+            <div className="default-profile-img">
+              <FaCamera className="default-camera-icon" />
+            </div>
+          )}
+        </div>
 
-        <p className="profile-nickname" style={{cursor:'pointer'}}>{nickname}</p>
+        <p className="profile-nickname" style={{ cursor: 'pointer' }}>{nickname}</p>
         <div className="profile-info">
-          <p className="profile-mbti" style={{cursor:'pointer'}}>{mbti || 'MBTI 미설정'}</p>
-          <p><strong>가입일:</strong> {joinDate}</p>
+          <p className="profile-mbti" style={{ cursor: 'pointer' }}>{mbti || 'MBTI 미설정'}</p>
+          {/* <p><strong>가입일:</strong> {joinDate}</p> */}
 
           <div className="profile-stats">
             <div className="stats-buttons">

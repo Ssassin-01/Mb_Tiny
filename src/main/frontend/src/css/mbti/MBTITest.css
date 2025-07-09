@@ -73,7 +73,7 @@
   margin-top: 10px;
 }
 
-/* MbtiMatchResult 추가 꾸미기 */
+/* MBTI 매칭 결과 */
 .mbti-match-result {
   margin-top: 40px;
   padding: 30px;
@@ -127,6 +127,134 @@
   background-color: #30d5c8;
   color: white;
 }
+
+/* MBTI 설명 버튼 */
+.mbti-button-list {
+  margin-top: 40px;
+  padding: 0 20px;
+}
+
+.mbti-group {
+  margin-bottom: 32px;
+  text-align: center;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #fdfdfd;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: 0.3s all;
+}
+
+.mbti-group:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.mbti-group h4 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mbti-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.mbti-btn {
+  padding: 10px 30px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 20px;
+  border: 2px solid #ccc;
+  background-color: #f4f4f4;
+  color: #333;
+  cursor: pointer;
+  transition: 0.2s all ease-in-out;
+}
+
+.mbti-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mbti-btn.active {
+  color: #fff;
+  font-weight: 700;
+  transform: scale(1.05);
+}
+
+
+/* MBTI 설명 컨테이너 */
+.mbti-detail-container {
+  margin-top: 30px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: left;
+  line-height: 1.8;
+  word-break: keep-all;
+  white-space: normal;
+  height: auto;
+  overflow: visible;
+}
+
+/* MBTI 설명 텍스트 */
+.mbti-description {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.9;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  white-space: pre-wrap;
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* MBTI 태그 전체 영역 */
+.mbti-tags {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+/* 각각의 태그 pill 디자인 */
+.mbti-tag {
+  background-color: #e0f7fa;
+  color: #00796b;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 각각의 설명 구역 */
+.mbti-section {
+  margin-bottom: 32px;
+}
+
+/* 소제목 */
+.mbti-section h4 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2d3436;
+  margin-bottom: 10px;
+}
+
+/* 설명 내용 */
+.mbti-section p {
+  color: #555;
+  font-size: 15.5px;
+}
+
 
 /* 반응형 */
 @media (max-width: 768px) {

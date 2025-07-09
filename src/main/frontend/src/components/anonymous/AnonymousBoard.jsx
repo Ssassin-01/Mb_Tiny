@@ -9,13 +9,19 @@ function AnonymousBoard() {
   const [currentPage, setCurrentPage] = useState(1);
   const POSTS_PER_PAGE = 20;
 
+  const [message, setMessage] = useState('');
+  const [showBanner, setShowBanner] = useState(false);
+
+  const showLoginBanner = (msg) => {
+    setMessage(msg);
+    setShowBanner(true);
+    setTimeout(() => {
+      setShowBanner(false);
+      navigate('/login');
+    }, 2000);
+  };
+
   useEffect(() => {
-    sessionStorage.setItem('loginUser', JSON.stringify({
-      id: 1,
-      nickname: '도하',
-      mbti: 'INFP'
-    }));
- 
     const fetchPosts = async () => {
       try {
         const res = await axios.get('http://localhost:8080/api/anonymous-posts', {
@@ -23,7 +29,7 @@ function AnonymousBoard() {
         });
         setPosts(res.data);
       } catch (err) {
-        console.error('게시글 불러오기 실패', err);
+        console.error('게시글 불러오기 실패:', err);
       }
     };
 
@@ -34,31 +40,25 @@ function AnonymousBoard() {
   const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
   const currentPosts = posts.slice(startIdx, startIdx + POSTS_PER_PAGE);
 
-  // 오늘이면 시간, 아니면 월-일 형식으로 포맷
-  function formatDateOrTime(createdAt) {
+  const formatDateOrTime = (createdAt) => {
     const createdDate = new Date(createdAt);
     const now = new Date();
-
     const isToday =
       createdDate.getFullYear() === now.getFullYear() &&
       createdDate.getMonth() === now.getMonth() &&
       createdDate.getDate() === now.getDate();
 
-    if (isToday) {
-      return createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-    } else {
-      const month = String(createdDate.getMonth() + 1).padStart(2, '0');
-      const date = String(createdDate.getDate()).padStart(2, '0');
-      return `${month}-${date}`;
-    }
-  }
+    return isToday
+      ? createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+      : `${String(createdDate.getMonth() + 1).padStart(2, '0')}-${String(createdDate.getDate()).padStart(2, '0')}`;
+  };
 
   return (
     <div className="anonymous-page">
+      {showBanner && <div className="alert-message">{message}</div>}
+
       <div className="anonymous-layout">
         <div className="anonymous-board">
-
-          {/* PC 테이블 */}
           <div className="table-wrapper pc-only">
             <table className="table">
               <thead>
@@ -94,7 +94,6 @@ function AnonymousBoard() {
             </table>
           </div>
 
-          {/* ✅ 모바일 리스트 */}
           <div className="mobile-list mobile-only">
             {currentPosts.map((post) => (
               <div className="mobile-post-item" key={post.id} onClick={() => navigate(`/anonymous/${post.id}`)}>
@@ -113,7 +112,6 @@ function AnonymousBoard() {
             ))}
           </div>
 
-          {/* ✅ 페이징 + 글쓰기 버튼은 공통 */}
           <div className="paging">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
@@ -127,11 +125,20 @@ function AnonymousBoard() {
           </div>
 
           <div className="actions">
-            <button className="write-btn" onClick={() => navigate('/anonymous/write')}>
+            <button
+              className="write-btn"
+              onClick={() => {
+                const loginUser = sessionStorage.getItem('loginUser');
+                if (!loginUser) {
+                  showLoginBanner('글쓰기는 로그인 후 가능합니다.');
+                  return;
+                }
+                navigate('/anonymous/write');
+              }}
+            >
               글쓰기
             </button>
           </div>
-
         </div>
       </div>
     </div>

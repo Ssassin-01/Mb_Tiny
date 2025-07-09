@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Clock;
 import java.util.List;
 
 @RestController
@@ -47,6 +48,7 @@ public class ChatRoomController {
             @RequestBody ChatRoomRequestDTO dto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        System.out.println(dto.getReceiverNickname());
         Member sender = userDetails.getMember();
         ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(sender.getNickname(), dto.getReceiverNickname());
 

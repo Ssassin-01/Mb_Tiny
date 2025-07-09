@@ -31,15 +31,17 @@ public class ChatRoomService {
                 .orElseThrow(() -> new IllegalArgumentException("받는 사람 없음"));
 
         Optional<ChatRoom> existing = chatRoomRepository
-                .findBySenderAndReceiverOrReceiverAndSender(sender, receiver, sender, receiver);
+                .findWithMessagesBySenderAndReceiverOrReceiverAndSender(sender, receiver);
 
         return existing.orElseGet(() -> chatRoomRepository.save(
                 ChatRoom.builder()
                         .sender(sender)
                         .receiver(receiver)
+                        .messages(new ArrayList<>())
                         .build()
         ));
     }
+
 
     public List<ChatRoomDTO> getChatRoomsForMember(Member member) {
         List<ChatRoom> chatRooms = chatRoomRepository.findBySenderOrReceiver(member, member);
@@ -47,27 +49,31 @@ public class ChatRoomService {
 
         for (ChatRoom room : chatRooms) {
             Message lastMessage = messageRepository.findTopByChatRoomOrderBySentAtDesc(room);
-            if (lastMessage == null) continue;
 
             Member target = (room.getSender().getId().equals(member.getId()))
                     ? room.getReceiver()
                     : room.getSender();
 
-            ChatRoomDTO dto = convertToDTO(room, target, lastMessage);
+            ChatRoomDTO dto = convertToDTO(room, target, lastMessage); // ✅ null이어도 처리 가능
             result.add(dto);
         }
 
-        result.sort((a, b) -> b.getLastSentAt().compareTo(a.getLastSentAt()));
+        result.sort((a, b) -> {
+            if (a.getLastSentAt() == null) return 1;
+            if (b.getLastSentAt() == null) return -1;
+            return b.getLastSentAt().compareTo(a.getLastSentAt());
+        });
 
         return result;
     }
 
-    private ChatRoomDTO convertToDTO(ChatRoom room, Member receiver, Message lastMessage) {
+
+    public ChatRoomDTO convertToDTO(ChatRoom chatRoom, Member target, Message lastMessage) {
         return ChatRoomDTO.builder()
-                .roomId(room.getId())
-                .receiverNickname(receiver.getNickname())
-                .lastMessage(lastMessage.getContent())
-                .lastSentAt(lastMessage.getSentAt())
+                .roomId(chatRoom.getId())
+                .receiverNickname(target.getNickname())
+                .lastMessage(lastMessage != null ? lastMessage.getContent() : "")
+                .lastSentAt(lastMessage != null ? lastMessage.getSentAt() : null)
                 .build();
     }
 
@@ -76,8 +82,12 @@ public class ChatRoomService {
                 ? chatRoom.getReceiver()
                 : chatRoom.getSender();
 
-        // 마지막 메시지
         List<Message> messages = chatRoom.getMessages();
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
+
+        // 마지막 메시지
         messages.sort(Comparator.comparing(Message::getSentAt));
         Message lastMessage = messages.isEmpty() ? null : messages.get(messages.size() - 1);
 
@@ -86,6 +96,7 @@ public class ChatRoomService {
                 .receiverNickname(other.getNickname())
                 .lastMessage(lastMessage != null ? lastMessage.getContent() : "")
                 .lastSentAt(lastMessage != null ? lastMessage.getSentAt() : null)
+                .profileImgUrl(other.getProfileImgUrl())
                 .build();
     }
 

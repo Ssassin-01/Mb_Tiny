@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { UserPlus, UserCheck } from 'lucide-react';
 import axios from 'axios';
 import '../../css/follow/FollowButton.css';
 
@@ -26,7 +27,7 @@ function FollowButton({ targetId, onFollowChange }) {
 
     if (targetId) {
       fetchStatus();
-    }
+    }  
   }, [targetId]);
 
   // 팔로우/언팔로우 토글
@@ -43,7 +44,7 @@ function FollowButton({ targetId, onFollowChange }) {
         setIsFollowing(true);
       }
 
-      // 팔로우 변경 시 부모 콜백 호출
+
       if (onFollowChange) {
         onFollowChange();
       }
@@ -60,7 +61,17 @@ function FollowButton({ targetId, onFollowChange }) {
       onClick={handleToggleFollow}
       disabled={loading}
     >
-      {isFollowing ? '팔로잉' : '팔로우'}
+      {isFollowing ? (
+        <>
+          <UserCheck size={16} style={{ marginRight: 6 }} />
+          팔로잉
+        </>
+      ) : (
+        <>
+          <UserPlus size={16} style={{ marginRight: 6 }} />
+          팔로우
+        </>
+      )}
     </button>
   );
 }
