@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCamera } from 'react-icons/fa';
 import axios from 'axios';
+import api from '../../api/axiosInstance';
 import '../../css/profile/ProfileEditPage.css';
 
 const S3_BASE = 'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/';
@@ -35,7 +36,7 @@ const ProfileEditPage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/members/me', {
+        const res = await api.get('/members/me', {
           withCredentials: true,
         });
         const { gender, phone, birthday, mbti, profileImgUrl } = res.data;
@@ -141,7 +142,7 @@ const ProfileEditPage = () => {
         formData.append('profileImg', imageFile);
       }
 
-      await axios.post('http://localhost:8080/api/members/modify', formData, {
+      await api.post('/members/modify', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
       });

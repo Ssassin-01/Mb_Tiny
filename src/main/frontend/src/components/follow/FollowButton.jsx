@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UserPlus, UserCheck } from 'lucide-react';
 import axios from 'axios';
 import '../../css/follow/FollowButton.css';
+import api from '../../api/axiosInstance';
 
 function FollowButton({ targetId, onFollowChange }) {
   const [isFollowing, setIsFollowing] = useState(false);
@@ -16,9 +17,13 @@ function FollowButton({ targetId, onFollowChange }) {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/follow/following', { withCredentials: true });
+        const res = await api.get('/follow/following', {
+          withCredentials: true,
+        });
         const followingList = res.data;
-        const isAlreadyFollowing = followingList.some(user => user.id === targetId);
+        const isAlreadyFollowing = followingList.some(
+          (user) => user.id === targetId
+        );
         setIsFollowing(isAlreadyFollowing);
       } catch (err) {
         console.error('팔로잉 상태 조회 실패:', err);
@@ -27,7 +32,7 @@ function FollowButton({ targetId, onFollowChange }) {
 
     if (targetId) {
       fetchStatus();
-    }  
+    }
   }, [targetId]);
 
   // 팔로우/언팔로우 토글
@@ -37,13 +42,12 @@ function FollowButton({ targetId, onFollowChange }) {
 
     try {
       if (isFollowing) {
-        await axios.delete(`http://localhost:8080/api/follow/${targetId}`, { withCredentials: true });
+        await api.delete(`/follow/${targetId}`, { withCredentials: true });
         setIsFollowing(false);
       } else {
-        await axios.post(`http://localhost:8080/api/follow/${targetId}`, {}, { withCredentials: true });
+        await api.post(`/follow/${targetId}`, {}, { withCredentials: true });
         setIsFollowing(true);
       }
-
 
       if (onFollowChange) {
         onFollowChange();

@@ -1,12 +1,13 @@
 import React from 'react';
 import { FiLogOut } from 'react-icons/fi';
 import axios from 'axios';
+import api from '../../api/axiosInstance';
 import '../../css/layout/Logout.css';
 
 const Logout = () => {
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:8080/api/members/logout', {}, { withCredentials: true });
+      await api.post('/members/logout', {}, { withCredentials: true });
       sessionStorage.removeItem('loginUser');
       sessionStorage.removeItem('recommendedFriends');
       // 토스트 띄우기
@@ -19,7 +20,6 @@ const Logout = () => {
         document.body.removeChild(toast);
         window.location.href = '/'; // 새로고침하면서 홈('/')으로 강제 이동
       }, 2000);
-
     } catch (error) {
       console.error('❌ 로그아웃 실패', error);
       alert('로그아웃 실패');
@@ -27,12 +27,11 @@ const Logout = () => {
   };
 
   return (
-    <button className="logout-button" onClick={handleLogout}>
-      <FiLogOut className="logout-icon" />
-      <span className="logout-text">로그아웃</span>
+    <button className='logout-button' onClick={handleLogout}>
+      <FiLogOut className='logout-icon' />
+      <span className='logout-text'>로그아웃</span>
     </button>
   );
-  
 };
 
 export default Logout;

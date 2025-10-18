@@ -4,7 +4,7 @@ import { FaUserFriends } from 'react-icons/fa';
 import '../../css/recommend/FriendRecommend.css';
 import FriendRecommendFilter from './FriendRecommendFilter';
 import FollowButton from '../follow/FollowButton';
-import axios from 'axios';
+import api from '../../api/axiosInstance';
 import { toImageUrl } from '../../utils/image';
 
 const FriendRecommend = () => {
@@ -38,12 +38,9 @@ const FriendRecommend = () => {
 
   const fetchFriends = async (count) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/members/random/exclude?count=${count}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await api.get(`/members/random/exclude?count=${count}`, {
+        withCredentials: true,
+      });
       setRecommendedFriends(res.data);
     } catch (err) {
       console.error('회원 목록 불러오기 실패', err);

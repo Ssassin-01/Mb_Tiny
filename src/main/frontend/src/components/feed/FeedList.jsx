@@ -4,6 +4,7 @@ import FeedCard from './FeedCard';
 import FeedInput from './FeedInput';
 import FeedFilter from './FeedFilter';
 import axios from 'axios';
+import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import '../../css/feed/Feed.css';
 
@@ -47,12 +48,9 @@ function FeedList() {
     setPage(1);
     setHasMore(true);
     try {
-      const url =
-        sortType === 'popular'
-          ? 'http://localhost:8080/api/posts/popular'
-          : 'http://localhost:8080/api/posts';
+      const url = sortType === 'popular' ? '/posts/popular' : '/posts';
 
-      const response = await axios.get(url, { withCredentials: true });
+      const response = await api.get(url);
       const fetched = filterFeeds(response.data, mbtiFilter);
 
       setAllFeeds(fetched);
@@ -103,7 +101,7 @@ function FeedList() {
       formData.append('postData', JSON.stringify(postData));
       if (image) formData.append('image', image);
 
-      await axios.post('http://localhost:8080/api/posts', formData, {
+      await api.post('/posts', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
       });
@@ -124,7 +122,7 @@ function FeedList() {
   const handleDelete = async (postId) => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     try {
-      await axios.delete(`http://localhost:8080/api/posts/${postId}`, {
+      await api.delete(`/posts/${postId}`, {
         withCredentials: true,
       });
       alert('게시글이 삭제되었습니다.');
@@ -137,7 +135,7 @@ function FeedList() {
 
   const handleLike = async (postId) => {
     try {
-      await axios.post(`http://localhost:8080/api/posts/${postId}/like`, null, {
+      await api.post(`/posts/${postId}/like`, null, {
         withCredentials: true,
       });
       resetAndLoadFeeds();
@@ -154,7 +152,7 @@ function FeedList() {
       formData.append('postData', JSON.stringify(postData));
       if (newImage) formData.append('image', newImage);
 
-      await axios.post(`http://localhost:8080/api/posts/${postId}`, formData, {
+      await api.post(`/posts/${postId}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
       });

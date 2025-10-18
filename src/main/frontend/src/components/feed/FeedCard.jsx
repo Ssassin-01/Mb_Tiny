@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import '../../css/feed/FeedComments.css';
 
@@ -92,12 +93,9 @@ function FeedCard({ feed, onUpdate, onDelete }) {
       return;
     }
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/posts/${feed.id}/comments`,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await api.get(`/posts/${feed.id}/comments`, {
+        withCredentials: true,
+      });
       setComments(res.data);
       setShowCommentsModal(true);
     } catch (error) {
@@ -113,18 +111,15 @@ function FeedCard({ feed, onUpdate, onDelete }) {
     if (newComment.trim() === '') return;
 
     try {
-      await axios.post(
-        `http://localhost:8080/api/posts/${feed.id}/comments`,
+      await api.post(
+        `/posts/${feed.id}/comments`,
         { content: newComment },
         { withCredentials: true }
       );
       setNewComment('');
-      const res = await axios.get(
-        `http://localhost:8080/api/posts/${feed.id}/comments`,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await api.get(`/posts/${feed.id}/comments`, {
+        withCredentials: true,
+      });
       setComments(res.data);
     } catch (error) {
       console.error('댓글 작성 실패:', error);
@@ -137,11 +132,9 @@ function FeedCard({ feed, onUpdate, onDelete }) {
       return;
     }
     try {
-      const res = await axios.post(
-        `http://localhost:8080/api/posts/${feed.id}/like`,
-        null,
-        { withCredentials: true }
-      );
+      const res = await api.post(`/posts/${feed.id}/like`, null, {
+        withCredentials: true,
+      });
       setLiked(res.data.like);
     } catch (error) {
       console.error('좋아요 실패:', error);

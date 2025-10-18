@@ -101,11 +101,9 @@ function SignUpPage() {
     };
 
     try {
-      const res = await axios.post(
-        'http://localhost:8080/api/members/register',
-        registerData,
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+      const res = await axios.post('/members/register', registerData, {
+        headers: { 'Content-Type': 'application/json' },
+      });
       console.log('register response:', res.status, res.data);
       alert('회원가입 성공! 로그인해주세요.');
       navigate('/login');

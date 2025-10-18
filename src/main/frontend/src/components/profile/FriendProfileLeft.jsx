@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import api from '../../api/axiosInstance';
 import FollowButton from '../follow/FollowButton';
 import mbtiDescriptions from './mbtiDescriptions';
-import { FaCamera } from 'react-icons/fa';
 import { MessageCircle } from 'lucide-react';
 import '../../css/profile/Profile.css';
 import { toImageUrl } from '../../utils/image';
@@ -25,10 +25,8 @@ const FriendProfileLeft = ({
 
   const fetchFollowCounts = async () => {
     try {
-      const url = isOwner
-        ? 'http://localhost:8080/api/follow/count'
-        : `http://localhost:8080/api/follow/count/${nickname}`;
-      const res = await axios.get(url, { withCredentials: true });
+      const url = isOwner ? '/follow/count' : `/follow/count/${nickname}`;
+      const res = await api.get(url, { withCredentials: true });
       setFollowerCount(res.data.followers);
       setFollowingCount(res.data.following);
     } catch (error) {
@@ -83,19 +81,16 @@ const FriendProfileLeft = ({
                   className='message-btn'
                   onClick={async () => {
                     try {
-                      const res = await axios.post(
-                        'http://localhost:8080/api/chatrooms',
+                      const res = await api.post(
+                        '/api/chatrooms',
                         { receiverNickname: nickname },
                         { withCredentials: true }
                       );
                       const roomId = res.data.roomId;
 
-                      const listRes = await axios.get(
-                        'http://localhost:8080/api/chatrooms',
-                        {
-                          withCredentials: true,
-                        }
-                      );
+                      const listRes = await api.get('/chatrooms', {
+                        withCredentials: true,
+                      });
                       const updatedRooms = listRes.data.map((room) => ({
                         ...room,
                         targetNickname: room.receiverNickname,

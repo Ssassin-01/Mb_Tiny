@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaPaperPlane } from 'react-icons/fa';
 import '../../css/layout/Topbar.css';
 import axios from 'axios';
+import api from '../../api/axiosInstance';
 import NotificationBell from './NotificationBell';
 import Logout from './Logout';
 import SearchBar from './SearchBar';
@@ -15,8 +16,8 @@ const Topbar = () => {
     const sessionUser = sessionStorage.getItem('loginUser');
     if (!sessionUser) return; // 로그인 안 되어 있으면 요청 자체 생략
 
-    axios
-      .get('http://localhost:8080/api/members/me', {
+    api
+      .get('/members/me', {
         withCredentials: true,
       })
       .then((res) => {
@@ -33,7 +34,11 @@ const Topbar = () => {
 
   return (
     <div className='topbar'>
-      <div className='logo' onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+      <div
+        className='logo'
+        onClick={() => navigate('/')}
+        style={{ cursor: 'pointer' }}
+      >
         <img src='/img/logo.png' alt='로고' className='logo-img' />
       </div>
 

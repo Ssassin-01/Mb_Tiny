@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axiosInstance';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../css/anonymous/AnonymousWrite.css';
 
@@ -7,7 +7,7 @@ function AnonymousWrite() {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const postId = params.get('id'); // 수정할 글 id (없으면 새글 작성)
+  const postId = params.get('id'); // 수정 모드 시 존재
 
   const [form, setForm] = useState({
     category: '수다',
@@ -21,6 +21,20 @@ function AnonymousWrite() {
 
   const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
 
+  // ✅ 이미지 URL 변환 유틸
+  const S3_BASE =
+    'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/';
+  const isDev = process.env.NODE_ENV === 'development';
+  const API_BASE = isDev ? 'http://localhost:8080' : '';
+
+  const toImageUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http://') || url.startsWith('https://')) return url; // 절대경로(S3 등)
+    if (url.startsWith('/profile/') || url.startsWith('/uploads/'))
+      return S3_BASE + url.slice(1);
+    return API_BASE + url;
+  };
+
   useEffect(() => {
     if (!loginUser) {
       alert('로그인이 필요합니다.');
@@ -28,34 +42,31 @@ function AnonymousWrite() {
     }
   }, [loginUser, navigate]);
 
-  // 수정모드: 기존 글 정보 불러오기
+  // ✅ 수정모드: 기존 글 정보 불러오기
   useEffect(() => {
     if (postId) {
-      axios
-        .get(`http://localhost:8080/api/anonymous-posts/${postId}`, {
-          withCredentials: true,
-        })
+      api
+        .get(`/anonymous-posts/${postId}`)
         .then((res) => {
           setForm({
             category: res.data.category || '수다',
             title: res.data.title,
             content: res.data.content,
           });
+
           if (res.data.imageUrl) {
-            setPreview(`http://localhost:8080${res.data.imageUrl}`);
+            setPreview(toImageUrl(res.data.imageUrl));
           }
         })
         .catch((err) => {
           console.error('글 불러오기 실패', err);
-          alert('❌ 글 정보를 불러오지 못했습니다. (더미)');
+          alert('❌ 글 정보를 불러오지 못했습니다.');
         });
     }
   }, [postId]);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 600);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth <= 600);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -74,14 +85,13 @@ function AnonymousWrite() {
     }
   };
 
-  // ✅ 작성/수정 통합
+  // ✅ 작성/수정 통합 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const postData = {
       title: form.title,
       content: form.content,
-      // (category는 화면용이고 실제 저장은 안함)
     };
 
     const formData = new FormData();
@@ -89,32 +99,19 @@ function AnonymousWrite() {
       'postData',
       new Blob([JSON.stringify(postData)], { type: 'application/json' })
     );
-
-    if (image) {
-      formData.append('image', image);
-    }
+    if (image) formData.append('image', image);
 
     try {
       if (postId) {
-        await axios.put(
-          `http://localhost:8080/api/anonymous-posts/${postId}`,
-          formData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-            withCredentials: true,
-          }
-        );
+        await api.put(`/anonymous-posts/${postId}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         alert('✅ 글이 수정되었습니다!');
         navigate('/anonymous');
       } else {
-        await axios.post(
-          'http://localhost:8080/api/anonymous-posts',
-          formData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-            withCredentials: true,
-          }
-        );
+        await api.post('/anonymous-posts', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         setSuccess(true);
         setTimeout(() => navigate('/anonymous'), 1500);
       }

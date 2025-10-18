@@ -3,7 +3,7 @@ import ProfileLeft from './ProfileLeft';
 import ProfileRight from './ProfileRight';
 import '../../css/profile/Profile.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/axiosInstance';
 
 const S3_BASE = 'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/';
 
@@ -37,12 +37,9 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(
-          'http://localhost:8080/api/members/me',
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await api.get('/members/me', {
+          withCredentials: true,
+        });
         setUserInfo(response.data);
       } catch (error) {
         console.error('프로필 정보 가져오기 실패:', error);

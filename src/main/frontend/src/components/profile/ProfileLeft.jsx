@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCamera } from 'react-icons/fa';
-import axios from 'axios';
 import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
 import mbtiDescriptions from './mbtiDescriptions';
 import DeleteId from './DeleteId';
 import { toImageUrl } from '../../utils/image';
+import api from '../../api/axiosInstance';
 
 const ProfileLeft = ({
   nickname,
@@ -35,7 +34,7 @@ const ProfileLeft = ({
   };
   const handleDelete = async () => {
     try {
-      await axios.delete('http://localhost:8080/api/members/delete', {
+      await api.delete('/members/delete', {
         withCredentials: true,
       });
       alert('회원탈퇴가 완료되었습니다.');
@@ -51,7 +50,7 @@ const ProfileLeft = ({
   useEffect(() => {
     const fetchFollowCount = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/follow/count', {
+        const res = await api.get('/follow/count', {
           withCredentials: true,
         });
         setFollowerCount(res.data.followers);

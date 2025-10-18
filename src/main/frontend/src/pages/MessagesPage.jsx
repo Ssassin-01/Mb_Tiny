@@ -5,6 +5,8 @@ import ChatRoom from '../components/chat/ChatRoom';
 import SockJS from 'sockjs-client';
 import { CompatClient, Stomp } from '@stomp/stompjs';
 import { useLocation, useNavigate } from 'react-router-dom';
+import api from '../api/axiosInstance';
+import { SOCKET_BASE_URL } from '../api/socketConfig';
 import '../css/chat/MessagesPage.css';
 
 const MessagesPage = () => {
@@ -26,11 +28,12 @@ const MessagesPage = () => {
 
   // 로그인한 사용자 닉네임 가져오기
   useEffect(() => {
-    axios.get('http://localhost:8080/api/members/me', { withCredentials: true })
-      .then(res => setMyNickname(res.data.nickname))
-      .catch(err => {
+    api
+      .get('/members/me', { withCredentials: true })
+      .then((res) => setMyNickname(res.data.nickname))
+      .catch((err) => {
         console.error('로그인 사용자 정보 실패:', err);
-        showAutoBannerThenLogin("로그인이 필요합니다.");
+        showAutoBannerThenLogin('로그인이 필요합니다.');
       });
   }, []);
 
@@ -46,13 +49,13 @@ const MessagesPage = () => {
 
   // WebSocket 연결
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/chat", null, {
-      transports: ["websocket"]
+    const socket = new SockJS(SOCKET_BASE_URL, null, {
+      transports: ['websocket'],
     });
     const client = Stomp.over(socket);
 
     client.connect({}, () => {
-      console.log("WebSocket 연결 완료");
+      console.log('WebSocket 연결 완료');
       setStompClient(client);
     });
 
@@ -63,20 +66,23 @@ const MessagesPage = () => {
 
   // 채팅방 목록 불러오기
   useEffect(() => {
-    axios.get('http://localhost:8080/api/chatrooms', { withCredentials: true })
-      .then(res => {
-        const updatedRooms = res.data.map(room => ({
+    api
+      .get('/chatrooms', { withCredentials: true })
+      .then((res) => {
+        const updatedRooms = res.data.map((room) => ({
           ...room,
-          targetNickname: room.receiverNickname
+          targetNickname: room.receiverNickname,
         }));
         setChatRooms(updatedRooms);
 
         if (preselectedRoomId) {
-          const found = updatedRooms.find(room => room.roomId === Number(preselectedRoomId));
+          const found = updatedRooms.find(
+            (room) => room.roomId === Number(preselectedRoomId)
+          );
           if (found) handleSelectChatRoom(found);
         }
       })
-      .catch(err => console.error("채팅방 목록 실패", err));
+      .catch((err) => console.error('채팅방 목록 실패', err));
   }, [preselectedRoomId]);
 
   // 채팅방 선택
@@ -84,43 +90,46 @@ const MessagesPage = () => {
     try {
       const { roomId, targetNickname } = chatRoom;
       setRoomId(roomId);
-      setSelectedFriend({ nickname: targetNickname, profileImgUrl: chatRoom.profileImgUrl });
+      setSelectedFriend({
+        nickname: targetNickname,
+        profileImgUrl: chatRoom.profileImgUrl,
+      });
 
       if (subscription) {
         subscription.unsubscribe();
       }
 
-      const msgRes = await axios.get(`http://localhost:8080/api/chatrooms/${roomId}/messages`, {
-        withCredentials: true
+      const msgRes = await api.get(`/chatrooms/${roomId}/messages`, {
+        withCredentials: true,
       });
       setMessages(msgRes.data);
     } catch (err) {
-      console.error("메시지 불러오기 실패", err);
+      console.error('메시지 불러오기 실패', err);
     }
   };
 
   // stomp 구독 (메시지 수신)
   useEffect(() => {
     if (roomId && stompClient && stompClient.connected) {
-      console.log("stomp 구독:", roomId);
+      console.log('stomp 구독:', roomId);
 
       const sub = stompClient.subscribe(`/topic/room/${roomId}`, (msg) => {
         const newMessage = JSON.parse(msg.body);
-        console.log("실시간 메시지 수신:", newMessage);
-        setMessages(prev => [...prev, newMessage]);
+        console.log('실시간 메시지 수신:', newMessage);
+        setMessages((prev) => [...prev, newMessage]);
 
         // 최신 메시지 업데이트
-        const updatedRooms = chatRooms.map(room =>
+        const updatedRooms = chatRooms.map((room) =>
           room.roomId === roomId
             ? {
                 ...room,
                 lastMessage: newMessage.content,
-                lastSentAt: newMessage.sentAt
+                lastSentAt: newMessage.sentAt,
               }
             : room
         );
-        const sortedRooms = [...updatedRooms].sort((a, b) =>
-          new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0)
+        const sortedRooms = [...updatedRooms].sort(
+          (a, b) => new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0)
         );
         setChatRooms(sortedRooms);
       });
@@ -128,7 +137,7 @@ const MessagesPage = () => {
       setSubscription(sub);
 
       return () => {
-        console.log("구독 해제:", roomId);
+        console.log('구독 해제:', roomId);
         sub.unsubscribe();
       };
     }
@@ -144,25 +153,25 @@ const MessagesPage = () => {
       roomId,
       content: input,
       senderNickname: myNickname,
-      sentAt: now
+      sentAt: now,
     };
 
-    stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(message));
+    stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(message));
     setInput('');
 
     // 바로 UI 반영
-    const updatedRooms = chatRooms.map(room =>
+    const updatedRooms = chatRooms.map((room) =>
       room.roomId === roomId
         ? {
             ...room,
             lastMessage: message.content,
-            lastSentAt: now
+            lastSentAt: now,
           }
         : room
     );
 
-    const sortedRooms = [...updatedRooms].sort((a, b) =>
-      new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0)
+    const sortedRooms = [...updatedRooms].sort(
+      (a, b) => new Date(b.lastSentAt || 0) - new Date(a.lastSentAt || 0)
     );
     setChatRooms(sortedRooms);
   };
@@ -178,15 +187,15 @@ const MessagesPage = () => {
   return (
     <>
       {/* 로그인 안내 배너 */}
-      {showBanner && <div className="login-banner">{message}</div>}
+      {showBanner && <div className='login-banner'>{message}</div>}
 
-      <div className="messages-layout">
+      <div className='messages-layout'>
         <ChatList
           chatRooms={chatRooms}
           onSelectChatRoom={handleSelectChatRoom}
           selectedRoomId={roomId}
         />
-        <div className="chat-container">
+        <div className='chat-container'>
           <ChatRoom
             friend={selectedFriend}
             myNickname={myNickname}

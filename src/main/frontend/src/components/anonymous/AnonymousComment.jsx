@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import api from '../../api/axiosInstance';
 import '../../css/anonymous/AnonymousComment.css';
 
 function AnonymousComment({ postId }) {
@@ -15,12 +16,9 @@ function AnonymousComment({ postId }) {
 
   const fetchComments = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/anonymous-posts/${postId}/comments`,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await api.get(`/anonymous-posts/${postId}/comments`, {
+        withCredentials: true,
+      });
       setComments(res.data);
     } catch (err) {
       console.error('댓글 불러오기 실패', err);
@@ -38,8 +36,8 @@ function AnonymousComment({ postId }) {
     const now = new Date().toISOString(); // 현재시간 생성
 
     try {
-      await axios.post(
-        `http://localhost:8080/api/anonymous-posts/${postId}/comments`,
+      await api.post(
+        `/anonymous-posts/${postId}/comments`,
         {
           content: newComment,
           color: color,
@@ -64,8 +62,8 @@ function AnonymousComment({ postId }) {
     if (!editContent.trim()) return;
 
     try {
-      await axios.put(
-        `http://localhost:8080/api/anonymous-posts/${postId}/comments/${editingId}`,
+      await api.put(
+        `/anonymous-posts/${postId}/comments/${editingId}`,
         { content: editContent, color: color },
         { withCredentials: true }
       );
@@ -83,12 +81,9 @@ function AnonymousComment({ postId }) {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
 
     try {
-      await axios.delete(
-        `http://localhost:8080/api/anonymous-posts/${postId}/comments/${commentId}`,
-        {
-          withCredentials: true,
-        }
-      );
+      await api.delete(`/anonymous-posts/${postId}/comments/${commentId}`, {
+        withCredentials: true,
+      });
       fetchComments();
       alert('✅ 삭제 완료');
     } catch (err) {

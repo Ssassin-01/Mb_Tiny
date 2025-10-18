@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import '../../css/layout/NotificationBell.css';
+import api from '../../api/axiosInstance';
 
 export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -8,32 +9,34 @@ export default function NotificationBell() {
   const [showDropdown, setShowDropdown] = useState(false);
   const eventSourceRef = useRef(null);
 
+  // ✅ 환경 감지
+  const isDev = process.env.NODE_ENV === 'development';
+  const SSE_URL = isDev
+    ? 'http://localhost:8080/api/notifications/subscribe'
+    : '/api/notifications/subscribe';
+
   useEffect(() => {
     const fetchUnread = async () => {
       try {
-        const response = await fetch(
-          'http://localhost:8080/api/notifications/unread',
-          { credentials: 'include' }
-        );
-        const data = await response.json();
-        setNotifications(data.map((message) => ({ message })));
-        setUnreadCount(data.length);
+        const res = await api.get('/notifications/unread');
+        setNotifications(res.data.map((msg) => ({ message: msg })));
+        setUnreadCount(res.data.length);
       } catch (error) {
-        console.error('❌ 초기 알림 불러오기 실패', error);
+        console.error('❌ 초기 알림 불러오기 실패:', error);
       }
     };
 
     const connect = () => {
-      if (eventSourceRef.current) return; // 이미 연결된 경우 재연결 금지
+      if (eventSourceRef.current) return; // 중복 연결 방지
 
-      const source = new EventSourcePolyfill(
-        'http://localhost:8080/api/notifications/subscribe',
-        { withCredentials: true }
-      );
+      // ✅ 환경별 자동 URL
+      const source = new EventSourcePolyfill(SSE_URL, {
+        withCredentials: true,
+      });
       eventSourceRef.current = source;
 
       source.addEventListener('notification', (event) => {
-        console.log('새 알림:', event.data);
+        console.log('🔔 새 알림:', event.data);
         setNotifications((prev) => [...prev, { message: event.data }]);
         setUnreadCount((prev) => prev + 1);
       });
@@ -46,7 +49,7 @@ export default function NotificationBell() {
         console.error('❌ SSE 연결 오류 발생. 3초 후 재연결 시도', error);
         source.close();
         eventSourceRef.current = null;
-        setTimeout(connect, 3000); // 오류 시 재연결
+        setTimeout(connect, 3000);
       };
     };
 
@@ -66,13 +69,10 @@ export default function NotificationBell() {
 
     if (unreadCount > 0) {
       try {
-        await fetch('http://localhost:8080/api/notifications/mark-as-read', {
-          method: 'POST',
-          credentials: 'include',
-        });
+        await api.post('/notifications/mark-as-read');
         setUnreadCount(0);
       } catch (error) {
-        console.error('❌ 읽음 처리 실패', error);
+        console.error('❌ 읽음 처리 실패:', error);
       }
     }
   };

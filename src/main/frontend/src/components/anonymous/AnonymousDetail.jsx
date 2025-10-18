@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/axiosInstance';
 import AnonymousComment from '../anonymous/AnonymousComment';
 import '../../css/anonymous/AnonymousDetail.css';
 
@@ -13,6 +13,20 @@ function AnonymousDetail() {
 
   const [message, setMessage] = useState('');
   const [showBanner, setShowBanner] = useState(false);
+
+  // ✅ 이미지 URL 자동 변환
+  const S3_BASE =
+    'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/';
+  const isDev = process.env.NODE_ENV === 'development';
+  const API_BASE = isDev ? 'http://localhost:8080' : '';
+
+  const toImageUrl = (url) => {
+    if (!url) return '/img/default-image.png';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url; // S3 or absolute
+    if (url.startsWith('/profile/') || url.startsWith('/uploads/'))
+      return S3_BASE + url.slice(1);
+    return API_BASE + url; // EC2에서는 '/api'로 프록시됨
+  };
 
   useEffect(() => {
     const loginUser = sessionStorage.getItem('loginUser');
@@ -28,9 +42,7 @@ function AnonymousDetail() {
 
     const fetchPost = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/anonymous-posts/${id}`, {
-          withCredentials: true,
-        });
+        const res = await api.get(`/anonymous-posts/${id}`);
         setPost(res.data);
         setIsLiked(res.data.liked);
       } catch (err) {
@@ -43,9 +55,7 @@ function AnonymousDetail() {
 
   const handleLikeToggle = async () => {
     try {
-      const res = await axios.post(`http://localhost:8080/api/anonymous-posts/${id}/like`, {}, {
-        withCredentials: true,
-      });
+      const res = await api.post(`/anonymous-posts/${id}/like`, {});
       const liked = res.data.like;
       setPost((prev) => ({
         ...prev,
@@ -60,9 +70,7 @@ function AnonymousDetail() {
   const handleDelete = async () => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     try {
-      await axios.delete(`http://localhost:8080/api/anonymous-posts/${id}`, {
-        withCredentials: true,
-      });
+      await api.delete(`/anonymous-posts/${id}`);
       alert('삭제 완료');
       navigate('/anonymous');
     } catch (err) {
@@ -74,24 +82,25 @@ function AnonymousDetail() {
     navigate(`/anonymous/write?id=${id}`);
   };
 
-  if (!post) return (
-    <div className="anonymous-page">
-      {showBanner && <div className="alert-message">{message}</div>}
-    </div>
-  );
+  if (!post)
+    return (
+      <div className='anonymous-page'>
+        {showBanner && <div className='alert-message'>{message}</div>}
+      </div>
+    );
 
   return (
-    <div className="anonymous-page">
-      {showBanner && <div className="alert-message">{message}</div>}
+    <div className='anonymous-page'>
+      {showBanner && <div className='alert-message'>{message}</div>}
 
-      <div className="anonymous-layout">
-        <div className="detail">
-          <h1 className="title">{post.title}</h1>
+      <div className='anonymous-layout'>
+        <div className='detail'>
+          <h1 className='title'>{post.title}</h1>
 
-          <div className="info-row">
-            <div className="left">
-              <span className="writer">MBTI: {post.mbti}</span>
-              <span className="date">
+          <div className='info-row'>
+            <div className='left'>
+              <span className='writer'>MBTI: {post.mbti}</span>
+              <span className='date'>
                 {new Date(post.createdAt).toLocaleString('ko-KR', {
                   year: 'numeric',
                   month: '2-digit',
@@ -103,30 +112,30 @@ function AnonymousDetail() {
                 })}
               </span>
             </div>
-            <div className="right">
+            <div className='right'>
               <span>조회 {post.viewCount}</span>
               <span>추천 {post.likeCount}</span>
             </div>
           </div>
 
-          <div className="content">
+          <div className='content'>
             {post.imageUrl && (
               <>
                 <img
-                  src={`http://localhost:8080${post.imageUrl}`}
-                  alt="첨부 이미지"
-                  className="post-image"
+                  src={toImageUrl(post.imageUrl)}
+                  alt='첨부 이미지'
+                  className='post-image'
                   onClick={() => setShowModal(true)}
                 />
                 {showModal && (
                   <div
-                    className="modal-overlay"
+                    className='modal-overlay'
                     onClick={() => setShowModal(false)}
                   >
                     <img
-                      src={`http://localhost:8080${post.imageUrl}`}
-                      alt="큰 이미지"
-                      className="modal-image"
+                      src={toImageUrl(post.imageUrl)}
+                      alt='큰 이미지'
+                      className='modal-image'
                       onClick={(e) => e.stopPropagation()}
                     />
                   </div>
@@ -136,13 +145,13 @@ function AnonymousDetail() {
             <p>{post.content}</p>
           </div>
 
-          <div className="recommend">
-            <button className="recommend-btn" onClick={handleLikeToggle}>
+          <div className='recommend'>
+            <button className='recommend-btn' onClick={handleLikeToggle}>
               {isLiked ? '추천취소' : '추천하기'}
             </button>
           </div>
 
-          <div className="buttons">
+          <div className='buttons'>
             <button onClick={() => navigate('/anonymous')}>목록으로</button>
             <button onClick={handleEdit}>수정</button>
             <button onClick={handleDelete}>삭제</button>

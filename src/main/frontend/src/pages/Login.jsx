@@ -17,13 +17,15 @@ function Login() {
     e.preventDefault(); // 폼 새로고침 방지
     try {
       // 로그인 요청
-      const loginRes = await axios.post('/api/members/login', form, {
+      const loginRes = await axios.post('/members/login', form, {
         withCredentials: true, // 세션 쿠키 유지
       });
 
       // 로그인 성공 시 유저 정보 요청
       if (loginRes.data.message === '로그인 성공') {
-        const userRes = await axios.get('/api/members/me', { withCredentials: true });
+        const userRes = await axios.get('/members/me', {
+          withCredentials: true,
+        });
 
         // 유저 정보를 세션스토리지에 저장
         sessionStorage.setItem('loginUser', JSON.stringify(userRes.data));
@@ -40,48 +42,50 @@ function Login() {
   };
 
   return (
-    <div className="login">
+    <div className='login'>
       <img
-        src="/img/logo.png"
-        alt="MBTiny Logo"
-        className="logo"
+        src='/img/logo.png'
+        alt='MBTiny Logo'
+        className='logo'
         onClick={() => navigate('/')}
         style={{ cursor: 'pointer' }}
       />
-      <form className="login-box" onSubmit={handleSubmit}>
-        <div className="field">
+      <form className='login-box' onSubmit={handleSubmit}>
+        <div className='field'>
           <input
-            type="email"
-            name="email"
-            placeholder="Email"
+            type='email'
+            name='email'
+            placeholder='Email'
             value={form.email}
             onChange={handleChange}
             required
           />
         </div>
-        <div className="field">
+        <div className='field'>
           <input
-            type="password"
-            name="password"
-            placeholder="Password"
+            type='password'
+            name='password'
+            placeholder='Password'
             value={form.password}
             onChange={handleChange}
             required
           />
         </div>
 
-        <button type="submit" className="login-btn">
+        <button type='submit' className='login-btn'>
           🔐 로그인
         </button>
         <button
-          type="button"
-          className="signup-btn"
+          type='button'
+          className='signup-btn'
           onClick={() => navigate('/signup')}
         >
           회원가입
         </button>
 
-        {message && <p style={{ color: 'red', marginTop: '10px' }}>{message}</p>}
+        {message && (
+          <p style={{ color: 'red', marginTop: '10px' }}>{message}</p>
+        )}
       </form>
     </div>
   );

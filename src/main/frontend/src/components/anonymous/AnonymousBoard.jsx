@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import api from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import '../../css/anonymous/AnonymousBoard.css';
 
@@ -24,7 +25,7 @@ function AnonymousBoard() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/anonymous-posts', {
+        const res = await api.get('/anonymous-posts', {
           withCredentials: true,
         });
         setPosts(res.data);
@@ -49,18 +50,24 @@ function AnonymousBoard() {
       createdDate.getDate() === now.getDate();
 
     return isToday
-      ? createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
-      : `${String(createdDate.getMonth() + 1).padStart(2, '0')}-${String(createdDate.getDate()).padStart(2, '0')}`;
+      ? createdDate.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        })
+      : `${String(createdDate.getMonth() + 1).padStart(2, '0')}-${String(
+          createdDate.getDate()
+        ).padStart(2, '0')}`;
   };
 
   return (
-    <div className="anonymous-page">
-      {showBanner && <div className="alert-message">{message}</div>}
+    <div className='anonymous-page'>
+      {showBanner && <div className='alert-message'>{message}</div>}
 
-      <div className="anonymous-layout">
-        <div className="anonymous-board">
-          <div className="table-wrapper pc-only">
-            <table className="table">
+      <div className='anonymous-layout'>
+        <div className='anonymous-board'>
+          <div className='table-wrapper pc-only'>
+            <table className='table'>
               <thead>
                 <tr>
                   <th>번호</th>
@@ -78,10 +85,13 @@ function AnonymousBoard() {
                     onClick={() => navigate(`/anonymous/${post.id}`)}
                     style={{ cursor: 'pointer' }}
                   >
-                    <td>{posts.length - ((currentPage - 1) * POSTS_PER_PAGE + index)}</td>
-                    <td className="subject">{post.title}</td>
                     <td>
-                      <span className="mbti-badge" data-mbti={post.mbti}>
+                      {posts.length -
+                        ((currentPage - 1) * POSTS_PER_PAGE + index)}
+                    </td>
+                    <td className='subject'>{post.title}</td>
+                    <td>
+                      <span className='mbti-badge' data-mbti={post.mbti}>
                         {post.mbti || '익명'}
                       </span>
                     </td>
@@ -94,25 +104,30 @@ function AnonymousBoard() {
             </table>
           </div>
 
-          <div className="mobile-list mobile-only">
+          <div className='mobile-list mobile-only'>
             {currentPosts.map((post) => (
-              <div className="mobile-post-item" key={post.id} onClick={() => navigate(`/anonymous/${post.id}`)}>
-                <div className="post-title-row">
-                  <div className="post-title">{post.title}</div>
+              <div
+                className='mobile-post-item'
+                key={post.id}
+                onClick={() => navigate(`/anonymous/${post.id}`)}
+              >
+                <div className='post-title-row'>
+                  <div className='post-title'>{post.title}</div>
                   {post.mbti && (
-                    <span className="mbti-badge" data-mbti={post.mbti}>
+                    <span className='mbti-badge' data-mbti={post.mbti}>
                       {post.mbti}
                     </span>
                   )}
                 </div>
-                <div className="post-info">
-                  {post.viewCount} 조회 · {post.likeCount} 추천 · {formatDateOrTime(post.createdAt)}
+                <div className='post-info'>
+                  {post.viewCount} 조회 · {post.likeCount} 추천 ·{' '}
+                  {formatDateOrTime(post.createdAt)}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="paging">
+          <div className='paging'>
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i + 1}
@@ -124,9 +139,9 @@ function AnonymousBoard() {
             ))}
           </div>
 
-          <div className="actions">
+          <div className='actions'>
             <button
-              className="write-btn"
+              className='write-btn'
               onClick={() => {
                 const loginUser = sessionStorage.getItem('loginUser');
                 if (!loginUser) {

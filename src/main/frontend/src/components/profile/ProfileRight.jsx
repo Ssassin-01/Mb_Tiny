@@ -3,7 +3,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import ProfileFeedCard from './ProfileFeedCard'; // ✅ 새 컴포넌트
 import PostItem from './ProfileRightPostItem'; // 익명글용
 import '../../css/profile/Profile.css';
-import axios from 'axios';
+import api from '../../api/axiosInstance';
 
 function ProfileRight() {
   const [activeTab, setActiveTab] = useState('feed');
@@ -18,13 +18,13 @@ function ProfileRight() {
 
   const fetchMyPosts = async () => {
     try {
-      const userRes = await axios.get('http://localhost:8080/api/members/me', {
+      const userRes = await api.get('/members/me', {
         withCredentials: true,
       });
       const loginUser = userRes.data;
 
       if (!loginUser) return;
-      const feedRes = await axios.get('http://localhost:8080/api/posts', {
+      const feedRes = await api.get('/posts', {
         withCredentials: true,
       });
       const myFeeds = feedRes.data.filter(
@@ -32,10 +32,9 @@ function ProfileRight() {
       );
       setFeedPosts(myFeeds);
       setHasMoreFeed(false);
-      const anonRes = await axios.get(
-        'http://localhost:8080/api/anonymous-posts',
-        { withCredentials: true }
-      );
+      const anonRes = await api.get('/anonymous-posts', {
+        withCredentials: true,
+      });
       const myAnons = anonRes.data.filter(
         (post) => post.email === loginUser.email
       );
@@ -51,7 +50,7 @@ function ProfileRight() {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
 
     try {
-      await axios.delete(`http://localhost:8080/api/posts/${postId}`, {
+      await api.delete(`/posts/${postId}`, {
         withCredentials: true,
       });
       alert('삭제되었습니다.');
@@ -75,7 +74,7 @@ function ProfileRight() {
         formData.append('image', newImage);
       }
 
-      await axios.put(`http://localhost:8080/api/posts/${postId}`, formData, {
+      await api.put(`/posts/${postId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

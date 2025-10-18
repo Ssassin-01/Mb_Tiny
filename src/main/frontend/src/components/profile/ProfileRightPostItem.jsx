@@ -1,8 +1,8 @@
 import React from 'react';
 import '../../css/profile/Profile.css';
+import { toImageUrl } from '../../utils/image'; // ✅ 공통 함수 import
 
 const PostItem = ({ post, isAnonymous }) => {
-  // 날짜 포맷 함수
   const formatDate = (dateStr) => {
     if (!dateStr) return '날짜 없음';
     const date = new Date(dateStr);
@@ -19,9 +19,14 @@ const PostItem = ({ post, isAnonymous }) => {
           <p className='post-content'>{post.content}</p>
           {post.imageUrl && (
             <img
-              src={`http://localhost:8080${post.imageUrl}`}
+              src={toImageUrl(post.imageUrl)} // ✅ 통합 변환 함수 사용
               alt='게시글 이미지'
               className='feed-image'
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src =
+                  'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/profile/default.png';
+              }}
             />
           )}
           <div className='post-meta'>
@@ -39,9 +44,14 @@ const PostItem = ({ post, isAnonymous }) => {
           <p className='post-content'>{post.content}</p>
           {post.imageUrl && (
             <img
-              src={`http://localhost:8080${post.imageUrl}`}
+              src={toImageUrl(post.imageUrl)} // ✅ 이 부분도 통합
               alt='피드 이미지'
               className='feed-image'
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src =
+                  'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/profile/default.png';
+              }}
             />
           )}
           <p className='date'>🕒 {formattedDate}</p>

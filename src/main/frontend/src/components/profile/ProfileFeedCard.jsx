@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axiosInstance';
 import '../../css/feed/FeedComments.css';
 
 function ProfileFeedCard({ feed, onUpdate, onDelete }) {
@@ -65,10 +65,9 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
 
   const openCommentsModal = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/posts/${feed.id}/comments`,
-        { withCredentials: true }
-      );
+      const res = await api.get(`/posts/${feed.id}/comments`, {
+        withCredentials: true,
+      });
       setComments(res.data);
       setShowCommentsModal(true);
     } catch (error) {
@@ -80,8 +79,8 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
     if (newComment.trim() === '') return;
 
     try {
-      await axios.post(
-        `http://localhost:8080/api/posts/${feed.id}/comments`,
+      await api.post(
+        `/posts/${feed.id}/comments`,
         {
           content: newComment,
         },
@@ -89,10 +88,9 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
       );
 
       setNewComment('');
-      const res = await axios.get(
-        `http://localhost:8080/api/posts/${feed.id}/comments`,
-        { withCredentials: true }
-      );
+      const res = await api.get(`/posts/${feed.id}/comments`, {
+        withCredentials: true,
+      });
       setComments(res.data);
     } catch (error) {
       console.error('댓글 작성 실패:', error);
@@ -101,11 +99,9 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
 
   const handleLikeClick = async () => {
     try {
-      const res = await axios.post(
-        `http://localhost:8080/api/posts/${feed.id}/like`,
-        null,
-        { withCredentials: true }
-      );
+      const res = await api.post(`/posts/${feed.id}/like`, null, {
+        withCredentials: true,
+      });
       setLiked(res.data.like);
     } catch (error) {
       console.error('좋아요 실패:', error);

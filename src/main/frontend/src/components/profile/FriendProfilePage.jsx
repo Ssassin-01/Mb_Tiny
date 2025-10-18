@@ -3,62 +3,50 @@ import { useParams } from 'react-router-dom';
 import FriendProfileLeft from './FriendProfileLeft';
 import FriendProfileRight from './FriendProfileRight';
 import '../../css/profile/FriendProfilePage.css';
-import axios from 'axios';
+import api from '../../api/axiosInstance';
+
+const S3_BASE = 'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/';
+
+const toImageUrl = (u) => {
+  if (!u) return S3_BASE + 'profile/default.png';
+  if (u.startsWith('http://') || u.startsWith('https://')) return u;
+  if (u.startsWith('/profile/')) return S3_BASE + u.slice(1);
+  if (!u.startsWith('/')) return S3_BASE + u;
+  return 'http://localhost:8080' + u;
+};
 
 const FriendProfilePage = () => {
-  const { nickname } = useParams(); // 닉네임 또는 숫자 ID일 수 있음
+  const { nickname } = useParams();
   const [profileData, setProfileData] = useState(null);
-  const [posts, setPosts] = useState([]);
   const [showPosts, setShowPosts] = useState(false);
 
-  const S3_BASE =
-    'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/';
-
-  const toImageUrl = (u) => {
-    if (!u) return S3_BASE + 'profile/default.png';
-    if (u.startsWith('http://') || u.startsWith('https://')) return u;
-    if (u.startsWith('/profile/')) return S3_BASE + u.slice(1);
-    if (!u.startsWith('/')) return S3_BASE + u;
-    return 'http://localhost:8080' + u;
-  };
-
+  // ✅ 프로필 정보 가져오기
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:8080/api/members/${encodeURIComponent(nickname)}`,
-          {
-            method: 'GET',
-            credentials: 'include', // 이거 반드시 필요
-          }
-        );
-
-        const data = await res.json();
-        console.log('받은 profileData:', data);
-        setProfileData(data);
+        const res = await api.get(`/members/${encodeURIComponent(nickname)}`);
+        console.log('받은 profileData:', res.data);
+        setProfileData(res.data);
       } catch (error) {
-        console.error('프로필 불러오기 실패:', error);
+        console.error('❌ 프로필 불러오기 실패:', error);
       }
     };
-
     fetchProfile();
   }, [nickname]);
 
-  // 세션 유지 테스트용 useEffect
+  // ✅ 세션 유지 확인
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/api/members/me', {
-        withCredentials: true,
-      })
+    api
+      .get('/members/me')
       .then((res) => {
-        console.log('세션 유지 중:', res.data); // 세션 OK
+        console.log('✅ 세션 유지 중:', res.data);
       })
       .catch((err) => {
         console.error(
-          '세션 없음 또는 인증 실패:',
+          '❌ 세션 없음 또는 인증 실패:',
           err.response?.status,
           err.response?.data
-        ); // 세션 X
+        );
       });
   }, []);
 
