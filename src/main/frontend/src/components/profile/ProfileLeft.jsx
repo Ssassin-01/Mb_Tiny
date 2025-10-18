@@ -6,6 +6,7 @@ import '../../css/profile/Profile.css';
 import FollowModal from '../follow/FollowModal';
 import mbtiDescriptions from './mbtiDescriptions';
 import DeleteId from './DeleteId';
+import { toImageUrl } from '../../utils/image';
 
 const ProfileLeft = ({
   nickname,
@@ -15,7 +16,7 @@ const ProfileLeft = ({
   postCount,
   isOwner,
   targetId,
-  profileImgUrl  // 상위 컴포넌트에서 전달
+  profileImgUrl, // 상위 컴포넌트에서 전달
 }) => {
   const navigate = useNavigate();
   const [modalType, setModalType] = useState(null);
@@ -50,7 +51,9 @@ const ProfileLeft = ({
   useEffect(() => {
     const fetchFollowCount = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/follow/count', { withCredentials: true });
+        const res = await axios.get('http://localhost:8080/api/follow/count', {
+          withCredentials: true,
+        });
         setFollowerCount(res.data.followers);
         setFollowingCount(res.data.following);
       } catch (err) {
@@ -64,34 +67,54 @@ const ProfileLeft = ({
   }, [isOwner]);
 
   return (
-    <div className="profile-left">
-      <div className="profile-card">
-        <div className="profile-img-wrapper">
-          {profileImgUrl ? (
-            <img src={`http://localhost:8080${profileImgUrl}`} alt="프로필" className="profile-img" />
-          ) : (
-            <div className="default-profile-img">
-              <FaCamera className="default-camera-icon" />
-            </div>
-          )}
+    <div className='profile-left'>
+      <div className='profile-card'>
+        <div className='profile-img-wrapper'>
+          <img
+            src={toImageUrl(profileImgUrl)}
+            alt='프로필'
+            className='profile-img'
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = toImageUrl(null);
+            }}
+          />
         </div>
 
-        <p className="profile-nickname" style={{ cursor: 'pointer' }}>{nickname}</p>
-        <div className="profile-info">
-          <p className="profile-mbti" style={{ cursor: 'pointer' }}>{mbti || 'MBTI 미설정'}</p>
+        <p className='profile-nickname' style={{ cursor: 'pointer' }}>
+          {nickname}
+        </p>
+        <div className='profile-info'>
+          <p className='profile-mbti' style={{ cursor: 'pointer' }}>
+            {mbti || 'MBTI 미설정'}
+          </p>
           {/* <p><strong>가입일:</strong> {joinDate}</p> */}
 
-          <div className="profile-stats">
-            <div className="stats-buttons">
-              <span className="stats-item" onClick={onTogglePosts}>게시글 {postCount}</span>
-              <span className="stats-item" onClick={() => openModal('followers')}>팔로워 {followerCount}</span>
-              <span className="stats-item" onClick={() => openModal('following')}>팔로잉 {followingCount}</span>
+          <div className='profile-stats'>
+            <div className='stats-buttons'>
+              <span className='stats-item' onClick={onTogglePosts}>
+                게시글 {postCount}
+              </span>
+              <span
+                className='stats-item'
+                onClick={() => openModal('followers')}
+              >
+                팔로워 {followerCount}
+              </span>
+              <span
+                className='stats-item'
+                onClick={() => openModal('following')}
+              >
+                팔로잉 {followingCount}
+              </span>
             </div>
           </div>
 
-          <div className="mbti-description">
-            <h4>{mbti} 유형: {mbtiInfo.title}</h4>
-            <div className="mbti-tags">
+          <div className='mbti-description'>
+            <h4>
+              {mbti} 유형: {mbtiInfo.title}
+            </h4>
+            <div className='mbti-tags'>
               {mbtiInfo.tags.map((tag, index) => (
                 <span key={index}>{tag}</span>
               ))}
@@ -100,9 +123,19 @@ const ProfileLeft = ({
           </div>
 
           {isOwner && (
-            <div className="profile-actions">
-              <button className="edit-btn" onClick={() => navigate("/profile/edit")}>프로필 수정</button>
-              <button className="delete-btn" onClick={() => setShowDeleteModal(true)}>회원탈퇴</button>
+            <div className='profile-actions'>
+              <button
+                className='edit-btn'
+                onClick={() => navigate('/profile/edit')}
+              >
+                프로필 수정
+              </button>
+              <button
+                className='delete-btn'
+                onClick={() => setShowDeleteModal(true)}
+              >
+                회원탈퇴
+              </button>
             </div>
           )}
         </div>

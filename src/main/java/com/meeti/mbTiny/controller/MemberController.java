@@ -99,7 +99,7 @@
         }
 
         //회원정보 수정
-        @PutMapping("/modify")
+        @PostMapping(value="/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
         public ResponseEntity<?> modifyProfile(@ModelAttribute MemberUpdateRequestDTO dto,
                                                @AuthenticationPrincipal CustomUserDetails userDetails,
                                                HttpServletRequest request) {

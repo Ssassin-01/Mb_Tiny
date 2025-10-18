@@ -11,13 +11,27 @@ const FriendProfilePage = () => {
   const [posts, setPosts] = useState([]);
   const [showPosts, setShowPosts] = useState(false);
 
+  const S3_BASE =
+    'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/';
+
+  const toImageUrl = (u) => {
+    if (!u) return S3_BASE + 'profile/default.png';
+    if (u.startsWith('http://') || u.startsWith('https://')) return u;
+    if (u.startsWith('/profile/')) return S3_BASE + u.slice(1);
+    if (!u.startsWith('/')) return S3_BASE + u;
+    return 'http://localhost:8080' + u;
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/members/${encodeURIComponent(nickname)}`, {
-          method: 'GET',
-          credentials: 'include', // 이거 반드시 필요
-        });
+        const res = await fetch(
+          `http://localhost:8080/api/members/${encodeURIComponent(nickname)}`,
+          {
+            method: 'GET',
+            credentials: 'include', // 이거 반드시 필요
+          }
+        );
 
         const data = await res.json();
         console.log('받은 profileData:', data);
@@ -32,15 +46,20 @@ const FriendProfilePage = () => {
 
   // 세션 유지 테스트용 useEffect
   useEffect(() => {
-    axios.get('http://localhost:8080/api/members/me', {
-      withCredentials: true
-    })
-    .then(res => {
-      console.log('세션 유지 중:', res.data); // 세션 OK
-    })
-    .catch(err => {
-      console.error('세션 없음 또는 인증 실패:', err.response?.status, err.response?.data); // 세션 X
-    });
+    axios
+      .get('http://localhost:8080/api/members/me', {
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log('세션 유지 중:', res.data); // 세션 OK
+      })
+      .catch((err) => {
+        console.error(
+          '세션 없음 또는 인증 실패:',
+          err.response?.status,
+          err.response?.data
+        ); // 세션 X
+      });
   }, []);
 
   if (!profileData) {
@@ -48,7 +67,7 @@ const FriendProfilePage = () => {
   }
 
   return (
-    <div className="friend-profile-page">
+    <div className='friend-profile-page'>
       <FriendProfileLeft
         nickname={profileData.nickname}
         mbti={profileData.mbti}
@@ -56,11 +75,7 @@ const FriendProfilePage = () => {
         postCount={profileData.postCount || 0}
         isOwner={false}
         targetId={profileData.id}
-        profileImgUrl={
-          profileData.profileImgUrl
-            ? `http://localhost:8080${profileData.profileImgUrl}`
-            : ''
-        }
+        profileImgUrl={toImageUrl(profileData.profileImgUrl)}
         onTogglePosts={() => setShowPosts(!showPosts)}
       />
       <FriendProfileRight

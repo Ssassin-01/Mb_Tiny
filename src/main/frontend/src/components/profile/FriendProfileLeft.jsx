@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import FollowButton from '../follow/FollowButton';
 import mbtiDescriptions from './mbtiDescriptions';
-import { FaCamera } from 'react-icons/fa'; 
+import { FaCamera } from 'react-icons/fa';
 import { MessageCircle } from 'lucide-react';
 import '../../css/profile/Profile.css';
+import { toImageUrl } from '../../utils/image';
 
 const FriendProfileLeft = ({
   nickname,
@@ -41,8 +42,8 @@ const FriendProfileLeft = ({
   }, [targetId, refreshTrigger]);
 
   const handleFollowChange = (delta) => {
-    setFollowerCount(prev => prev + delta);
-    setRefreshTrigger(prev => prev + 1);
+    setFollowerCount((prev) => prev + delta);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   const mbtiInfo = mbtiDescriptions[mbti?.toUpperCase()] || {
@@ -52,32 +53,34 @@ const FriendProfileLeft = ({
   };
 
   return (
-    <div className="profile-left">
-      <div className="profile-card">
-        <div className="profile-img-wrapper">
-          {profileImgUrl ? (
-            <img src={profileImgUrl} alt="프로필" className="profile-img" />
-          ) : (
-            <div className="default-profile-img">
-              <FaCamera className="default-camera-icon" />
-            </div>
-          )}
+    <div className='profile-left'>
+      <div className='profile-card'>
+        <div className='profile-img-wrapper'>
+          <img
+            src={toImageUrl(profileImgUrl)}
+            alt='프로필'
+            className='profile-img'
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = toImageUrl(null);
+            }}
+          />
         </div>
 
-        <p className="profile-nickname">{nickname}</p>
+        <p className='profile-nickname'>{nickname}</p>
 
-        <div className="profile-info">
-          <div className="mbti-and-buttons">
-            <p className="profile-mbti">{mbti}</p>
+        <div className='profile-info'>
+          <div className='mbti-and-buttons'>
+            <p className='profile-mbti'>{mbti}</p>
 
             {!isOwner && (
-              <div className="inline-button-wrapper">
+              <div className='inline-button-wrapper'>
                 <FollowButton
                   targetId={targetId}
                   onFollowChange={handleFollowChange}
                 />
                 <button
-                  className="message-btn"
+                  className='message-btn'
                   onClick={async () => {
                     try {
                       const res = await axios.post(
@@ -87,20 +90,25 @@ const FriendProfileLeft = ({
                       );
                       const roomId = res.data.roomId;
 
-                      const listRes = await axios.get('http://localhost:8080/api/chatrooms', {
-                        withCredentials: true
-                      });
-                      const updatedRooms = listRes.data.map(room => ({
+                      const listRes = await axios.get(
+                        'http://localhost:8080/api/chatrooms',
+                        {
+                          withCredentials: true,
+                        }
+                      );
+                      const updatedRooms = listRes.data.map((room) => ({
                         ...room,
-                        targetNickname: room.receiverNickname
+                        targetNickname: room.receiverNickname,
                       }));
 
-                      const targetRoom = updatedRooms.find(r => r.roomId === roomId);
+                      const targetRoom = updatedRooms.find(
+                        (r) => r.roomId === roomId
+                      );
                       if (targetRoom) {
                         navigate(`/messagespage?roomId=${roomId}`);
                       }
                     } catch (err) {
-                      console.error("❌ 메시지 버튼 실패:", err);
+                      console.error('❌ 메시지 버튼 실패:', err);
                     }
                   }}
                 >
@@ -111,17 +119,21 @@ const FriendProfileLeft = ({
             )}
           </div>
 
-          <div className="profile-stats">
-            <div className="stats-buttons">
-              <span className="stats-item" onClick={onTogglePosts}>게시글</span>
-              <span className="stats-item">팔로워 {followerCount}</span>
-              <span className="stats-item">팔로잉 {followingCount}</span>
+          <div className='profile-stats'>
+            <div className='stats-buttons'>
+              <span className='stats-item' onClick={onTogglePosts}>
+                게시글
+              </span>
+              <span className='stats-item'>팔로워 {followerCount}</span>
+              <span className='stats-item'>팔로잉 {followingCount}</span>
             </div>
           </div>
 
-          <div className="mbti-description">
-            <h4>{mbti} 유형: {mbtiInfo.title}</h4>
-            <div className="mbti-tags">
+          <div className='mbti-description'>
+            <h4>
+              {mbti} 유형: {mbtiInfo.title}
+            </h4>
+            <div className='mbti-tags'>
               {mbtiInfo.tags.map((tag, idx) => (
                 <span key={idx}>{tag}</span>
               ))}

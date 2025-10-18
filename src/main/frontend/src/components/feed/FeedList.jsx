@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import FeedCard from "./FeedCard";
+import React, { useState, useEffect } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import FeedCard from './FeedCard';
 import FeedInput from './FeedInput';
 import FeedFilter from './FeedFilter';
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import "../../css/feed/Feed.css";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import '../../css/feed/Feed.css';
 
 function FeedList() {
   const [feeds, setFeeds] = useState([]);
@@ -14,8 +14,13 @@ function FeedList() {
   const [page, setPage] = useState(1);
   const perPage = 10;
 
-  const [mbtiFilter, setMbtiFilter] = useState(["선택 안함", "선택 안함", "선택 안함", "선택 안함"]);
-  const [sortType, setSortType] = useState("recent");
+  const [mbtiFilter, setMbtiFilter] = useState([
+    '선택 안함',
+    '선택 안함',
+    '선택 안함',
+    '선택 안함',
+  ]);
+  const [sortType, setSortType] = useState('recent');
 
   const [message, setMessage] = useState('');
   const [showBanner, setShowBanner] = useState(false);
@@ -43,9 +48,9 @@ function FeedList() {
     setHasMore(true);
     try {
       const url =
-        sortType === "popular"
-          ? "http://localhost:8080/api/posts/popular"
-          : "http://localhost:8080/api/posts";
+        sortType === 'popular'
+          ? 'http://localhost:8080/api/posts/popular'
+          : 'http://localhost:8080/api/posts';
 
       const response = await axios.get(url, { withCredentials: true });
       const fetched = filterFeeds(response.data, mbtiFilter);
@@ -63,24 +68,24 @@ function FeedList() {
       const nextPage = page + 1;
       const start = (nextPage - 1) * perPage;
       const end = nextPage * perPage;
-  
+
       const more = allFeeds.slice(start, end);
-      setFeeds(prev => [...prev, ...more]);
+      setFeeds((prev) => [...prev, ...more]);
       setPage(nextPage);
-  
+
       if (end >= allFeeds.length) setHasMore(false);
     }, 500); // 스피너 보일 수 있게 0.5초 지연
   };
-  
+
   const filterFeeds = (feeds, mbtiFilter) => {
     const [IorE, NorS, TorF, JorP] = mbtiFilter;
-    return feeds.filter(feed => {
+    return feeds.filter((feed) => {
       if (!feed.mbti) return false;
       const mbti = feed.mbti.toUpperCase();
-      if (IorE !== "선택 안함" && mbti[0] !== IorE) return false;
-      if (NorS !== "선택 안함" && mbti[1] !== NorS) return false;
-      if (TorF !== "선택 안함" && mbti[2] !== TorF) return false;
-      if (JorP !== "선택 안함" && mbti[3] !== JorP) return false;
+      if (IorE !== '선택 안함' && mbti[0] !== IorE) return false;
+      if (NorS !== '선택 안함' && mbti[1] !== NorS) return false;
+      if (TorF !== '선택 안함' && mbti[2] !== TorF) return false;
+      if (JorP !== '선택 안함' && mbti[3] !== JorP) return false;
       return true;
     });
   };
@@ -119,7 +124,9 @@ function FeedList() {
   const handleDelete = async (postId) => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     try {
-      await axios.delete(`http://localhost:8080/api/posts/${postId}`, { withCredentials: true });
+      await axios.delete(`http://localhost:8080/api/posts/${postId}`, {
+        withCredentials: true,
+      });
       alert('게시글이 삭제되었습니다.');
       resetAndLoadFeeds();
     } catch (error) {
@@ -130,7 +137,9 @@ function FeedList() {
 
   const handleLike = async (postId) => {
     try {
-      await axios.post(`http://localhost:8080/api/posts/${postId}/like`, null, { withCredentials: true });
+      await axios.post(`http://localhost:8080/api/posts/${postId}/like`, null, {
+        withCredentials: true,
+      });
       resetAndLoadFeeds();
     } catch (error) {
       console.error('좋아요 실패:', error);
@@ -145,7 +154,7 @@ function FeedList() {
       formData.append('postData', JSON.stringify(postData));
       if (newImage) formData.append('image', newImage);
 
-      await axios.put(`http://localhost:8080/api/posts/${postId}`, formData, {
+      await axios.post(`http://localhost:8080/api/posts/${postId}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
       });
@@ -159,13 +168,13 @@ function FeedList() {
   };
 
   return (
-    <div className="feed-container">
-      {showBanner && <div className="alert-message">{message}</div>}
+    <div className='feed-container'>
+      {showBanner && <div className='alert-message'>{message}</div>}
 
       <FeedInput onPost={handleNewPost} />
       <FeedFilter mbtiFilter={mbtiFilter} onChange={handleFilterChange} />
 
-      <div className="sort-buttons">
+      <div className='sort-buttons'>
         <button
           className={sortType === 'recent' ? 'active' : ''}
           onClick={() => setSortType('recent')}
@@ -184,9 +193,13 @@ function FeedList() {
         dataLength={feeds.length}
         next={loadMoreFeeds}
         hasMore={hasMore}
-        loader={<div className="spinner"></div>}
-        endMessage={<p style={{ textAlign: "center" }}><b>더 이상 불러올 피드가 없습니다</b></p>}
-        scrollableTarget="mainScroll"
+        loader={<div className='spinner'></div>}
+        endMessage={
+          <p style={{ textAlign: 'center' }}>
+            <b>더 이상 불러올 피드가 없습니다</b>
+          </p>
+        }
+        scrollableTarget='mainScroll'
         style={{ overflow: 'visible', position: 'relative' }}
       >
         {feeds.map((feed) => (

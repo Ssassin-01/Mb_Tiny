@@ -11,6 +11,17 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
   const [newComment, setNewComment] = useState('');
   const [liked, setLiked] = useState(feed.liked);
 
+  const S3_BASE =
+    'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/';
+
+  const toImageUrl = (u) => {
+    if (!u) return null;
+    if (u.startsWith('http://') || u.startsWith('https://')) return u;
+    if (u.startsWith('/profile/')) return S3_BASE + u.slice(1);
+    if (!u.startsWith('/')) return S3_BASE + u;
+    return 'http://localhost:8080' + u;
+  };
+
   const formatDateOrTime = (input) => {
     const raw = input || feed.createdAt || feed.createDate;
     if (!raw) return '날짜 없음';
@@ -54,7 +65,10 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
 
   const openCommentsModal = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/api/posts/${feed.id}/comments`, { withCredentials: true });
+      const res = await axios.get(
+        `http://localhost:8080/api/posts/${feed.id}/comments`,
+        { withCredentials: true }
+      );
       setComments(res.data);
       setShowCommentsModal(true);
     } catch (error) {
@@ -66,12 +80,19 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
     if (newComment.trim() === '') return;
 
     try {
-      await axios.post(`http://localhost:8080/api/posts/${feed.id}/comments`, {
-        content: newComment
-      }, { withCredentials: true });
+      await axios.post(
+        `http://localhost:8080/api/posts/${feed.id}/comments`,
+        {
+          content: newComment,
+        },
+        { withCredentials: true }
+      );
 
       setNewComment('');
-      const res = await axios.get(`http://localhost:8080/api/posts/${feed.id}/comments`, { withCredentials: true });
+      const res = await axios.get(
+        `http://localhost:8080/api/posts/${feed.id}/comments`,
+        { withCredentials: true }
+      );
       setComments(res.data);
     } catch (error) {
       console.error('댓글 작성 실패:', error);
@@ -80,7 +101,11 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
 
   const handleLikeClick = async () => {
     try {
-      const res = await axios.post(`http://localhost:8080/api/posts/${feed.id}/like`, null, { withCredentials: true });
+      const res = await axios.post(
+        `http://localhost:8080/api/posts/${feed.id}/like`,
+        null,
+        { withCredentials: true }
+      );
       setLiked(res.data.like);
     } catch (error) {
       console.error('좋아요 실패:', error);
@@ -92,9 +117,14 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
     setShowCommentsModal(false);
   };
 
+  const imageSrc = toImageUrl(feed.imageUrl);
+
   return (
-    <div className="feed-card">
-      <div className="feed-time" style={{ fontSize: '13px', color: '#888', marginBottom: '10px' }}>
+    <div className='feed-card'>
+      <div
+        className='feed-time'
+        style={{ fontSize: '13px', color: '#888', marginBottom: '10px' }}
+      >
         {formatDateOrTime()}
       </div>
 
@@ -103,26 +133,26 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
           <textarea
             value={editedContent}
             onChange={(e) => setEditedContent(e.target.value)}
-            rows="4"
-            className="edit-textarea"
+            rows='4'
+            className='edit-textarea'
           />
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <input type='file' accept='image/*' onChange={handleImageChange} />
         </>
       ) : (
         <>
-          <div className="feed-content">{feed.content}</div>
+          <div className='feed-content'>{feed.content}</div>
           {feed.imageUrl && (
             <img
-              src={`http://localhost:8080${feed.imageUrl}`}
-              alt="피드 이미지"
-              className="feed-image"
+              src={imageSrc}
+              alt='피드 이미지'
+              className='feed-image'
               style={{ cursor: 'pointer' }}
             />
           )}
         </>
       )}
 
-      <div className="feed-actions">
+      <div className='feed-actions'>
         {isEditing ? (
           <>
             <button onClick={handleSaveClick}>저장</button>
@@ -144,20 +174,22 @@ function ProfileFeedCard({ feed, onUpdate, onDelete }) {
       </div>
 
       {showCommentsModal && (
-        <div className="comment-modal">
-          <div className="modal-content">
-            <button className="close-button" onClick={closeModal}>X</button>
-            <div className="comments-list">
+        <div className='comment-modal'>
+          <div className='modal-content'>
+            <button className='close-button' onClick={closeModal}>
+              X
+            </button>
+            <div className='comments-list'>
               {comments.map((comment) => (
-                <div key={comment.id} className="comment-item">
+                <div key={comment.id} className='comment-item'>
                   <strong>{comment.nickname}</strong>: {comment.content}
                 </div>
               ))}
             </div>
-            <div className="comment-input">
+            <div className='comment-input'>
               <input
-                type="text"
-                placeholder="댓글을 입력하세요..."
+                type='text'
+                placeholder='댓글을 입력하세요...'
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
               />

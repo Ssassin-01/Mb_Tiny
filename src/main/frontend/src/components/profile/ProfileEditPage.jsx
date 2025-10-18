@@ -4,6 +4,8 @@ import { FaCamera } from 'react-icons/fa';
 import axios from 'axios';
 import '../../css/profile/ProfileEditPage.css';
 
+const S3_BASE = 'https://mbtiny-image-bucket.s3.ap-northeast-2.amazonaws.com/';
+
 const ProfileEditPage = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef();
@@ -15,6 +17,14 @@ const ProfileEditPage = () => {
     birthday: '',
     mbti: '',
   });
+
+  const toImageUrl = (u) => {
+    if (!u) return null;
+    if (u.startsWith('http://') || u.startsWith('https://')) return u;
+    if (u.startsWith('/profile/')) return S3_BASE + u.slice(1);
+    if (!u.startsWith('/')) return S3_BASE + u;
+    return 'http://localhost:8080' + u;
+  };
 
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -36,7 +46,7 @@ const ProfileEditPage = () => {
           birthday: birthday || '',
           mbti: mbti || '',
         });
-        setPreview(profileImgUrl ? `http://localhost:8080${profileImgUrl}` : null);
+        setPreview(profileImgUrl ? toImageUrl(profileImgUrl) : null);
       } catch (err) {
         console.error('프로필 정보 불러오기 실패', err);
         alert('로그인이 필요합니다.');
@@ -102,7 +112,7 @@ const ProfileEditPage = () => {
   const handleResetToDefault = () => {
     const emptyFile = new File([], '');
     setImageFile(emptyFile);
-    setPreview('http://localhost:8080/uploads/profile/default.png');
+    setPreview(toImageUrl(S3_BASE + 'profile/default.png'));
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -131,7 +141,7 @@ const ProfileEditPage = () => {
         formData.append('profileImg', imageFile);
       }
 
-      await axios.put('http://localhost:8080/api/members/modify', formData, {
+      await axios.post('http://localhost:8080/api/members/modify', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
       });
@@ -145,79 +155,124 @@ const ProfileEditPage = () => {
   };
 
   return (
-    <div className="profile-edit-container">
+    <div className='profile-edit-container'>
       <h2>프로필 수정</h2>
-      <form onSubmit={handleSubmit} className="profile-edit-form">
-        <div className="form-group">
+      <form onSubmit={handleSubmit} className='profile-edit-form'>
+        <div className='form-group'>
           <label>프로필 이미지</label>
-          <div className="img-preview-wrapper">
+          <div className='img-preview-wrapper'>
             {preview ? (
-              <img src={preview} alt="preview" className="img-preview" />
+              <img src={preview} alt='preview' className='img-preview' />
             ) : (
-              <div className="default-profile-img">
-                <FaCamera className="default-camera-icon" />
+              <div className='default-profile-img'>
+                <FaCamera className='default-camera-icon' />
               </div>
             )}
-            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} />
-            <button type="button" className="reset-profile-btn" onClick={handleResetToDefault}>
+            <input
+              ref={fileInputRef}
+              type='file'
+              accept='image/*'
+              onChange={handleImageChange}
+            />
+            <button
+              type='button'
+              className='reset-profile-btn'
+              onClick={handleResetToDefault}
+            >
               기본 이미지로 변경
             </button>
           </div>
         </div>
 
-        <div className="form-group">
+        <div className='form-group'>
           <label>비밀번호</label>
-          <input type="password" name="password" value={form.password} onChange={handleChange} />
-          {passwordError && <div className="error">{passwordError}</div>}
+          <input
+            type='password'
+            name='password'
+            value={form.password}
+            onChange={handleChange}
+          />
+          {passwordError && <div className='error'>{passwordError}</div>}
         </div>
 
-        <div className="form-group">
+        <div className='form-group'>
           <label>비밀번호 확인</label>
-          <input type="password" name="confirmPassword" value={confirmPassword} onChange={handleConfirmChange} />
-          {confirmError && <div className="error">{confirmError}</div>}
+          <input
+            type='password'
+            name='confirmPassword'
+            value={confirmPassword}
+            onChange={handleConfirmChange}
+          />
+          {confirmError && <div className='error'>{confirmError}</div>}
         </div>
 
-        <div className="form-group">
+        <div className='form-group'>
           <label>성별</label>
-          <select name="gender" value={form.gender} onChange={handleChange}>
-            <option value="">선택</option>
-            <option value="남성">남성</option>
-            <option value="여성">여성</option>
+          <select name='gender' value={form.gender} onChange={handleChange}>
+            <option value=''>선택</option>
+            <option value='남성'>남성</option>
+            <option value='여성'>여성</option>
           </select>
         </div>
 
-        <div className="form-group">
+        <div className='form-group'>
           <label>전화번호</label>
           <input
-            type="text"
-            name="phone"
+            type='text'
+            name='phone'
             value={form.phone}
             onChange={handleChange}
-            placeholder="- 없이 숫자만 입력해주세요"
+            placeholder='- 없이 숫자만 입력해주세요'
           />
         </div>
 
-        <div className="form-group">
+        <div className='form-group'>
           <label>생일</label>
-          <input type="date" name="birthday" value={form.birthday} onChange={handleChange} />
+          <input
+            type='date'
+            name='birthday'
+            value={form.birthday}
+            onChange={handleChange}
+          />
         </div>
 
-        <div className="form-group">
+        <div className='form-group'>
           <label>MBTI</label>
-          <select name="mbti" value={form.mbti} onChange={handleChange} required>
-            <option value="">선택</option>
+          <select
+            name='mbti'
+            value={form.mbti}
+            onChange={handleChange}
+            required
+          >
+            <option value=''>선택</option>
             {[
-              'ISTJ', 'ISFJ', 'INFJ', 'INTJ',
-              'ISTP', 'ISFP', 'INFP', 'INTP',
-              'ESTP', 'ESFP', 'ENFP', 'ENTP',
-              'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ'
+              'ISTJ',
+              'ISFJ',
+              'INFJ',
+              'INTJ',
+              'ISTP',
+              'ISFP',
+              'INFP',
+              'INTP',
+              'ESTP',
+              'ESFP',
+              'ENFP',
+              'ENTP',
+              'ESTJ',
+              'ESFJ',
+              'ENFJ',
+              'ENTJ',
             ].map((type) => (
-              <option key={type} value={type}>{type}</option>
+              <option key={type} value={type}>
+                {type}
+              </option>
             ))}
           </select>
         </div>
 
-        <button type="submit" className="save-btn">저장</button>
+        <button type='submit' className='save-btn'>
+          저장
+        </button>
       </form>
     </div>
   );
